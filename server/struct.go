@@ -1,0 +1,67 @@
+package server
+
+
+type User struct {
+	UserID      string
+	SessionID   string
+	Firstname   string
+	Lastname    string
+	Age         int
+	Nickname    string
+	Gender      string
+	Status      string
+	ImgUrl      string
+	Email       string
+	DateCreated string
+	Password    string
+}
+type Session struct {
+	SessionID string
+	UserID    string
+	DateAndTime string
+}
+type Post struct {
+	PostID       string
+	UserID       string
+	Date         string
+	Time         string
+	Title        string
+	Content      string
+	Category     string
+	ImgUrl       string
+	Comments     []Comment
+	Favorite     Favorite
+}
+
+type Comment struct {
+	CommentID   string
+	UserID      string
+	PostID      string
+	Date        string
+	Time        string
+	ImgUrl       string
+	Content     string
+}
+
+type Favorite struct {
+	FavoriteID string
+	PostID     string
+	UserID     string
+	React      int
+}
+
+type Chat struct {
+	ChatID       string
+	User1ID      string
+	User2ID      string
+	
+}
+
+type Message struct {
+	MessageID   string
+	ChatID      string
+	Content     string
+	Date        string
+	Time        string
+	UsedID      string
+}
