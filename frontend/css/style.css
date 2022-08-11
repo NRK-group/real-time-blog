@@ -1,6 +1,6 @@
 * {
     box-sizing: border-box;
-    background-color: #0a0908;
+    /* background-color: #0a0908; */
 }
 
 body {
@@ -42,12 +42,25 @@ body {
 .access-page {
     width: 100vw;
     height: 100vh;
-    background-color: rgb(238, 238, 238);
+    background: rgb(202, 240, 248);
+    background: linear-gradient(
+        180deg,
+        rgba(202, 240, 248, 0.2) 0%,
+        rgba(255, 255, 255, 1) 49%,
+        rgba(215, 129, 255, 0.2) 100%
+    );
     z-index: 1;
-    display: none;
     align-items: center;
     justify-content: center;
     overflow-y: scroll;
+}
+
+.login-page {
+    display: block;
+}
+
+.register-page {
+    display: none;
 }
 
 .access-page > * {
@@ -62,7 +75,8 @@ body {
     text-align: center;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.051), 0 12px 40px 0 rgba(0, 0, 0, 0.221);
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.051),
+        0 12px 40px 0 rgba(0, 0, 0, 0.221);
     padding: 5px;
 }
 
@@ -80,24 +94,28 @@ body {
     height: 50px;
     border-radius: 10px;
     background-color: white;
+    padding: 7px;
+    font-size: 15px;
 }
 
-.access-btn{
+.access-btn {
     display: block;
-    background-color: #7851a9;
+    background-color: #543de0;
     color: white;
     width: 200px;
     height: 30px;
     border: none;
     margin: 10px auto;
     border-radius: 10px;
+    font-size: 20px;
 }
 
-.access-btn:hover{
-    color: #C0C2C9;
+.access-btn:hover {
+    /* color: #c0c2c9; */
+    font-weight: bold;
 }
 
-.logo{
+.logo {
     background-color: black;
     width: 300px;
     height: 100px;
@@ -105,15 +123,81 @@ body {
     margin: 25px auto;
 }
 
-.show-password{
+.show-password {
     border: none;
 }
 
 .show-password:hover {
-    color: #7851a9;
+    color: #543de0;
 }
 
-.login-title{
+.login-title {
     background-color: #0a0a0a00;
     color: black;
+}
+
+/* Registration Page */
+.register-input-container {
+    border-radius: 15px;
+    width: 450px;
+    height: 650px;
+    background-color: white;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.051),
+        0 12px 40px 0 rgba(0, 0, 0, 0.221);
+    padding: 5px;
+    margin-bottom: 100px;
+}
+
+.selector-holder {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+}
+
+.access-selector-fields {
+    background-color: white;
+}
+
+.short-input-div {
+    width: 250px;
+    height: 50px;
+    display: inline-flex;
+    background-color: inherit;
+     margin: 15px auto;
+    margin-bottom: 0;
+}
+
+.short-input-fields{
+    width: 120px;
+    height: inherit;
+    background-color: inherit;
+    color: inherit;
+    border-radius: 10px;
+    color: black;
+    padding: 7px;
+    font-size: 15px;
+    margin: auto;
+}
+
+input[type=text]:focus {
+    outline: 2px solid #543de0;
+    border: none;
+}
+
+input[type=number]:focus {
+    outline: 2px solid #543de0;
+    border: none;
+}
+input[type=password]:focus{
+    outline: 2px solid #543de0;
+    border: none;
+}
+
+input[type=email]:focus{
+    outline: 2px solid #543de0;
+    border: none;
 }
