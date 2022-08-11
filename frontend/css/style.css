@@ -118,12 +118,12 @@ button {
 
 .login-page {
     background-color: white;
-    display: none;
+    display: block;
 }
 
 .register-page {
     background-color: white;
-    display: block;
+    display: none;
 }
 
 .access-page > * {
@@ -167,36 +167,33 @@ button {
     color: white;
     width: 200px;
     height: 30px;
-    border: none;
     margin: 10px auto;
+    padding: 5px 0px;
     border-radius: 10px;
     font-size: 20px;
 }
 
 .access-btn:hover {
-    /* color: #c0c2c9; */
-    font-weight: bold;
+    background-color: white;
+    color: #543de0;
+    -webkit-transition: all 0.5s;
+    -moz-transition: all 0.5s;
+    transition: all 0.5s;
 }
 
 .logo {
-    background-color: black;
-    width: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     height: 100px;
-    z-index: 10;
     margin: 25px auto;
-}
-
-.show-password {
-    border: none;
 }
 
 .show-password:hover {
     color: #543de0;
-}
-
-.login-title {
-    background-color: #0a0a0a00;
-    color: black;
+    -webkit-transition: all 0.5s;
+    -moz-transition: all 0.5s;
+    transition: all 0.5s;
 }
 
 /* Registration Page */
@@ -249,18 +246,30 @@ button {
 input[type='text']:focus {
     outline: 2px solid #543de0;
     border: none;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    transition: all 0.3s;
 }
 
 input[type='number']:focus {
     outline: 2px solid #543de0;
     border: none;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    transition: all 0.3s;
 }
 input[type='password']:focus {
     outline: 2px solid #543de0;
     border: none;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    transition: all 0.3s;
 }
 
 input[type='email']:focus {
     outline: 2px solid #543de0;
     border: none;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    transition: all 0.3s;
 }
