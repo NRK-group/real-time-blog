@@ -38,3 +38,82 @@ body {
     display: grid;
     grid-template-rows: 50% 50%;
 }
+
+.access-page {
+    width: 100vw;
+    height: 100vh;
+    background-color: rgb(238, 238, 238);
+    z-index: 1;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    overflow-y: scroll;
+}
+
+.access-page > * {
+    margin: auto;
+}
+
+.login-input-container {
+    border-radius: 15px;
+    width: 450px;
+    height: 375px;
+    background-color: white;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.051), 0 12px 40px 0 rgba(0, 0, 0, 0.221);
+    padding: 5px;
+}
+
+.access-text {
+    background-color: inherit;
+    color: black;
+    margin: 5px auto;
+}
+
+.access-input-fields {
+    display: block;
+    margin: 15px auto;
+    margin-bottom: 0;
+    width: 250px;
+    height: 50px;
+    border-radius: 10px;
+    background-color: white;
+}
+
+.access-btn{
+    display: block;
+    background-color: #7851a9;
+    color: white;
+    width: 200px;
+    height: 30px;
+    border: none;
+    margin: 10px auto;
+    border-radius: 10px;
+}
+
+.access-btn:hover{
+    color: #C0C2C9;
+}
+
+.logo{
+    background-color: black;
+    width: 300px;
+    height: 100px;
+    z-index: 10;
+    margin: 25px auto;
+}
+
+.show-password{
+    border: none;
+}
+
+.show-password:hover {
+    color: #7851a9;
+}
+
+.login-title{
+    background-color: #0a0a0a00;
+    color: black;
+}
