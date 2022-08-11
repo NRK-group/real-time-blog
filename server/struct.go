@@ -1,5 +1,13 @@
 package server
 
+import (
+	"database/sql"
+)
+
+
+type DB struct {
+	DB *sql.DB
+}
 
 type User struct {
 	UserID      string
