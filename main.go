@@ -16,13 +16,15 @@ func main() {
 	if err != nil {
 		log.Fatal("Database conection error")
 	}
-
-	server.CreateDatabase(db)
+	database := &server.DB{
+		DB : server.CreateDatabase(db),
+	}
+	
 
 	defer db.Close()
 
-	http.HandleFunc("/", server.Home)
-	http.HandleFunc("/register", server.Register)
+	http.HandleFunc("/", database.Home)
+	http.HandleFunc("/register", database.Register)
 	frontend := http.FileServer(http.Dir("./frontend"))
 	http.Handle("/frontend/", http.StripPrefix("/frontend/", frontend)) // handling the CSS
 	fmt.Printf("Starting server at port 8800\n")

@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func Home(w http.ResponseWriter, r *http.Request) {
+func (DB *DB) Home(w http.ResponseWriter, r *http.Request) {
 	t, err := template.ParseFiles("frontend/index.html")
 	if err != nil {
 		http.Error(w, "500 Internal error", http.StatusInternalServerError)
@@ -19,7 +19,7 @@ func Home(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func Register(w http.ResponseWriter, r *http.Request) {
+func (DB *DB) Register(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/register" {
 		http.Error(w, "404 not found.", http.StatusNotFound)
 		return
