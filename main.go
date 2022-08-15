@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"html/template"
-	"io/ioutil"
 	"log"
 	"net/http"
 
@@ -32,14 +31,14 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if r.Method == "POST" {
-		resp, err := ioutil.ReadAll(r.Body)
+		var userData server.UserData
+		err := json.NewDecoder(r.Body).Decode(&userData) // unmarshall the userdata
 		if err != nil {
-			http.Error(w, "400 Bad Request.", http.StatusBadRequest)
+			fmt.Print(err)
+			http.Error(w, "500 Internal Server Error.", http.StatusInternalServerError)
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		var userData server.UserData
-		json.Unmarshal(resp, &userData)
 		fmt.Print(userData) // this is the data that need to be inserted to the database.
 		w.Header().Set("Content-type", "application/text")
 		w.WriteHeader(http.StatusOK)

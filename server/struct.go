@@ -75,7 +75,7 @@ type UserData struct {
 	FirstName       string `json:"firstName"`
 	Nickname        string `json:"nickname"`
 	LastName        string `json:"lastName"`
-	Age             int    `json:"age"`
+	Age             string `json:"age"`
 	Gender          string `string:"gender"`
 	Email           string `string:"email"`
 	Password        string `string:"password"`
