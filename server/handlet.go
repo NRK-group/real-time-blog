@@ -71,7 +71,7 @@ func (DB *DB) Register(w http.ResponseWriter, r *http.Request) {
 		//Turn age into an int
 		userAge, _ := strconv.Atoi(userData.Age)
 		//Gate the date of registration
-		userDate := time.Now().Format("01-02-2006")
+		userDate := time.Now().Format("January 2, 2006")
 		//Hash the password
 		password, hashErr := HashPassword(userData.Password)
 
