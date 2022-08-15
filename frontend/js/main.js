@@ -46,7 +46,6 @@ registerBtn.addEventListener('click', (e) => {
         },
         body: JSON.stringify(userData),
     }).then((response) => {
-        console.log(response.write);
         return response;
     });
 });
