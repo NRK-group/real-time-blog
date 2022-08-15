@@ -67,3 +67,49 @@ func (forum *DB) CreateSession(userID string) (string, error) {
 	forum.Update("User", "sessionID", sessionID.String(), "userID", userID)
 	return sessionID.String(), nil
 }
+
+// LoginUser
+// is method of forum that checks the database if the login details match the credential
+// and allow them to login if their is a match credentials
+func (forum *DB) LoginUsers(emailOrNickname, pas string) (string, string, string, string) {
+	var users User
+	rows, err := forum.DB.Query("SELECT * FROM User WHERE nickName = '" + emailOrNickname + "' OR email = '" + emailOrNickname + "")
+	if err != nil {
+		return "", "", "", err.Error()
+	}
+	var userID, imgUrl, firstName, lastName, nickName, gender, status, email, dateCreated, pass, sessionID string
+	var age int
+	for rows.Next() {
+		rows.Scan(&userID, &imgUrl, &firstName, &lastName, &nickName, &gender, &age, &status, &email, &dateCreated, &pass, &sessionID)
+		users = User{
+			UserID:      userID,
+			SessionID:   sessionID,
+			Firstname:   firstName,
+			Lastname:    lastName,
+			Age:         age,
+			Nickname:    nickName,
+			Gender:      gender,
+			Status:      status,
+			ImgUrl:      imgUrl,
+			Email:       email,
+			DateCreated: dateCreated,
+			Password:    pass,
+		}
+	}
+	if users.Nickname == "" || users.Email == "" {
+		return "", "", "", "user not found"
+	}
+	if !(CheckPasswordHash(pas, users.Password)) {
+		return "", "", "", "password not macth"
+	}
+	if users.SessionID != "" {
+		forum.RemoveSession(users.SessionID)
+	}
+	sess, err := forum.CreateSession(users.UserID)
+	if err != nil {
+		return "", "", "", err.Error()
+	}
+	users.SessionID = sess
+	forum.Update("User", "Status", "Online", "userID", userID)
+	return users.UserID, users.Nickname, users.SessionID, ""
+}

@@ -44,7 +44,8 @@ registerBtn.addEventListener('click', (e) => {
         },
         body: JSON.stringify(userData),
     }).then((response) => {
-        return response;
+        console.log(response.text())
+        return response.text();
     });
 });
 const openLoginModal = () => {
