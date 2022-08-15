@@ -29,6 +29,7 @@ func initUser(db *sql.DB) {
 	`)
 	stmt.Exec()
 }
+
 func initSession(db *sql.DB) {
 	stmt, _ := db.Prepare(`
 	CREATE TABLE IF NOT EXISTS "Session" (
@@ -42,6 +43,7 @@ func initSession(db *sql.DB) {
 	`)
 	stmt.Exec()
 }
+
 func initPost(db *sql.DB) {
 	stmt, _ := db.Prepare(`
 	CREATE TABLE IF NOT EXISTS "Post" (
@@ -60,6 +62,7 @@ func initPost(db *sql.DB) {
 	`)
 	stmt.Exec()
 }
+
 func initComment(db *sql.DB) {
 	stmt, _ := db.Prepare(`
 	CREATE TABLE IF NOT EXISTS "Comment" (
@@ -79,6 +82,7 @@ func initComment(db *sql.DB) {
 	`)
 	stmt.Exec()
 }
+
 func initFavorite(db *sql.DB) {
 	stmt, _ := db.Prepare(`
 	CREATE TABLE IF NOT EXISTS "Favorite" (
@@ -95,6 +99,7 @@ func initFavorite(db *sql.DB) {
 	`)
 	stmt.Exec()
 }
+
 func initMessage(db *sql.DB) {
 	stmt, _ := db.Prepare(`
 	CREATE TABLE IF NOT EXISTS "Message" (
@@ -113,6 +118,7 @@ func initMessage(db *sql.DB) {
 	`)
 	stmt.Exec()
 }
+
 func initChat(db *sql.DB) {
 	stmt, _ := db.Prepare(`
 	CREATE TABLE IF NOT EXISTS "Chat" (
