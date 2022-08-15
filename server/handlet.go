@@ -42,11 +42,9 @@ func (DB *DB) Register(w http.ResponseWriter, r *http.Request) {
 		// Check if the nickname is already in use
 		var allowNickname int
 		DB.DB.QueryRow(`SELECT 1 from User WHERE nickName = (?);`, userData.Nickname).Scan(&allowNickname)
-		
 
 		var allowEmail int
 		DB.DB.QueryRow(`SELECT 1 from User WHERE email = (?);`, userData.Email).Scan(&allowEmail)
-		
 
 		if allowNickname == 1 && allowEmail == 1 {
 			// This user already exsists
@@ -62,20 +60,20 @@ func (DB *DB) Register(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		//Create a UserId for the new user using UUID
+		// Create a UserId for the new user using UUID
 		userID := uuid.NewV4().String()
-		//Turn age into an int
+		// Turn age into an int
 		userAge, _ := strconv.Atoi(userData.Age)
-		//Gate the date of registration
+		// Gate the date of registration
 		userDate := time.Now().Format("January 2, 2006")
-		//Hash the password
+		// Hash the password
 		password, hashErr := HashPassword(userData.Password)
 
 		if hashErr != nil {
 			fmt.Println("Error hashing password", hashErr)
 		}
-		//Valid registration so add the user to the database
-		DB.DB.Exec(`INSERT INTO User VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`, userID, "", userData.FirstName, userData.LastName, userData.Nickname, userData.Gender, userAge, "Offline", userData.Email, userDate, password,"" )
+		// Valid registration so add the user to the database
+		DB.DB.Exec(`INSERT INTO User VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`, userID, "", userData.FirstName, userData.LastName, userData.Nickname, userData.Gender, userAge, "Offline", userData.Email, userDate, password, "")
 
 		w.Header().Set("Content-type", "application/text")
 		w.WriteHeader(http.StatusOK)
