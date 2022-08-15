@@ -54,7 +54,7 @@ func (DB *DB) Register(w http.ResponseWriter, r *http.Request) {
 
 		if allowNickname == 1 && allowEmail == 1 {
 			// This user already exsists
-			w.Write([]byte("This user is already exists"))
+			w.Write([]byte("This user already exists"))
 			return
 		} else if allowEmail == 1 {
 			// This email is already in use
