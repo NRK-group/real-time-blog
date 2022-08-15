@@ -17,9 +17,8 @@ func main() {
 		log.Fatal("Database conection error")
 	}
 	database := &server.DB{
-		DB : server.CreateDatabase(db),
+		DB: server.CreateDatabase(db),
 	}
-	
 
 	defer db.Close()
 
