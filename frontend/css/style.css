@@ -1,5 +1,6 @@
 * {
     box-sizing: border-box;
+    letter-spacing: 1px;
 }
 
 body {
@@ -283,4 +284,59 @@ input[type='email']:focus {
 }
 .open {
     display: block;
+}
+.profile-container {
+    padding: 10%;
+}
+.profile-card {
+    height: 100%;
+    width: 100%;
+    background-color: white;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px 20px 20px 20px;
+}
+.profile-picture {
+    height: 150px;
+    width: 150px;
+    background-color: rgb(206, 232, 240);
+    border-radius: 20px;
+    margin-bottom: 25px;
+}
+.profile-button {
+    padding: 10px 20px;
+    color: white;
+    background-color: #543de0;
+    border-radius: 16px;
+    cursor: pointer;
+    width: 100px;
+    text-align: center;
+}
+.profile-button:hover {
+    background-color: white;
+    color: #543de0;
+    -webkit-transition: all 0.5s;
+    -moz-transition: all 0.5s;
+    transition: all 0.5s;
+}
+.edit-icon {
+    color: white;
+    fill: currentColor;
+    display: inline-block;
+    margin-right: 10px;
+    width: 15px;
+    height: 15px;
+}
+.profile-button:hover > .edit-icon {
+    color: #543de0;
+}
+.profile-name {
+    margin-bottom: 5px;
+    font-weight: 700;
+}
+.profile-username {
+    margin-bottom: 50px;
+    opacity: 0.5;
 }

@@ -86,6 +86,12 @@ loginBtn.addEventListener('click', (e) => {
         },
         body: JSON.stringify(userLoginData),
     }).then((response) => {
+        const loginPageId = document.querySelector('#login-page-id');
+        const registerPageId = document.querySelector('#register-page-id');
+        loginPageId.classList.remove('open');
+        loginPageId.classList.add('close');
+        registerPageId.classList.remove('open');
+        registerPageId.classList.add('close');
         return response;
     });
 });
