@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"html/template"
 	"log"
@@ -24,19 +25,41 @@ func Home(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func Register(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/register" {
+		http.Error(w, "404 not found.", http.StatusNotFound)
+		return
+	}
+	if r.Method == "POST" {
+		var userData server.UserData
+		err := json.NewDecoder(r.Body).Decode(&userData) // unmarshall the userdata
+		if err != nil {
+			fmt.Print(err)
+			http.Error(w, "500 Internal Server Error.", http.StatusInternalServerError)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		fmt.Print(userData) // this is the data that need to be inserted to the database.
+		w.Header().Set("Content-type", "application/text")
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("Register successful"))
+		return
+	}
+	http.Error(w, "400 Bad Request.", http.StatusBadRequest)
+}
+
 func main() {
 	db, err := sql.Open("sqlite3", "./server/forum.db")
 	if err != nil {
 		log.Fatal("Database conection error")
 	}
 
-	 server.CreateDatabase(db)
+	server.CreateDatabase(db)
 
 	defer db.Close()
 
-	
-
 	http.HandleFunc("/", Home)
+	http.HandleFunc("/register", Register)
 	frontend := http.FileServer(http.Dir("./frontend"))
 	http.Handle("/frontend/", http.StripPrefix("/frontend/", frontend)) // handling the CSS
 	fmt.Printf("Starting server at port 8800\n")

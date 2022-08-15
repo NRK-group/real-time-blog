@@ -180,6 +180,10 @@ button {
     -moz-transition: all 0.5s;
     transition: all 0.5s;
 }
+.access-btn:focus {
+    background-color: #543de0;
+    color: white;
+}
 
 .logo {
     display: flex;
@@ -272,4 +276,11 @@ input[type='email']:focus {
     -webkit-transition: all 0.3s;
     -moz-transition: all 0.3s;
     transition: all 0.3s;
+}
+
+.close {
+    display: none;
+}
+.open {
+    display: block;
 }

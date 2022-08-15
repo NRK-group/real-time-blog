@@ -8,8 +8,8 @@
         <title>Forum</title>
     </head>
     <body>
-        <!-- Login Screen Div -->
-        <div class="login-page access-page">
+        <!-- * Login Screen Div -->
+        <div class="login-page access-page" id="login-page-id">
             <div class="logo">
                 <div class="title">FORUM</div>
             </div>
@@ -28,13 +28,23 @@
                 <button class="access-text show-password">
                     Reveal Password
                 </button>
-                <button type="button" class="access-btn">Login</button>
+                <button type="button" class="access-btn" id="login-btn-id">
+                    Login
+                </button>
                 <p class="access-text">or</p>
-                <button type="button" class="access-btn">Register</button>
+                <button
+                    type="button"
+                    class="access-btn"
+                    id="open-register-btn-id"
+                >
+                    Register
+                </button>
             </div>
         </div>
-        <!-- Registration Page -->
-        <div class="register-page access-page">
+        <!-- * end of the login page -->
+
+        <!-- * Registration Page -->
+        <div class="register-page access-page" id="register-page-id">
             <div class="logo">
                 <div class="title">FORUM</div>
             </div>
@@ -45,18 +55,23 @@
                         type="text"
                         class="short-input-fields"
                         placeholder="First Name"
+                        id="first-name-id"
+                        required
                     />
                     <input
                         type="text"
                         class="short-input-fields"
                         placeholder="Nickname"
+                        id="nickname-id"
+                        required
                     />
                 </div>
-
                 <input
                     type="text"
                     class="access-input-fields"
                     placeholder="Last Name"
+                    id="last-name-id"
+                    required
                 />
                 <div class="short-input-div">
                     <input
@@ -64,11 +79,14 @@
                         class="short-input-fields"
                         min="13"
                         placeholder="Age"
+                        id="age-id"
+                        required
                     />
                     <select
                         class="short-input-fields"
-                        id="gender-selector"
                         placeholder="gender"
+                        id="gender-id"
+                        required
                     >
                         <option value="" disabled selected hidden>
                             Gender
@@ -84,31 +102,42 @@
                         </option>
                     </select>
                 </div>
-
                 <input
                     type="email"
                     class="access-input-fields"
                     placeholder="Email"
+                    id="email-id"
+                    required
                 />
                 <input
                     type="password"
                     class="access-input-fields"
                     placeholder="Password"
+                    id="password-id"
+                    required
                 />
                 <input
                     type="password"
                     class="access-input-fields"
                     placeholder="Confirm Password"
+                    id="confirm-password-id"
+                    required
                 />
-
                 <button class="access-text show-password">
                     Reveal Password
                 </button>
-                <button type="button" class="access-btn">Login</button>
+                <button type="submit" class="access-btn" id="register-btn-id">
+                    Register
+                </button>
                 <p class="access-text">or</p>
-                <button type="button" class="access-btn">Register</button>
+                <button type="button" class="access-btn" id="open-login-btn-id">
+                    Login
+                </button>
             </div>
         </div>
+        <!-- * end of the registration page -->
+
+        <!-- * start of the main screen -->
         <div class="top-container">
             <div class="title-container">
                 <div class="title">FORUM</div>
@@ -145,5 +174,8 @@
                 <div class="users-container"></div>
             </div>
         </div>
+        <!-- * end of the main screen  -->
+
+        <script src="../frontend/js/main.js"></script>
     </body>
 </html>
