@@ -41,16 +41,12 @@ func (DB *DB) Register(w http.ResponseWriter, r *http.Request) {
 
 		// Check if the nickname is already in use
 		var allowNickname int
-		nickNameErr := DB.DB.QueryRow(`SELECT 1 from User WHERE nickName = (?);`, userData.Nickname).Scan(&allowNickname)
-		if nickNameErr != nil {
-			fmt.Println("Error checking the nickname: ", nickNameErr.Error())
-		}
+		DB.DB.QueryRow(`SELECT 1 from User WHERE nickName = (?);`, userData.Nickname).Scan(&allowNickname)
+		
 
 		var allowEmail int
-		emailErr := DB.DB.QueryRow(`SELECT 1 from User WHERE email = (?);`, userData.Email).Scan(&allowEmail)
-		if emailErr != nil {
-			fmt.Println("Error checking the nickname: ", emailErr.Error())
-		}
+		DB.DB.QueryRow(`SELECT 1 from User WHERE email = (?);`, userData.Email).Scan(&allowEmail)
+		
 
 		if allowNickname == 1 && allowEmail == 1 {
 			// This user already exsists
@@ -86,6 +82,31 @@ func (DB *DB) Register(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Register successful"))
 		return
 	}
+	fmt.Println("Error in register handler")
+
 	http.Error(w, "400 Bad Request.", http.StatusBadRequest)
 }
 
+func (DB *DB) Login(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/login" {
+		http.Error(w, "404 not found.", http.StatusNotFound)
+		return
+	}
+	if r.Method == "POST" {
+		var userLoginData UserLoginData
+		err := json.NewDecoder(r.Body).Decode(&userLoginData) // unmarshall the userdata
+		if err != nil {
+			fmt.Print(err)
+			http.Error(w, "500 Internal Server Error.", http.StatusInternalServerError)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		fmt.Print(userLoginData)
+		w.Header().Set("Content-type", "application/text")
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("Register successful"))
+		return
+	}
+	fmt.Println("Error in login handler")
+	http.Error(w, "400 Bad Request.", http.StatusBadRequest)
+}

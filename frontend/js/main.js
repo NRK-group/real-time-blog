@@ -11,7 +11,6 @@ openRegisterBtn.addEventListener('click', (e) => {
 });
 
 const getRegisterData = () => {
-    console.log('hello');
     const firstName = document.querySelector('#first-name-id');
     const nickname = document.querySelector('#nickname-id');
     const lastName = document.querySelector('#last-name-id');
@@ -37,7 +36,6 @@ const registerBtn = document.querySelector('#register-btn-id');
 registerBtn.addEventListener('click', (e) => {
     e.preventDefault();
     const userData = getRegisterData();
-    console.log(userData);
     fetch('/register', {
         method: 'POST',
         headers: {
@@ -46,6 +44,54 @@ registerBtn.addEventListener('click', (e) => {
         },
         body: JSON.stringify(userData),
     }).then((response) => {
+        return response;
+    });
+});
+const openLoginModal = () => {
+    const loginPageId = document.querySelector('#login-page-id');
+    const registerPageId = document.querySelector('#register-page-id');
+    loginPageId.classList.remove('close');
+    loginPageId.classList.add('open');
+    registerPageId.classList.remove('open');
+    registerPageId.classList.add('close');
+    console.log('hello');
+};
+const openLoginBtn = document.querySelector('#open-login-btn-id');
+openLoginBtn.addEventListener('click', (e) => {
+    console.log('hello');
+    e.preventDefault();
+    openLoginModal();
+});
+const getloginData = () => {
+    const emailOrUsername = document.querySelector(
+        '#login-email-or-username-id'
+    );
+    const password = document.querySelector('#login-password-id');
+    const userLoginData = {
+        emailOrUsername: emailOrUsername.value,
+        password: password.value,
+    };
+    Object.freeze();
+    return userLoginData;
+};
+const loginBtn = document.querySelector('#login-btn-id');
+loginBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    const userLoginData = getloginData();
+    fetch('/login', {
+        method: 'POST',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userLoginData),
+    }).then((response) => {
+        const loginPageId = document.querySelector('#login-page-id');
+        const registerPageId = document.querySelector('#register-page-id');
+        loginPageId.classList.remove('open');
+        loginPageId.classList.add('close');
+        registerPageId.classList.remove('open');
+        registerPageId.classList.add('close');
         return response;
     });
 });
