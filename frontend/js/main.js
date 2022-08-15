@@ -63,11 +63,13 @@ openLoginBtn.addEventListener('click', (e) => {
     openLoginModal();
 });
 const getloginData = () => {
-    const emailOrUsername = document.querySelector('#email-or-username-id');
+    const emailOrUsername = document.querySelector(
+        '#login-email-or-username-id'
+    );
     const password = document.querySelector('#login-password-id');
     const userLoginData = {
-        emailOrUsername: emailOrUsername,
-        password: password,
+        emailOrUsername: emailOrUsername.value,
+        password: password.value,
     };
     Object.freeze();
     return userLoginData;

@@ -81,3 +81,8 @@ type UserData struct {
 	Password        string `string:"password"`
 	ConfirmPasspord string `string:"confirmPassword"`
 }
+
+type UserLoginData struct {
+	EmailOrNickname string `json:"emailOrUsername"`
+	Password        string `json:"password"`
+}
