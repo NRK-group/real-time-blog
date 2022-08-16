@@ -23,11 +23,15 @@
                 />
                 <input
                     type="password"
-                    class="access-input-fields"
+                    class="access-input-fields login-reveal-password"
                     placeholder="Password"
                     id="login-password-id"
                 />
-                <button class="access-text show-password">
+                <button
+                    class="access-text show-password"
+                    id="login-reveal-password"
+                    onclick="revealPasswordBtn('#login-reveal-password', '.login-reveal-password')"
+                >
                     Reveal Password
                 </button>
                 <button type="button" class="access-btn" id="login-btn-id">
@@ -113,19 +117,23 @@
                 />
                 <input
                     type="password"
-                    class="access-input-fields"
+                    class="access-input-fields password reg-password-field"
                     placeholder="Password"
                     id="password-id"
                     required
                 />
                 <input
                     type="password"
-                    class="access-input-fields"
+                    class="access-input-fields reg-password-field"
                     placeholder="Confirm Password"
                     id="confirm-password-id"
                     required
                 />
-                <button class="access-text show-password">
+                <button
+                    class="access-text show-password"
+                    id="register-reveal-password"
+                    onclick="revealPasswordBtn('#register-reveal-password' , '.reg-password-field')"
+                >
                     Reveal Password
                 </button>
                 <button type="submit" class="access-btn" id="register-btn-id">
