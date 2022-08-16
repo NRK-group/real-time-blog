@@ -98,16 +98,16 @@ loginBtn.addEventListener('click', (e) => {
 
 function unSet(fields, revBtn) {
     setTimeout(function () {
-        fields.forEach(field => field.setAttribute('type', 'password'));
+        fields.forEach((field) => field.setAttribute('type', 'password'));
         revBtn.innerText = 'Reveal Password';
-    }, 5000)
+    }, 5000);
 }
 
 function revealPasswordBtn(id, className) {
-    const revealBtn = document.querySelector(id)
+    const revealBtn = document.querySelector(id);
     const inputFields = document.querySelectorAll(className);
 
-    inputFields.forEach(eachField => {
+    inputFields.forEach((eachField) => {
         if (eachField.getAttribute('type') === 'password') {
             eachField.setAttribute('type', 'text');
             revealBtn.innerText = 'Hide Password';
@@ -115,9 +115,7 @@ function revealPasswordBtn(id, className) {
             eachField.setAttribute('type', 'password');
             revealBtn.innerText = 'Reveal Password';
         }
-    })
+    });
 
     unSet(inputFields, revealBtn);
-
-    
 }
