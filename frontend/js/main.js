@@ -1,6 +1,8 @@
 const openRegristerModal = () => {
     const loginPageId = document.querySelector('#login-page-id');
     const registerPageId = document.querySelector('#register-page-id');
+    loginPageId.classList.remove('open');
+    registerPageId.classList.remove('close');
     loginPageId.classList.add('close');
     registerPageId.classList.add('open');
 };
@@ -122,10 +124,13 @@ loginBtn.addEventListener('click', (e) => {
     }).then((response) => {
         const loginPageId = document.querySelector('#login-page-id');
         const registerPageId = document.querySelector('#register-page-id');
+        const mainPageId = document.querySelector('#main-page-id');
         loginPageId.classList.remove('open');
-        loginPageId.classList.add('close');
         registerPageId.classList.remove('open');
+        mainPageId.classList.remove('close');
+        loginPageId.classList.add('close');
         registerPageId.classList.add('close');
+        mainPageId.style.display = 'grid';
         return response;
     });
 });
