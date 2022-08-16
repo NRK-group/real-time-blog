@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+	"net/mail"
 	"strconv"
+	"strings"
 	"time"
 
 	uuid "github.com/satori/go.uuid"
@@ -23,6 +25,11 @@ func (DB *DB) Home(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func validMailAddress(address string) bool {
+	_, err := mail.ParseAddress(address)
+	return err == nil
+}
+
 func (DB *DB) Register(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/register" {
 		http.Error(w, "404 not found.", http.StatusNotFound)
@@ -38,6 +45,48 @@ func (DB *DB) Register(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		fmt.Print(userData) // this is the data that need to be inserted to the database.
+
+		// Check that all inputs are vald
+		// Check the lenght of the user name is between 3 & 20
+		if len(userData.Nickname) < 3 || len(userData.Nickname) > 20 {
+			// Write an error message to the user
+			w.Header().Set("Content-type", "application/text")
+			w.WriteHeader(http.StatusOK)
+			w.Write([]byte("Nicknames must be between 3-20 characters"))
+			return
+		}
+
+		// Check the passwords match
+		if userData.Password != userData.ConfirmPassword {
+			w.Header().Set("Content-type", "application/text")
+			w.WriteHeader(http.StatusOK)
+			w.Write([]byte("Passwords don't match"))
+			return
+		}
+
+		// Check the password is > 8
+		if len(userData.Password) < 8 {
+			w.Header().Set("Content-type", "application/text")
+			w.WriteHeader(http.StatusOK)
+			w.Write([]byte("Passwords must be 8+ characters"))
+			return
+		}
+
+		// check the email is in a valid format
+		if !validMailAddress(userData.Email) {
+			w.Header().Set("Content-type", "application/text")
+			w.WriteHeader(http.StatusOK)
+			w.Write([]byte("Please enter a valid email"))
+			return
+		} else {
+			if !strings.Contains(strings.Split(userData.Email, "@")[1], ".") {
+				//Golang parseAddress validates even if a fullstop isnt present after the @ so check for that
+				w.Header().Set("Content-type", "application/text")
+				w.WriteHeader(http.StatusOK)
+				w.Write([]byte("Please enter a valid email"))
+				return
+			}
+		}
 
 		// Check if the nickname is already in use
 		var allowNickname int

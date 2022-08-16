@@ -79,7 +79,7 @@ type UserData struct {
 	Gender          string `string:"gender"`
 	Email           string `string:"email"`
 	Password        string `string:"password"`
-	ConfirmPasspord string `string:"confirmPassword"`
+	ConfirmPassword string `string:"confirmPassword"`
 }
 
 type UserLoginData struct {
