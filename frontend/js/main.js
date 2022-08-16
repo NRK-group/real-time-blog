@@ -95,3 +95,29 @@ loginBtn.addEventListener('click', (e) => {
         return response;
     });
 });
+
+function unSet(fields, revBtn) {
+    setTimeout(function () {
+        fields.forEach(field => field.setAttribute('type', 'password'));
+        revBtn.innerText = 'Reveal Password';
+    }, 5000)
+}
+
+function revealPasswordBtn(id, className) {
+    const revealBtn = document.querySelector(id)
+    const inputFields = document.querySelectorAll(className);
+
+    inputFields.forEach(eachField => {
+        if (eachField.getAttribute('type') === 'password') {
+            eachField.setAttribute('type', 'text');
+            revealBtn.innerText = 'Hide Password';
+        } else if (eachField.getAttribute('type') === 'text') {
+            eachField.setAttribute('type', 'password');
+            revealBtn.innerText = 'Reveal Password';
+        }
+    })
+
+    unSet(inputFields, revealBtn);
+
+    
+}
