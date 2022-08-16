@@ -44,7 +44,8 @@ registerBtn.addEventListener('click', (e) => {
         },
         body: JSON.stringify(userData),
     }).then((response) => {
-        return response;
+        console.log(response.text())
+        return response.text();
     });
 });
 const openLoginModal = () => {
@@ -77,6 +78,7 @@ const getloginData = () => {
 const loginBtn = document.querySelector('#login-btn-id');
 loginBtn.addEventListener('click', (e) => {
     e.preventDefault();
+    console.log("that")
     const userLoginData = getloginData();
     fetch('/login', {
         method: 'POST',
