@@ -8,6 +8,11 @@ body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
         Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     scroll-behavior: smooth;
+}
+button {
+    all: unset;
+}
+.main-page {
     display: grid;
     grid-template-rows: 7% 93%;
     overflow: hidden;
@@ -20,9 +25,6 @@ body {
         rgba(255, 255, 255, 1) 49%,
         rgba(215, 129, 255, 0.2) 100%
     );
-}
-button {
-    all: unset;
 }
 .top-container {
     display: grid;
@@ -111,7 +113,6 @@ button {
         rgba(255, 255, 255, 1) 49%,
         rgba(215, 129, 255, 0.2) 100%
     );
-    z-index: 1;
     align-items: center;
     justify-content: center;
     overflow-y: scroll;
@@ -277,12 +278,6 @@ input[type='email']:focus {
     transition: all 0.3s;
 }
 
-.close {
-    display: none;
-}
-.open {
-    display: block;
-}
 .profile-container {
     padding: 10%;
 }
@@ -338,4 +333,76 @@ input[type='email']:focus {
 .profile-username {
     margin-bottom: 50px;
     opacity: 0.5;
+}
+.message-container {
+    visibility: hidden;
+    min-width: 250px;
+    margin-left: -125px;
+    background-color: white;
+    color: #543de0;
+    text-align: center;
+    border-radius: 20px;
+    padding: 16px;
+    position: fixed;
+    z-index: 1;
+    left: 50%;
+    top: 160px;
+    height: 60px;
+    font-size: 20px;
+    font-weight: 500;
+}
+.show {
+    visibility: visible;
+    -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+@-webkit-keyframes fadein {
+    from {
+        top: 0;
+        opacity: 0;
+    }
+    to {
+        top: 160px;
+        opacity: 1;
+    }
+}
+
+@keyframes fadein {
+    from {
+        top: 0;
+        opacity: 0;
+    }
+    to {
+        top: 160px;
+        opacity: 1;
+    }
+}
+
+@-webkit-keyframes fadeout {
+    from {
+        top: 160px;
+        opacity: 1;
+    }
+    to {
+        top: 0;
+        opacity: 0;
+    }
+}
+
+@keyframes fadeout {
+    from {
+        top: 160px;
+        opacity: 1;
+    }
+    to {
+        top: 0;
+        opacity: 0;
+    }
+}
+.close {
+    display: none;
+}
+.open {
+    display: block;
 }

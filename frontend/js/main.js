@@ -9,7 +9,24 @@ openRegisterBtn.addEventListener('click', (e) => {
     e.preventDefault();
     openRegristerModal();
 });
-
+const showMessages = (msg = '') => {
+    const messageContainer = document.querySelector('#message-container-id');
+    messageContainer.textContent = msg;
+    messageContainer.classList.add('show');
+    setTimeout(() => {
+        messageContainer.classList.remove('show');
+    }, 3000);
+};
+const checkRegisterData = (userData) => {
+    for (let key of Object.keys(userData)) {
+        if (userData[key] === '') {
+            showMessages(`Missing field: ${key}`);
+            return [false, key];
+        }
+    }
+    console.log(userData);
+    return [true, ''];
+};
 const getRegisterData = () => {
     const firstName = document.querySelector('#first-name-id');
     const nickname = document.querySelector('#nickname-id');
@@ -29,23 +46,42 @@ const getRegisterData = () => {
         password: password.value,
         confirmPassword: confirmPassword.value,
     };
-    Object.freeze;
-    return userData;
+    return [checkRegisterData(userData)[0], userData];
 };
 const registerBtn = document.querySelector('#register-btn-id');
 registerBtn.addEventListener('click', (e) => {
     e.preventDefault();
     const userData = getRegisterData();
-    fetch('/register', {
-        method: 'POST',
-        headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userData),
-    }).then((response) => {
-        return response;
-    });
+    console.log(userData[0]);
+    if (userData[0]) {
+        fetch('/register', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(userData[1]),
+        })
+            .then((response) => {
+                return response.text();
+            })
+            .then((resp) => {
+                showMessages(resp);
+                if (resp === 'Register successful') {
+                    setTimeout(() => {
+                        const loginPageId =
+                            document.querySelector('#login-page-id');
+                        const registerPageId =
+                            document.querySelector('#register-page-id');
+                        registerPageId.classList.remove('open');
+                        registerPageId.classList.add('close');
+                        loginPageId.classList.remove('close');
+                        loginPageId.classList.add('open');
+                    }, 2500);
+                }
+                return resp;
+            });
+    }
 });
 const openLoginModal = () => {
     const loginPageId = document.querySelector('#login-page-id');
@@ -54,11 +90,9 @@ const openLoginModal = () => {
     loginPageId.classList.add('open');
     registerPageId.classList.remove('open');
     registerPageId.classList.add('close');
-    console.log('hello');
 };
 const openLoginBtn = document.querySelector('#open-login-btn-id');
 openLoginBtn.addEventListener('click', (e) => {
-    console.log('hello');
     e.preventDefault();
     openLoginModal();
 });
