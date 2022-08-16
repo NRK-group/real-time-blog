@@ -9,7 +9,7 @@
     </head>
     <body>
         <!-- * Login Screen Div -->
-        <div class="login-page access-page" id="login-page-id">
+        <div class="login-page access-page open" id="login-page-id">
             <div class="logo">
                 <div class="title">FORUM</div>
             </div>
@@ -50,7 +50,7 @@
         <!-- * end of the login page -->
 
         <!-- * Registration Page -->
-        <div class="register-page access-page" id="register-page-id">
+        <div class="register-page access-page close" id="register-page-id">
             <div class="logo">
                 <div class="title">FORUM</div>
             </div>
@@ -148,63 +148,69 @@
         <!-- * end of the registration page -->
 
         <!-- * start of the main screen -->
-        <div class="top-container">
-            <div class="title-container">
-                <div class="title">FORUM</div>
+        <main class="main-page close" id="main-page-id">
+            <div class="top-container">
+                <div class="title-container">
+                    <div class="title">FORUM</div>
+                </div>
+                <div class="search-container"></div>
+                <div class="logout-container">
+                    <button class="logout-btn">
+                        <span class="logout-icon">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 512 512"
+                            >
+                                <!--! Font Awesome Pro 6.1.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. -->
+                                <path
+                                    d="M160 416H96c-17.67 0-32-14.33-32-32V128c0-17.67 14.33-32 32-32h64c17.67 0 32-14.33 32-32S177.7 32 160 32H96C42.98 32 0 74.98 0 128v256c0 53.02 42.98 96 96 96h64c17.67 0 32-14.33 32-32S177.7 416 160 416zM502.6 233.4l-128-128c-12.51-12.51-32.76-12.49-45.25 0c-12.5 12.5-12.5 32.75 0 45.25L402.8 224H192C174.3 224 160 238.3 160 256s14.31 32 32 32h210.8l-73.38 73.38c-12.5 12.5-12.5 32.75 0 45.25s32.75 12.5 45.25 0l128-128C515.1 266.1 515.1 245.9 502.6 233.4z"
+                                />
+                            </svg>
+                        </span>
+                        Logout
+                    </button>
+                </div>
             </div>
-            <div class="search-container"></div>
-            <div class="logout-container">
-                <button class="logout-btn">
-                    <span class="logout-icon">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 512 512"
-                        >
-                            <!--! Font Awesome Pro 6.1.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. -->
-                            <path
-                                d="M160 416H96c-17.67 0-32-14.33-32-32V128c0-17.67 14.33-32 32-32h64c17.67 0 32-14.33 32-32S177.7 32 160 32H96C42.98 32 0 74.98 0 128v256c0 53.02 42.98 96 96 96h64c17.67 0 32-14.33 32-32S177.7 416 160 416zM502.6 233.4l-128-128c-12.51-12.51-32.76-12.49-45.25 0c-12.5 12.5-12.5 32.75 0 45.25L402.8 224H192C174.3 224 160 238.3 160 256s14.31 32 32 32h210.8l-73.38 73.38c-12.5 12.5-12.5 32.75 0 45.25s32.75 12.5 45.25 0l128-128C515.1 266.1 515.1 245.9 502.6 233.4z"
-                            />
-                        </svg>
-                    </span>
-                    Logout
-                </button>
-            </div>
-        </div>
-        <div class="bottom-container">
-            <div class="left-container">
-                <div class="personal-filter-container"></div>
-                <div class="post-filter-container"></div>
-            </div>
-            <div class="middle-container">
-                <div class="newpost-container"></div>
-                <div class="allpost-container"></div>
-            </div>
-            <div class="right-container">
-                <div class="profile-container">
-                    <div class="profile-card">
-                        <div class="profile-picture"></div>
-                        <div class="profile-name">FirstName LastName</div>
-                        <div class="profile-username">@username</div>
-                        <div>
-                            <button class="profile-button">
-                                <span class="edit-icon"
-                                    ><svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        viewBox="0 0 576 512"
-                                    >
-                                        <!-- Font Awesome Pro 5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) -->
-                                        <path
-                                            d="M402.6 83.2l90.2 90.2c3.8 3.8 3.8 10 0 13.8L274.4 405.6l-92.8 10.3c-12.4 1.4-22.9-9.1-21.5-21.5l10.3-92.8L388.8 83.2c3.8-3.8 10-3.8 13.8 0zm162-22.9l-48.8-48.8c-15.2-15.2-39.9-15.2-55.2 0l-35.4 35.4c-3.8 3.8-3.8 10 0 13.8l90.2 90.2c3.8 3.8 10 3.8 13.8 0l35.4-35.4c15.2-15.3 15.2-40 0-55.2zM384 346.2V448H64V128h229.8c3.2 0 6.2-1.3 8.5-3.5l40-40c7.6-7.6 2.2-20.5-8.5-20.5H48C21.5 64 0 85.5 0 112v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V306.2c0-10.7-12.9-16-20.5-8.5l-40 40c-2.2 2.3-3.5 5.3-3.5 8.5z"
-                                        /></svg></span
-                                >edit
-                            </button>
+            <div class="bottom-container">
+                <div class="left-container">
+                    <div class="personal-filter-container"></div>
+                    <div class="post-filter-container"></div>
+                </div>
+                <div class="middle-container">
+                    <div class="newpost-container"></div>
+                    <div class="allpost-container"></div>
+                </div>
+                <div class="right-container">
+                    <div class="profile-container">
+                        <div class="profile-card">
+                            <div class="profile-picture"></div>
+                            <div class="profile-name">FirstName LastName</div>
+                            <div class="profile-username">@username</div>
+                            <div>
+                                <button class="profile-button">
+                                    <span class="edit-icon"
+                                        ><svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 576 512"
+                                        >
+                                            <!-- Font Awesome Pro 5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) -->
+                                            <path
+                                                d="M402.6 83.2l90.2 90.2c3.8 3.8 3.8 10 0 13.8L274.4 405.6l-92.8 10.3c-12.4 1.4-22.9-9.1-21.5-21.5l10.3-92.8L388.8 83.2c3.8-3.8 10-3.8 13.8 0zm162-22.9l-48.8-48.8c-15.2-15.2-39.9-15.2-55.2 0l-35.4 35.4c-3.8 3.8-3.8 10 0 13.8l90.2 90.2c3.8 3.8 10 3.8 13.8 0l35.4-35.4c15.2-15.3 15.2-40 0-55.2zM384 346.2V448H64V128h229.8c3.2 0 6.2-1.3 8.5-3.5l40-40c7.6-7.6 2.2-20.5-8.5-20.5H48C21.5 64 0 85.5 0 112v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V306.2c0-10.7-12.9-16-20.5-8.5l-40 40c-2.2 2.3-3.5 5.3-3.5 8.5z"
+                                            /></svg></span
+                                    >edit
+                                </button>
+                            </div>
                         </div>
                     </div>
+                    <div class="users-container"></div>
                 </div>
-                <div class="users-container"></div>
             </div>
-        </div>
+        </main>
         <!-- * end of the main screen  -->
+
+        <!-- * start of the message modal -->
+        <div class="message-container" id="message-container-id"></div>
+        <!-- * end of the message modal-->
 
         <script src="../frontend/js/main.js"></script>
     </body>
