@@ -26,7 +26,6 @@ const checkRegisterData = (userData) => {
             return [false, key];
         }
     }
-    console.log(userData);
     return [true, ''];
 };
 const getRegisterData = () => {
@@ -120,18 +119,22 @@ loginBtn.addEventListener('click', (e) => {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(userLoginData),
-    }).then((response) => {
-        const loginPageId = document.querySelector('#login-page-id');
-        const registerPageId = document.querySelector('#register-page-id');
-        const mainPageId = document.querySelector('#main-page-id');
-        loginPageId.classList.remove('open');
-        registerPageId.classList.remove('open');
-        mainPageId.classList.remove('close');
-        loginPageId.classList.add('close');
-        registerPageId.classList.add('close');
-        mainPageId.style.display = 'grid';
-        return response;
-    });
+    })
+        .then((response) => {
+            const loginPageId = document.querySelector('#login-page-id');
+            const registerPageId = document.querySelector('#register-page-id');
+            const mainPageId = document.querySelector('#main-page-id');
+            loginPageId.classList.remove('open');
+            registerPageId.classList.remove('open');
+            mainPageId.classList.remove('close');
+            loginPageId.classList.add('close');
+            registerPageId.classList.add('close');
+            mainPageId.style.display = 'grid';
+            return response.text();
+        })
+        .then((resp) => {
+            console.log(resp);
+        });
 });
 
 function unSet(fields, revBtn) {
