@@ -23,11 +23,15 @@
                 />
                 <input
                     type="password"
-                    class="access-input-fields"
+                    class="access-input-fields login-reveal-password"
                     placeholder="Password"
                     id="login-password-id"
                 />
-                <button class="access-text show-password">
+                <button
+                    class="access-text show-password"
+                    id="login-reveal-password"
+                    onclick="revealPasswordBtn('#login-reveal-password', '.login-reveal-password')"
+                >
                     Reveal Password
                 </button>
                 <button type="button" class="access-btn" id="login-btn-id">
@@ -52,99 +56,93 @@
             </div>
             <div class="register-input-container">
                 <h1 class="login-title title">Register</h1>
-                <form>
-                    <div class="short-input-div">
-                        <input
-                            type="text"
-                            class="short-input-fields"
-                            placeholder="First Name"
-                            id="first-name-id"
-                            required
-                        />
-                        <input
-                            type="text"
-                            class="short-input-fields"
-                            placeholder="Nickname"
-                            id="nickname-id"
-                            required
-                        />
-                    </div>
+                <div class="short-input-div">
                     <input
                         type="text"
-                        class="access-input-fields"
-                        placeholder="Last Name"
-                        id="last-name-id"
-                        required
-                    />
-                    <div class="short-input-div">
-                        <input
-                            type="number"
-                            class="short-input-fields"
-                            min="13"
-                            placeholder="Age"
-                            id="age-id"
-                            required
-                        />
-                        <select
-                            class="short-input-fields"
-                            placeholder="gender"
-                            id="gender-id"
-                            required
-                        >
-                            <option value="" disabled selected hidden>
-                                Gender
-                            </option>
-                            <option value="Male" class="short-input-fields">
-                                Male
-                            </option>
-                            <option value="Female" class="short-input-fields">
-                                Female
-                            </option>
-                            <option value="Other" class="short-input-fields">
-                                Other
-                            </option>
-                        </select>
-                    </div>
-                    <input
-                        type="email"
-                        class="access-input-fields"
-                        placeholder="Email"
-                        id="email-id"
+                        class="short-input-fields"
+                        placeholder="First Name"
+                        id="first-name-id"
                         required
                     />
                     <input
-                        type="password"
-                        class="access-input-fields"
-                        placeholder="Password"
-                        id="password-id"
+                        type="text"
+                        class="short-input-fields"
+                        placeholder="Nickname"
+                        id="nickname-id"
                         required
                     />
+                </div>
+                <input
+                    type="text"
+                    class="access-input-fields"
+                    placeholder="Last Name"
+                    id="last-name-id"
+                    required
+                />
+                <div class="short-input-div">
                     <input
-                        type="password"
-                        class="access-input-fields"
-                        placeholder="Confirm Password"
-                        id="confirm-password-id"
+                        type="number"
+                        class="short-input-fields"
+                        min="13"
+                        placeholder="Age"
+                        id="age-id"
                         required
                     />
-                    <button class="access-text show-password">
-                        Reveal Password
-                    </button>
-                    <button
-                        type="submit"
-                        class="access-btn"
-                        id="register-btn-id"
+                    <select
+                        class="short-input-fields"
+                        placeholder="gender"
+                        id="gender-id"
+                        required
                     >
-                        Register
-                    </button>
-                    <p class="access-text">or</p>
-                    <button
-                        type="button"
-                        class="access-btn"
-                        id="open-login-btn-id"
-                    >
-                        Login
-                    </button>
-                </form>
+                        <option value="" disabled selected hidden>
+                            Gender
+                        </option>
+                        <option value="Male" class="short-input-fields">
+                            Male
+                        </option>
+                        <option value="Female" class="short-input-fields">
+                            Female
+                        </option>
+                        <option value="Other" class="short-input-fields">
+                            Other
+                        </option>
+                    </select>
+                </div>
+                <input
+                    type="email"
+                    class="access-input-fields"
+                    placeholder="Email"
+                    id="email-id"
+                    required
+                />
+                <input
+                    type="password"
+                    class="access-input-fields password reg-password-field"
+                    placeholder="Password"
+                    id="password-id"
+                    required
+                />
+                <input
+                    type="password"
+                    class="access-input-fields reg-password-field"
+                    placeholder="Confirm Password"
+                    id="confirm-password-id"
+                    required
+                />
+                <button
+                    class="access-text show-password"
+                    id="register-reveal-password"
+                    onclick="revealPasswordBtn('#register-reveal-password' , '.reg-password-field')"
+                >
+                    Reveal Password
+                </button>
+                <button type="submit" class="access-btn" id="register-btn-id">
+                    Register
+                </button>
+                <p class="access-text">or</p>
+                <button type="button" class="access-btn" id="open-login-btn-id">
+                    Login
+                </button>
             </div>
         </div>
         <!-- * end of the registration page -->
@@ -211,8 +209,7 @@
         <!-- * end of the main screen  -->
 
         <!-- * start of the message modal -->
-        <div class="message-container" id="message-container-id">
-        </div>
+        <div class="message-container" id="message-container-id"></div>
         <!-- * end of the message modal-->
 
         <script src="../frontend/js/main.js"></script>

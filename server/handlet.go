@@ -91,12 +91,13 @@ func (DB *DB) Register(w http.ResponseWriter, r *http.Request) {
 	http.Error(w, "400 Bad Request.", http.StatusBadRequest)
 }
 
-func (DB *DB) Login(w http.ResponseWriter, r *http.Request) {
+func (forum *DB) Login(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/login" {
 		http.Error(w, "404 not found.", http.StatusNotFound)
 		return
 	}
 	if r.Method == "POST" {
+
 		var userLoginData UserLoginData
 		err := json.NewDecoder(r.Body).Decode(&userLoginData) // unmarshall the userdata
 		if err != nil {
@@ -105,10 +106,23 @@ func (DB *DB) Login(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		fmt.Print(userLoginData)
+		loginResp := forum.LoginUsers(userLoginData.EmailOrNickname, userLoginData.Password)
+		if loginResp[0] == 'E' {
+			w.Header().Set("Content-type", "application/text")
+			w.WriteHeader(http.StatusOK)
+			w.Write([]byte(loginResp))
+			return
+		}
+
+		http.SetCookie(w, &http.Cookie{
+			Name:    "session_token",
+			Value:   loginResp,
+			Expires: time.Now().Add(24 * time.Hour),
+		})
+
 		w.Header().Set("Content-type", "application/text")
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("Register successful"))
+		w.Write([]byte("Login successful"))
 		return
 	}
 	fmt.Println("Error in login handler")
