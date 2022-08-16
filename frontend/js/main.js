@@ -78,6 +78,7 @@ const getloginData = () => {
 const loginBtn = document.querySelector('#login-btn-id');
 loginBtn.addEventListener('click', (e) => {
     e.preventDefault();
+    console.log("that")
     const userLoginData = getloginData();
     fetch('/login', {
         method: 'POST',
