@@ -336,8 +336,8 @@ input[type='email']:focus {
 }
 .message-container {
     visibility: hidden;
-    min-width: 250px;
-    margin-left: -125px;
+    min-width: 400px;
+    margin-left: -200px;
     background-color: white;
     color: #543de0;
     text-align: center;
