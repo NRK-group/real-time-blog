@@ -441,7 +441,7 @@ input[type='email']:focus {
     height: 50px;
     border-bottom: 1px solid #533de080;
 }
-.new-post-top-content div:nth-child(1) {
+.user-image {
     height: 40px;
     width: 40px;
     border: 0.5px solid rgb(245, 245, 245);
@@ -518,6 +518,105 @@ input[type='email']:focus {
     color: #000000;
 }
 .rust:hover {
+    color: #000000;
+    background-color: #00000020;
+    border-color: #000000;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    transition: all 0.3s;
+}
+.all-post-container {
+    display: flex;
+    /* align-items: center; */
+    justify-content: center;
+    flex-direction: column;
+    padding-bottom: 100px;
+    display: grid;
+}
+.post-container {
+    width: 700px;
+    min-height: 400px;
+    margin: 20px 0px;
+    background-color: white;
+    box-shadow: 0 0 50px rgb(240, 240, 240);
+    border-radius: 16px;
+    padding: 50px;
+    grid-template-columns: 20% 20% 40% 20%;
+}
+.post-title {
+    font-size: 30px;
+    font-weight: 700;
+    /* letter-spacing: 10px; */
+}
+.post-profile {
+    display: flex;
+    justify-content: space-between;
+}
+.post-user-profile {
+    display: flex;
+    width: 300px;
+    height: 40px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+.post-user-profile span {
+    margin-left: 20px;
+}
+.username {
+    font-weight: 600;
+}
+.post-content {
+    line-height: 1.5;
+}
+.post-created {
+    margin: 5px 0px 0px 10px;
+
+    opacity: 0.5;
+}
+.golang-category {
+    width: 150px;
+    margin-top: 10px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 40px;
+    border: 1px solid white;
+    cursor: pointer;
+    color: #6ad6e3;
+    background-color: #6ad6e320;
+    border-color: #6ad6e3;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    transition: all 0.3s;
+}
+.javascript-category {
+    width: 150px;
+    margin-top: 10px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 40px;
+    border: 1px solid white;
+    cursor: pointer;
+    color: #f0db4f;
+    background-color: #f0db4f20;
+    border-color: #f0db4f;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    transition: all 0.3s;
+}
+.rust-category {
+    width: 150px;
+    margin-top: 10px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 40px;
+    border: 1px solid white;
+    cursor: pointer;
     color: #000000;
     background-color: #00000020;
     border-color: #000000;
