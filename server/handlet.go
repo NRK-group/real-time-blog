@@ -6,12 +6,33 @@ import (
 	"html/template"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	uuid "github.com/satori/go.uuid"
 )
 
-func (DB *DB) Home(w http.ResponseWriter, r *http.Request) {
+func (forum *DB) CheckCookie(w http.ResponseWriter, c *http.Cookie) []string {
+	co := []string{}
+	if strings.Contains(c.String(), "-") {
+		co = strings.Split(c.Value, "-")
+	}
+	if len(co) != 0 {
+		if !(forum.CheckSession(co[2])) {
+			// Set the new token as the users `session_token` cookie
+			http.SetCookie(w, &http.Cookie{
+				Name:    "session_token",
+				Value:   "",
+				Expires: time.Now(),
+			})
+		} else {
+			return co
+		}
+	}
+	return co
+}
+
+func (forum *DB) Home(w http.ResponseWriter, r *http.Request) {
 	t, err := template.ParseFiles("frontend/index.html")
 	if err != nil {
 		http.Error(w, "500 Internal error", http.StatusInternalServerError)
@@ -21,6 +42,30 @@ func (DB *DB) Home(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "500 Internal error", http.StatusInternalServerError)
 		return
 	}
+
+	var page ReturnData
+
+	cookie, err := r.Cookie("session_token")
+
+	if err != nil {
+		page = ReturnData{User:User{} , Posts: forum.AllPost("", ""), }
+		if err := t.Execute(w, page); err != nil {
+			http.Error(w, "500 Internal error", http.StatusInternalServerError)
+			return
+		}
+	} else {
+
+		co := forum.CheckCookie(w, cookie)
+
+		page = ReturnData{User: forum.GetUser(co[0]) , Posts: forum.AllPost("", "")}
+	}
+	if err := t.Execute(w, page); err != nil {
+		http.Error(w, "500 Internal error", http.StatusInternalServerError)
+		return
+	}
+
+
+
 }
 
 func (DB *DB) Register(w http.ResponseWriter, r *http.Request) {

@@ -37,6 +37,7 @@ type Post struct {
 	Category string
 	ImgUrl   string
 	Comments []Comment
+	NumOfComment int
 	Favorite Favorite
 }
 
@@ -85,4 +86,9 @@ type UserData struct {
 type UserLoginData struct {
 	EmailOrNickname string `json:"emailOrUsername"`
 	Password        string `json:"password"`
+}
+
+type ReturnData struct {
+	User        User
+	Posts       interface{}
 }
