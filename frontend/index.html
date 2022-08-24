@@ -271,146 +271,33 @@
                                 up, creating a lean, mean, and compiled solution
                                 that allows for massive multithreading,
                                 concurrency, and performance under pressure.
-                                Running Go on modern hardware—and even inside
-                                containers or on virtual machines—can be a real
-                                pleasure. Because Go was designed to run on
-                                multiple cores, it is built to support
-                                concurrency and scale as cores are added.
-                                Further, its multithreading capabilities—most
-                                specifically, its goroutines—are a surprising
-                                and welcome addition to your bag of tricks.
-                                Built for concurrency Before we dig in further,
-                                let’s look at goroutines. These are essentially
-                                concurrent functions that run while the rest of
-                                the program completes. In other words, you can
-                                fire off a goroutine, have it run, and keep
-                                going while it and thousands of its brethren
-                                process in the background. Network timeout?
-                                Don’t worry, your goroutine will manage it while
-                                the main loop continues. Complete database
-                                failure? Your goroutine will know, and you can
-                                gracefully work around the issue. Take a look at
-                                this simple example: package main import ( "fmt"
-                                "time" ) func hello() { fmt.Println("Hello world
-                                goroutine") } func main() { go hello()
-                                time.Sleep(1 * time.Second) fmt.Println("main
-                                function") } Copy and SaveGet Link The main
-                                function works just like it does in C. In this
-                                code, main fires off a goroutine—indicated by
-                                the go keyword—called hello(). The program takes
-                                a quick nap and then continues. If anything were
-                                to happen in the hello() function, the main
-                                function wouldn’t notice. All that’s important
-                                is the work is done. The program finishes when
-                                the main routine wakes up and fires off a
-                                Println. The hello() function could be
-                                anything—a data call, a transaction, a queue
-                                entry—and it would run while the rest of the
-                                program churns along. Like the aforementioned
-                                vine, think of goroutines as little flowers that
-                                branch off and die while the main vine keeps
-                                going. Want to see it in action? Check out this
-                                snippet at the Go Playground and you’ll see just
-                                how goroutines work. This feature alone is worth
-                                the price of admission. For web apps, goroutines
-                                let you run concurrent jobs while avoiding
-                                roadblocks. If you’re waiting for data input,
-                                for example, a goroutine can fire off to supply
-                                pre-populated text even as the user is typing.
-                                In other words, your program will keep running
-                                even if the concurrent processes take longer
-                                than expected. Best of all, goroutines are
-                                cheap, making Go fast. “The Goroutines are
-                                multiplexed to fewer number of OS threads,”
-                                wrote Naveen Ramanathan on GoLangBot, a Go
-                                learning resource. “There might be only one
-                                thread in a program with thousands of
-                                Goroutines. If any Goroutine in that thread
-                                blocks, say, waiting for user input, then
-                                another OS thread is created and the remaining
-                                Goroutines are moved to the new OS thread. All
-                                these are taken care of by the runtime and we,
-                                as programmers, are abstracted from these
-                                intricate details and are given a clean API to
-                                work with concurrency.” Why should you learn Go?
-                                You’ve probably seen some tweets or blogs in
-                                recent years arguing that Go is better than
-                                Perl/Python/C/etc. We’ve all been using
-                                something—heck, I even use command line PHP—to
-                                do little things on our servers. Want to watch a
-                                log? Perl. Want to send out regular tweets?
-                                Python. Want to manage incoming data from
-                                thousands of concurrent users? Java or C++ was
-                                always your answer. So is Go “better”? Well, Go,
-                                can do all of that. Go ensures that your toolbox
-                                is compilable across all platforms and on all
-                                hardware. It uses a surprisingly simple package
-                                management solution that “just works” and it is
-                                extremely portable. You can easily replace your
-                                scripting languages with Go and your compiled
-                                languages will definitely get a run for their
-                                money when stacked against Go solutions. Go is
-                                built for software engineering today. Not
-                                everything new is great, but when a programming
-                                language is designed for exactly the environment
-                                most of us use right now—scalable, cloud-based
-                                servers that are optimized for performance—a lot
-                                can go right. Go is compilable on nearly any
-                                machine, so you can use it to create a full
-                                webapp or a tool to clean up incoming data for
-                                processing. Like Perl before it, Go is a Swiss
-                                Army knife, but one that has stripped off all of
-                                the overhead and extra junk that has accreted
-                                onto programming platforms over the past few
-                                decades. Go is simple. As a dev, I’ve been able
-                                to pick up languages and frameworks over a long
-                                weekend. This gives me an understanding of a few
-                                important platforms and, since I don’t have to
-                                code daily, enough rope to hang myself when it
-                                comes to creating little side projects. Go has
-                                been different. For folks who already know the
-                                basics of programming or a few other languages,
-                                learning Go takes a few hours at most. Once you
-                                know its tricks, you’re ready to code. Again,
-                                because it is so fast, you’ll want to use it for
-                                nearly everything you used command line
-                                interpreters for, thereby replacing your bash
-                                scripts, Python sketches, and Java efforts. Go
-                                is fast. Take a look at this clever to-do list
-                                in Go by Mohamad Fadhil. The code is quite
-                                simple—set up a MySQL database in Docker, add in
-                                a bit of HTML, and almost instantly you have a
-                                super fast web app that compiles at the command
-                                line. What’s more, Fadhil explores why he likes
-                                Go in the first place: speed. In a regex
-                                test—regex-redux —Go ran in 3.55 seconds while
-                                Java ran in 5.58. The Go program weighed in at
-                                102 lines of code, while the Java program
-                                weighed in at 70. True, Go was a little heftier
-                                than Java, but given the speed at which Go
-                                bested the next most popular system language,
-                                it’s clear you’re not sacrificing speed. Go is
-                                on course to take over many open source and
-                                private projects and as it becomes more useful
-                                as a standard language for both microservices
-                                and the web. It could start replacing less
-                                performant solutions like Java and C. Don’t take
-                                my word for it. Check out GoLang.org for advice
-                                on writing web applications, command line tools,
-                                and services. “Personally, I believe Go is the
-                                new Java. Many open-source projects (e.g.,
-                                Jaeger, Kubernetes, Docker, InfluxDB, Serf,
-                                etc.) are now written in Go. In contrast, the
-                                older projects (e.g., Apache Kafka, Apache
-                                Hadoop, Apache Spark, etc.) are written in
-                                Java,” wrote Fadhil. Go is like chess or, well,
-                                the game of Go: it takes a moment to learn and a
-                                lifetime to master. Luckily, unlike chess, Go’s
-                                difficulty goes down with experience and soon
-                                you’ll be coding fast and furious programs in
-                                one of the world’s most modern languages.
                             </div>
-                            <div class="post-buttons"></div>
+                            <div class="post-buttons">
+                                <div class="favorite-btn" tabindex="1">
+                                    <span class="favorite-icon"
+                                        ><svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 384 512"
+                                        >
+                                            <!--! Font Awesome Pro 6.1.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. -->
+                                            <path
+                                                d="M48 0H336C362.5 0 384 21.49 384 48V487.7C384 501.1 373.1 512 359.7 512C354.7 512 349.8 510.5 345.7 507.6L192 400L38.28 507.6C34.19 510.5 29.32 512 24.33 512C10.89 512 0 501.1 0 487.7V48C0 21.49 21.49 0 48 0z"
+                                            /></svg
+                                    ></span>
+                                </div>
+                                <div class="response-btn">
+                                    <span class="response-icon"
+                                        ><svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 512 512"
+                                        >
+                                            <!--! Font Awesome Pro 6.1.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. -->
+                                            <path
+                                                d="M256 32C114.6 32 .0272 125.1 .0272 240c0 49.63 21.35 94.98 56.97 130.7c-12.5 50.37-54.27 95.27-54.77 95.77c-2.25 2.25-2.875 5.734-1.5 8.734C1.979 478.2 4.75 480 8 480c66.25 0 115.1-31.76 140.6-51.39C181.2 440.9 217.6 448 256 448c141.4 0 255.1-93.13 255.1-208S397.4 32 256 32z"
+                                            /></svg></span
+                                    >Response
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
