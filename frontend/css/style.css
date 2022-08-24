@@ -746,6 +746,7 @@ input[type='email']:focus {
     align-items: center;
     float: right;
     padding: 10px;
+    z-index: 1;
 }
 .chat-exit:hover {
     background-color: #533de0;
