@@ -93,14 +93,20 @@ func (DB *DB) Register(w http.ResponseWriter, r *http.Request) {
 
 		if allowNickname == 1 && allowEmail == 1 {
 			// This user already exsists
+			w.Header().Set("Content-type", "application/text")
+			w.WriteHeader(http.StatusOK)
 			w.Write([]byte("This user already exists"))
 			return
 		} else if allowEmail == 1 {
 			// This email is already in use
+			w.Header().Set("Content-type", "application/text")
+			w.WriteHeader(http.StatusOK)
 			w.Write([]byte("This email is already in use"))
 			return
 		} else if allowNickname == 1 {
 			// This nickname is already in use
+			w.Header().Set("Content-type", "application/text")
+			w.WriteHeader(http.StatusOK)
 			w.Write([]byte("This Nickname is already in use"))
 			return
 		}

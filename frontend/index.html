@@ -9,7 +9,7 @@
     </head>
     <body>
         <!-- * Login Screen Div -->
-        <div class="login-page access-page" id="login-page-id">
+        <div class="login-page access-page open" id="login-page-id">
             <div class="logo">
                 <div class="title">FORUM</div>
             </div>
@@ -23,11 +23,15 @@
                 />
                 <input
                     type="password"
-                    class="access-input-fields"
+                    class="access-input-fields login-reveal-password"
                     placeholder="Password"
                     id="login-password-id"
                 />
-                <button class="access-text show-password">
+                <button
+                    class="access-text show-password"
+                    id="login-reveal-password"
+                    onclick="revealPasswordBtn('#login-reveal-password', '.login-reveal-password')"
+                >
                     Reveal Password
                 </button>
                 <button type="button" class="access-btn" id="login-btn-id">
@@ -46,7 +50,7 @@
         <!-- * end of the login page -->
 
         <!-- * Registration Page -->
-        <div class="register-page access-page" id="register-page-id">
+        <div class="register-page access-page close" id="register-page-id">
             <div class="logo">
                 <div class="title">FORUM</div>
             </div>
@@ -113,19 +117,23 @@
                 />
                 <input
                     type="password"
-                    class="access-input-fields"
+                    class="access-input-fields password reg-password-field"
                     placeholder="Password"
                     id="password-id"
                     required
                 />
                 <input
                     type="password"
-                    class="access-input-fields"
+                    class="access-input-fields reg-password-field"
                     placeholder="Confirm Password"
                     id="confirm-password-id"
                     required
                 />
-                <button class="access-text show-password">
+                <button
+                    class="access-text show-password"
+                    id="register-reveal-password"
+                    onclick="revealPasswordBtn('#register-reveal-password' , '.reg-password-field')"
+                >
                     Reveal Password
                 </button>
                 <button type="submit" class="access-btn" id="register-btn-id">
@@ -140,63 +148,206 @@
         <!-- * end of the registration page -->
 
         <!-- * start of the main screen -->
-        <div class="top-container">
-            <div class="title-container">
-                <div class="title">FORUM</div>
+        <main class="main-page close" id="main-page-id">
+            <div class="top-container">
+                <div class="title-container">
+                    <div class="title">FORUM</div>
+                </div>
+                <div class="search-container"></div>
+                <div class="logout-container">
+                    <button class="logout-btn">
+                        <span class="logout-icon">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 512 512"
+                            >
+                                <!--! Font Awesome Pro 6.1.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. -->
+                                <path
+                                    d="M160 416H96c-17.67 0-32-14.33-32-32V128c0-17.67 14.33-32 32-32h64c17.67 0 32-14.33 32-32S177.7 32 160 32H96C42.98 32 0 74.98 0 128v256c0 53.02 42.98 96 96 96h64c17.67 0 32-14.33 32-32S177.7 416 160 416zM502.6 233.4l-128-128c-12.51-12.51-32.76-12.49-45.25 0c-12.5 12.5-12.5 32.75 0 45.25L402.8 224H192C174.3 224 160 238.3 160 256s14.31 32 32 32h210.8l-73.38 73.38c-12.5 12.5-12.5 32.75 0 45.25s32.75 12.5 45.25 0l128-128C515.1 266.1 515.1 245.9 502.6 233.4z"
+                                />
+                            </svg>
+                        </span>
+                        Logout
+                    </button>
+                </div>
             </div>
-            <div class="search-container"></div>
-            <div class="logout-container">
-                <button class="logout-btn">
-                    <span class="logout-icon">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 512 512"
-                        >
-                            <!--! Font Awesome Pro 6.1.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. -->
-                            <path
-                                d="M160 416H96c-17.67 0-32-14.33-32-32V128c0-17.67 14.33-32 32-32h64c17.67 0 32-14.33 32-32S177.7 32 160 32H96C42.98 32 0 74.98 0 128v256c0 53.02 42.98 96 96 96h64c17.67 0 32-14.33 32-32S177.7 416 160 416zM502.6 233.4l-128-128c-12.51-12.51-32.76-12.49-45.25 0c-12.5 12.5-12.5 32.75 0 45.25L402.8 224H192C174.3 224 160 238.3 160 256s14.31 32 32 32h210.8l-73.38 73.38c-12.5 12.5-12.5 32.75 0 45.25s32.75 12.5 45.25 0l128-128C515.1 266.1 515.1 245.9 502.6 233.4z"
-                            />
-                        </svg>
-                    </span>
-                    Logout
-                </button>
-            </div>
-        </div>
-        <div class="bottom-container">
-            <div class="left-container">
-                <div class="personal-filter-container"></div>
-                <div class="post-filter-container"></div>
-            </div>
-            <div class="middle-container">
-                <div class="newpost-container"></div>
-                <div class="allpost-container"></div>
-            </div>
-            <div class="right-container">
-                <div class="profile-container">
-                    <div class="profile-card">
-                        <div class="profile-picture"></div>
-                        <div class="profile-name">FirstName LastName</div>
-                        <div class="profile-username">@username</div>
-                        <div>
-                            <button class="profile-button">
-                                <span class="edit-icon"
-                                    ><svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        viewBox="0 0 576 512"
-                                    >
-                                        <!-- Font Awesome Pro 5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) -->
-                                        <path
-                                            d="M402.6 83.2l90.2 90.2c3.8 3.8 3.8 10 0 13.8L274.4 405.6l-92.8 10.3c-12.4 1.4-22.9-9.1-21.5-21.5l10.3-92.8L388.8 83.2c3.8-3.8 10-3.8 13.8 0zm162-22.9l-48.8-48.8c-15.2-15.2-39.9-15.2-55.2 0l-35.4 35.4c-3.8 3.8-3.8 10 0 13.8l90.2 90.2c3.8 3.8 10 3.8 13.8 0l35.4-35.4c15.2-15.3 15.2-40 0-55.2zM384 346.2V448H64V128h229.8c3.2 0 6.2-1.3 8.5-3.5l40-40c7.6-7.6 2.2-20.5-8.5-20.5H48C21.5 64 0 85.5 0 112v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V306.2c0-10.7-12.9-16-20.5-8.5l-40 40c-2.2 2.3-3.5 5.3-3.5 8.5z"
-                                        /></svg></span
-                                >edit
-                            </button>
+            <div class="bottom-container">
+                <div class="left-container">
+                    <div class="personal-filter-container"></div>
+                    <div class="post-filter-container"></div>
+                </div>
+                <div class="middle-container scrollbar-hidden">
+                    <div class="new-post-container">
+                        <div class="new-post-btn">
+                            <div class="new-post-top-btn">
+                                <span class="new-post-top-content">
+                                    <div class="user-image"></div>
+                                    <div>
+                                        What's your programming question? Be
+                                        specific.
+                                        <span class="square-plus-icon"
+                                            ><svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                viewBox="0 0 448 512"
+                                            >
+                                                <!--! Font Awesome Pro 6.1.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. -->
+                                                <path
+                                                    d="M200 344V280H136C122.7 280 112 269.3 112 256C112 242.7 122.7 232 136 232H200V168C200 154.7 210.7 144 224 144C237.3 144 248 154.7 248 168V232H312C325.3 232 336 242.7 336 256C336 269.3 325.3 280 312 280H248V344C248 357.3 237.3 368 224 368C210.7 368 200 357.3 200 344zM0 96C0 60.65 28.65 32 64 32H384C419.3 32 448 60.65 448 96V416C448 451.3 419.3 480 384 480H64C28.65 480 0 451.3 0 416V96zM48 96V416C48 424.8 55.16 432 64 432H384C392.8 432 400 424.8 400 416V96C400 87.16 392.8 80 384 80H64C55.16 80 48 87.16 48 96z"
+                                                />
+                                            </svg>
+                                        </span>
+                                    </div>
+                                </span>
+                            </div>
+                            <div class="new-post-bottom-btn">
+                                <div class="golang">
+                                    <span>
+                                        <img
+                                            src="https://raw.githubusercontent.com/devicons/devicon/master/icons/go/go-original.svg"
+                                            alt="go"
+                                            width="25"
+                                            height="25" /></span
+                                    >GoLang
+                                </div>
+                                <div class="javascript">
+                                    <span
+                                        ><img
+                                            src="https://raw.githubusercontent.com/devicons/devicon/master/icons/javascript/javascript-original.svg"
+                                            alt="javascript"
+                                            width="25"
+                                            height="25"
+                                    /></span>
+                                    JavaScript
+                                </div>
+                                <div class="rust">
+                                    <span>
+                                        <img
+                                            src="https://raw.githubusercontent.com/devicons/devicon/master/icons/rust/rust-plain.svg"
+                                            alt="rust"
+                                            width="30"
+                                            height="30" /></span
+                                    >Rust
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="all-post-container">
+                        <div class="post-container">
+                            <div class="post-title">
+                                What’s so great about Go?
+                            </div>
+                            <div class="post-profile">
+                                <div class="post-user-profile">
+                                    <div class="user-image"></div>
+                                    <span>
+                                        <div class="username">
+                                            Firstname Lastname
+                                        </div>
+                                        <div class="post-created">
+                                            January 06, 2022
+                                        </div>
+                                    </span>
+                                </div>
+                                <div
+                                    class="post-category golang golang-category"
+                                >
+                                    GoLang
+                                </div>
+                            </div>
+                            <div class="post-content">
+                                To paraphrase the indie band Cracker, what the
+                                world needs now is another programming language
+                                like I need a hole in the head. That said, Go
+                                has slowly but surely inundated the development
+                                world like a creeping vine, covering everything
+                                that came before it in a lush—and in many ways
+                                superior—cover of programming power. With its
+                                growing popularity, there are a number of
+                                reasons you should take a closer look at it. The
+                                story goes that Google engineers designed Go
+                                while waiting for other programs to compile.
+                                Their frustration at their toolset forced them
+                                to rethink system programming from the ground
+                                up, creating a lean, mean, and compiled solution
+                                that allows for massive multithreading,
+                                concurrency, and performance under pressure.
+                            </div>
+                            <div class="post-buttons">
+                                <div class="favorite-btn" tabindex="1">
+                                    <span class="favorite-icon"
+                                        ><svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 384 512"
+                                        >
+                                            <!--! Font Awesome Pro 6.1.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. -->
+                                            <path
+                                                d="M48 0H336C362.5 0 384 21.49 384 48V487.7C384 501.1 373.1 512 359.7 512C354.7 512 349.8 510.5 345.7 507.6L192 400L38.28 507.6C34.19 510.5 29.32 512 24.33 512C10.89 512 0 501.1 0 487.7V48C0 21.49 21.49 0 48 0z"
+                                            /></svg
+                                    ></span>
+                                </div>
+                                <div class="response-btn">
+                                    <span class="response-icon"
+                                        ><svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 512 512"
+                                        >
+                                            <!--! Font Awesome Pro 6.1.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. -->
+                                            <path
+                                                d="M256 32C114.6 32 .0272 125.1 .0272 240c0 49.63 21.35 94.98 56.97 130.7c-12.5 50.37-54.27 95.27-54.77 95.77c-2.25 2.25-2.875 5.734-1.5 8.734C1.979 478.2 4.75 480 8 480c66.25 0 115.1-31.76 140.6-51.39C181.2 440.9 217.6 448 256 448c141.4 0 255.1-93.13 255.1-208S397.4 32 256 32z"
+                                            /></svg></span
+                                    >Response
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="users-container"></div>
+                <div class="right-container">
+                    <div class="profile-container">
+                        <div class="profile-card">
+                            <div class="profile-picture"></div>
+                            <div class="profile-name">FirstName LastName</div>
+                            <div class="profile-username">@username</div>
+                            <div>
+                                <button class="profile-button">
+                                    <span class="edit-icon"
+                                        ><svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 576 512"
+                                        >
+                                            <!-- Font Awesome Pro 5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) -->
+                                            <path
+                                                d="M402.6 83.2l90.2 90.2c3.8 3.8 3.8 10 0 13.8L274.4 405.6l-92.8 10.3c-12.4 1.4-22.9-9.1-21.5-21.5l10.3-92.8L388.8 83.2c3.8-3.8 10-3.8 13.8 0zm162-22.9l-48.8-48.8c-15.2-15.2-39.9-15.2-55.2 0l-35.4 35.4c-3.8 3.8-3.8 10 0 13.8l90.2 90.2c3.8 3.8 10 3.8 13.8 0l35.4-35.4c15.2-15.3 15.2-40 0-55.2zM384 346.2V448H64V128h229.8c3.2 0 6.2-1.3 8.5-3.5l40-40c7.6-7.6 2.2-20.5-8.5-20.5H48C21.5 64 0 85.5 0 112v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V306.2c0-10.7-12.9-16-20.5-8.5l-40 40c-2.2 2.3-3.5 5.3-3.5 8.5z"
+                                            /></svg></span
+                                    >edit
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="users-container">
+                        <div class="forum-users-title">3 Active User</div>
+                        <div class="forum-users-container">
+                            <div class="forum-user">
+                                <div class="user-image"></div>
+                                <div class="username">@username</div>
+                            </div>
+                            <div class="forum-user">
+                                <div class="user-image"></div>
+                                <div class="username">@username</div>
+                            </div>
+                            <div class="forum-user">
+                                <div class="user-image"></div>
+                                <div class="username">@username</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
+        </main>
         <!-- * end of the main screen  -->
+
+        <!-- * start of the message modal -->
+        <div class="message-container" id="message-container-id"></div>
+        <!-- * end of the message modal-->
 
         <script src="../frontend/js/main.js"></script>
     </body>
