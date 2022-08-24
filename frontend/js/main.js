@@ -160,3 +160,18 @@ function revealPasswordBtn(id, className) {
 
     unSet(inputFields, revealBtn);
 }
+const openChatModal = (e) => {
+    console.log(e);
+    const chatModalContainer = document.querySelector(
+        '#chat-modal-container-id'
+    );
+    const userID = e.getAttribute('data-user-id');
+    chatModalContainer.style.display = 'flex';
+    console.log(userID);
+};
+const closeChat = () => {
+    const chatModalContainer = document.querySelector(
+        '#chat-modal-container-id'
+    );
+    chatModalContainer.style.display = 'none';
+};
