@@ -13,9 +13,10 @@ import (
 )
 
 func (forum *DB) CheckCookie(w http.ResponseWriter, c *http.Cookie) []string {
+	fmt.Println("CheckCookie-handlet")
 	co := []string{}
-	if strings.Contains(c.String(), "-") {
-		co = strings.Split(c.Value, "-")
+	if strings.Contains(c.String(), "&") {
+		co = strings.Split(c.Value, "&")
 	}
 	if len(co) != 0 {
 		if !(forum.CheckSession(co[2])) {
@@ -33,22 +34,25 @@ func (forum *DB) CheckCookie(w http.ResponseWriter, c *http.Cookie) []string {
 }
 
 func (forum *DB) Home(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Home-handlet")
 	t, err := template.ParseFiles("frontend/index.html")
 	if err != nil {
 		http.Error(w, "500 Internal error", http.StatusInternalServerError)
 		return
 	}
+	
 	if err := t.Execute(w, ""); err != nil {
 		http.Error(w, "500 Internal error", http.StatusInternalServerError)
 		return
 	}
+	/*
 
 	var page ReturnData
 
 	cookie, err := r.Cookie("session_token")
 
 	if err != nil {
-		page = ReturnData{User:User{} , Posts: forum.AllPost("", ""), }
+		page = ReturnData{User: User{}, Posts: forum.AllPost("", "")}
 		if err := t.Execute(w, page); err != nil {
 			http.Error(w, "500 Internal error", http.StatusInternalServerError)
 			return
@@ -57,15 +61,13 @@ func (forum *DB) Home(w http.ResponseWriter, r *http.Request) {
 
 		co := forum.CheckCookie(w, cookie)
 
-		page = ReturnData{User: forum.GetUser(co[0]) , Posts: forum.AllPost("", "")}
+		page = ReturnData{User: forum.GetUser(co[0]), Posts: forum.AllPost("", "")}
 	}
 	if err := t.Execute(w, page); err != nil {
 		http.Error(w, "500 Internal error", http.StatusInternalServerError)
 		return
 	}
-
-
-
+	*/
 }
 
 func (DB *DB) Register(w http.ResponseWriter, r *http.Request) {
@@ -141,6 +143,9 @@ func (forum *DB) Login(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "404 not found.", http.StatusNotFound)
 		return
 	}
+	SetupCorsResponse(w, r)
+	var page ReturnData
+
 	if r.Method == "POST" {
 
 		var userLoginData UserLoginData
@@ -153,9 +158,15 @@ func (forum *DB) Login(w http.ResponseWriter, r *http.Request) {
 		}
 		loginResp := forum.LoginUsers(userLoginData.EmailOrNickname, userLoginData.Password)
 		if loginResp[0] == 'E' {
+
+			page = ReturnData{User: forum.GetUser(""), Posts: forum.AllPost("", ""), Msg: loginResp, Users: forum.GetAllUser()}
+			marshallPage, err := json.Marshal(page)
+			if err != nil {
+				fmt.Println("Error marshalling the data: ", err)
+			}
 			w.Header().Set("Content-type", "application/text")
 			w.WriteHeader(http.StatusOK)
-			w.Write([]byte(loginResp))
+			w.Write(marshallPage)
 			return
 		}
 
@@ -165,11 +176,23 @@ func (forum *DB) Login(w http.ResponseWriter, r *http.Request) {
 			Expires: time.Now().Add(24 * time.Hour),
 		})
 
+		page = ReturnData{User: forum.GetUser(strings.Split(loginResp, "&")[0]), Posts: forum.AllPost("", ""), Msg: "Login successful",  Users: forum.GetAllUser()}
+		marshallPage, err := json.Marshal(page)
+		if err != nil {
+			fmt.Println("Error marshalling the data: ", err)
+		}
 		w.Header().Set("Content-type", "application/text")
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("Login successful"))
+		w.Write(marshallPage)
 		return
 	}
 	fmt.Println("Error in login handler")
 	http.Error(w, "400 Bad Request.", http.StatusBadRequest)
+}
+
+
+func SetupCorsResponse(w http.ResponseWriter, req *http.Request) {
+	(w).Header().Set("Access-Control-Allow-Origin", "*")
+	(w).Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+	(w).Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Authorization")
 }

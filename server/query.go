@@ -92,7 +92,7 @@ func (forum *DB) LoginUsers(emailOrNickname, pas string) string {
 			ImgUrl:      imgUrl,
 			Email:       email,
 			DateCreated: dateCreated,
-			Password:    "Password",
+			Password:    pass,
 		}
 	}
 
@@ -111,7 +111,7 @@ func (forum *DB) LoginUsers(emailOrNickname, pas string) string {
 	}
 	users.SessionID = sess
 	forum.Update("User", "Status", "Online", "userID", userID)
-	return users.UserID + "-" + users.Nickname + "-" + users.SessionID
+	return users.UserID + "&" + users.Nickname + "&" + users.SessionID
 }
 
 // CheckSession
@@ -134,7 +134,7 @@ func (forum *DB) CheckSession(sessionId string) bool {
 
 func (forum *DB) GetUser(uID string) User {
 	var user User
-	rows, err := forum.DB.Query("SELECT username, datecreated FROM User WHERE userID = '" + uID + "'")
+	rows, err := forum.DB.Query("SELECT * FROM User WHERE userID = '" + uID + "'")
 	if err != nil {
 		fmt.Println(err)
 		return user
@@ -156,11 +156,45 @@ func (forum *DB) GetUser(uID string) User {
 			ImgUrl:      imgUrl,
 			Email:       email,
 			DateCreated: dateCreated,
-			Password:    "Password",
 		}
 	}
 	forum.Update("User", "Status", "Online", "userID", userID)
 	return user
+}
+
+// GetAllUser
+// is a methond that return alluser nickname
+
+func (forum *DB) GetAllUser() []User {
+	var user User
+	var users []User
+	rows, err := forum.DB.Query("SELECT * FROM User ")
+	if err != nil {
+		fmt.Println(err)
+		return users
+	}
+
+	var userID, imgUrl, firstName, lastName, nickName, gender, status, email, dateCreated, pass, sessionID string
+	var age int
+	for rows.Next() {
+		rows.Scan(&userID, &imgUrl, &firstName, &lastName, &nickName, &gender, &age, &status, &email, &dateCreated, &pass, &sessionID)
+		user = User{
+			UserID:      userID,
+			SessionID:   sessionID,
+			Firstname:   firstName,
+			Lastname:    lastName,
+			Age:         age,
+			Nickname:    nickName,
+			Gender:      gender,
+			Status:      status,
+			ImgUrl:      imgUrl,
+			Email:       email,
+			DateCreated: dateCreated,
+		}
+		users = append([]User{user}, users...)
+	}
+	
+	return users
 }
 
 // AllPost
@@ -194,7 +228,7 @@ func (forum *DB) AllPost(filter, uID string) []Post {
 		}
 
 		var username string
-		rows2, err := forum.DB.Query("SELECT username FROM User WHERE userID = '" + userID + "'")
+		rows2, err := forum.DB.Query("SELECT nickName FROM User WHERE userID = '" + userID + "'")
 		if err != nil {
 			fmt.Print(err)
 			return posts
@@ -246,7 +280,7 @@ func (forum *DB) GetComments(pID string) []Comment {
 			Content:   content,
 		}
 		var username string
-		rows2, err := forum.DB.Query("SELECT username FROM User WHERE userID = '" + userID + "'")
+		rows2, err := forum.DB.Query("SELECT nickName FROM User WHERE userID = '" + userID + "'")
 		if err != nil {
 			fmt.Print(err)
 			return comments
@@ -283,10 +317,8 @@ func (forum *DB) GetFavoritesInPost(pID string) Favorite {
 		} else {
 			react = 0
 		}
-	
+
 		favorite.React = react
-		// reactions = append(reactions, reaction)
 	}
 	return favorite
 }
-

@@ -90,5 +90,7 @@ type UserLoginData struct {
 
 type ReturnData struct {
 	User        User
-	Posts       interface{}
+	Users        []User
+	Posts       []Post
+	Msg          string
 }
