@@ -130,7 +130,7 @@ loginBtn.addEventListener('click', (e) => {
             loginPageId.classList.add('close');
             registerPageId.classList.add('close');
             mainPageId.style.display = 'grid';
-            return response.text();
+            return response.json();
         })
         .then((resp) => {
             console.log(resp);

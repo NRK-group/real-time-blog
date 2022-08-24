@@ -1,6 +1,8 @@
 package server
 
 import (
+	"fmt"
+	"strings"
 	"time"
 
 	uuid "github.com/satori/go.uuid"
@@ -109,5 +111,214 @@ func (forum *DB) LoginUsers(emailOrNickname, pas string) string {
 	}
 	users.SessionID = sess
 	forum.Update("User", "Status", "Online", "userID", userID)
-	return users.UserID + "-" + users.Nickname + "-" + users.SessionID
+	return users.UserID + "&" + users.Nickname + "&" + users.SessionID
+}
+
+// CheckSession
+// is a method of forum that checks the session in the User table and checks if it is match with the sessionID inputed
+func (forum *DB) CheckSession(sessionId string) bool {
+	rows, err := forum.DB.Query("SELECT sessionID FROM User WHERE sessionID = '" + sessionId + "'")
+	if err != nil {
+		fmt.Print(err)
+		return false
+	}
+	var session string
+	for rows.Next() {
+		rows.Scan(&session)
+	}
+	return session != ""
+}
+
+// GetUser
+// is a methond that return the user info by their user id
+
+func (forum *DB) GetUser(uID string) User {
+	var user User
+	rows, err := forum.DB.Query("SELECT * FROM User WHERE userID = '" + uID + "'")
+	if err != nil {
+		fmt.Println(err)
+		return user
+	}
+
+	var userID, imgUrl, firstName, lastName, nickName, gender, status, email, dateCreated, pass, sessionID string
+	var age int
+	for rows.Next() {
+		rows.Scan(&userID, &imgUrl, &firstName, &lastName, &nickName, &gender, &age, &status, &email, &dateCreated, &pass, &sessionID)
+		user = User{
+			UserID:      userID,
+			SessionID:   sessionID,
+			Firstname:   firstName,
+			Lastname:    lastName,
+			Age:         age,
+			Nickname:    nickName,
+			Gender:      gender,
+			Status:      status,
+			ImgUrl:      imgUrl,
+			Email:       email,
+			DateCreated: dateCreated,
+		}
+	}
+	forum.Update("User", "Status", "Online", "userID", userID)
+	return user
+}
+
+// GetAllUser
+// is a methond that return alluser nickname
+
+func (forum *DB) GetAllUser() []User {
+	var user User
+	var users []User
+	rows, err := forum.DB.Query("SELECT * FROM User ")
+	if err != nil {
+		fmt.Println(err)
+		return users
+	}
+
+	var userID, imgUrl, firstName, lastName, nickName, gender, status, email, dateCreated, pass, sessionID string
+	var age int
+	for rows.Next() {
+		rows.Scan(&userID, &imgUrl, &firstName, &lastName, &nickName, &gender, &age, &status, &email, &dateCreated, &pass, &sessionID)
+		user = User{
+			UserID:      userID,
+			SessionID:   sessionID,
+			Firstname:   firstName,
+			Lastname:    lastName,
+			Age:         age,
+			Nickname:    nickName,
+			Gender:      gender,
+			Status:      status,
+			ImgUrl:      imgUrl,
+			Email:       email,
+			DateCreated: dateCreated,
+		}
+		users = append([]User{user}, users...)
+	}
+	
+	return users
+}
+
+// AllPost
+// is a method of forum that will return all post
+func (forum *DB) AllPost(filter, uID string) []Post {
+	var post Post
+	var posts []Post
+	var err error
+
+	rows, err := forum.DB.Query("SELECT * FROM Post ")
+	if err != nil {
+		fmt.Print(err)
+		return posts
+	}
+
+	var postID, userID, title, category, date, time, content, imgurl string
+	for rows.Next() {
+		rows.Scan(&postID, &userID, &title, &category, &date, &time, &imgurl, &content)
+		post = Post{
+			PostID:       postID,
+			UserID:       userID,
+			Date:         date,
+			Time:         time,
+			Content:      content,
+			Category:     category,
+			Title:        title,
+			ImgUrl:       imgurl,
+			Comments:     forum.GetComments(postID),
+			NumOfComment: len(forum.GetComments(postID)),
+			Favorite:     forum.GetFavoritesInPost(postID),
+		}
+
+		var username string
+		rows2, err := forum.DB.Query("SELECT nickName FROM User WHERE userID = '" + userID + "'")
+		if err != nil {
+			fmt.Print(err)
+			return posts
+		}
+		for rows2.Next() {
+			rows2.Scan(&username)
+		}
+		post.UserID = username
+		switch filter {
+		case "go":
+			if strings.Contains(category, "go") {
+				posts = append([]Post{post}, posts...)
+			}
+		case "javascript":
+			if strings.Contains(category, "javascript") {
+				posts = append([]Post{post}, posts...)
+			}
+		case "rust":
+			if strings.Contains(category, "rust") {
+				posts = append([]Post{post}, posts...)
+			}
+		default:
+			posts = append([]Post{post}, posts...)
+		}
+	}
+
+	return posts
+}
+
+// Get Comments
+// is a method of forum that return all the comment with that specific postID
+func (forum *DB) GetComments(pID string) []Comment {
+	rows, err := forum.DB.Query("SELECT * FROM Comment WHERE postID = '" + pID + "'")
+	var comment Comment
+	var comments []Comment
+	if err != nil {
+		fmt.Print(err)
+		return comments
+	}
+	var commentID, postID, userID, date, time, content string
+	for rows.Next() {
+		rows.Scan(&commentID, &postID, &userID, &date, &time, &content)
+		comment = Comment{
+			CommentID: commentID,
+			PostID:    postID,
+			UserID:    userID,
+			Date:      date,
+			Time:      time,
+			Content:   content,
+		}
+		var username string
+		rows2, err := forum.DB.Query("SELECT nickName FROM User WHERE userID = '" + userID + "'")
+		if err != nil {
+			fmt.Print(err)
+			return comments
+		}
+		for rows2.Next() {
+			rows2.Scan(&username)
+		}
+		comment.UserID = username
+		comments = append([]Comment{comment}, comments...)
+	}
+	return comments
+}
+
+func (forum *DB) GetFavoritesInPost(pID string) Favorite {
+	rows, err := forum.DB.Query("SELECT favoriteID, postID, userID, react FROM Reaction WHERE postID = '" + pID + "'")
+	var favorite Favorite
+
+	if err != nil {
+		fmt.Print(err)
+		return favorite
+	}
+	var favoriteID, postID, userID string
+	var react int
+	for rows.Next() {
+		rows.Scan(&favoriteID, &postID, &userID, &react)
+		favorite = Favorite{
+			FavoriteID: favoriteID,
+			PostID:     postID,
+			UserID:     userID,
+			React:      react,
+		}
+		if react != 1 {
+			react = 1
+		} else {
+			react = 0
+		}
+
+		favorite.React = react
+	}
+	return favorite
 }
