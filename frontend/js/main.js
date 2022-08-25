@@ -106,6 +106,7 @@ registerBtn.addEventListener('click', (e) => {
             .then((resp) => {
                 showMessages(resp);
                 if (resp === 'Register successful') {
+                    ClearRegistrationFields();
                     setTimeout(() => {
                         const loginPageId =
                             document.querySelector('#login-page-id');
@@ -115,7 +116,6 @@ registerBtn.addEventListener('click', (e) => {
                         registerPageId.classList.add('close');
                         loginPageId.classList.remove('close');
                         loginPageId.classList.add('open');
-                        ClearRegistrationFields();
                     }, 2500);
                 }
                 return resp;
