@@ -25,6 +25,8 @@ func main() {
 	http.HandleFunc("/", database.Home)
 	http.HandleFunc("/register", database.Register)
 	http.HandleFunc("/login", database.Login)
+	http.HandleFunc("/ws", server.WsEndpoint)
+
 	frontend := http.FileServer(http.Dir("./frontend"))
 	http.Handle("/frontend/", http.StripPrefix("/frontend/", frontend)) // handling the CSS
 	fmt.Printf("Starting server at port 8800\n")

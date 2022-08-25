@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"html/template"
+	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -40,33 +41,33 @@ func (forum *DB) Home(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "500 Internal error", http.StatusInternalServerError)
 		return
 	}
-	
+
 	if err := t.Execute(w, ""); err != nil {
 		http.Error(w, "500 Internal error", http.StatusInternalServerError)
 		return
 	}
 	/*
 
-	var page ReturnData
+		var page ReturnData
 
-	cookie, err := r.Cookie("session_token")
+		cookie, err := r.Cookie("session_token")
 
-	if err != nil {
-		page = ReturnData{User: User{}, Posts: forum.AllPost("", "")}
+		if err != nil {
+			page = ReturnData{User: User{}, Posts: forum.AllPost("", "")}
+			if err := t.Execute(w, page); err != nil {
+				http.Error(w, "500 Internal error", http.StatusInternalServerError)
+				return
+			}
+		} else {
+
+			co := forum.CheckCookie(w, cookie)
+
+			page = ReturnData{User: forum.GetUser(co[0]), Posts: forum.AllPost("", "")}
+		}
 		if err := t.Execute(w, page); err != nil {
 			http.Error(w, "500 Internal error", http.StatusInternalServerError)
 			return
 		}
-	} else {
-
-		co := forum.CheckCookie(w, cookie)
-
-		page = ReturnData{User: forum.GetUser(co[0]), Posts: forum.AllPost("", "")}
-	}
-	if err := t.Execute(w, page); err != nil {
-		http.Error(w, "500 Internal error", http.StatusInternalServerError)
-		return
-	}
 	*/
 }
 
@@ -176,7 +177,7 @@ func (forum *DB) Login(w http.ResponseWriter, r *http.Request) {
 			Expires: time.Now().Add(24 * time.Hour),
 		})
 
-		page = ReturnData{User: forum.GetUser(strings.Split(loginResp, "&")[0]), Posts: forum.AllPost("", ""), Msg: "Login successful",  Users: forum.GetAllUser()}
+		page = ReturnData{User: forum.GetUser(strings.Split(loginResp, "&")[0]), Posts: forum.AllPost("", ""), Msg: "Login successful", Users: forum.GetAllUser()}
 		marshallPage, err := json.Marshal(page)
 		if err != nil {
 			fmt.Println("Error marshalling the data: ", err)
@@ -190,9 +191,25 @@ func (forum *DB) Login(w http.ResponseWriter, r *http.Request) {
 	http.Error(w, "400 Bad Request.", http.StatusBadRequest)
 }
 
-
 func SetupCorsResponse(w http.ResponseWriter, req *http.Request) {
 	(w).Header().Set("Access-Control-Allow-Origin", "*")
 	(w).Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
 	(w).Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Authorization")
+}
+
+func WsEndpoint(w http.ResponseWriter, r *http.Request) {
+	upgrader.CheckOrigin = func(r *http.Request) bool { return true }
+
+	// upgrade this connection to a WebSocket
+	ws, err := upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		fmt.Println("Problem upgrading", err)
+		log.Println()
+	}
+	fmt.Println("CONNECTED to Front")
+	err = ws.WriteMessage(1, []byte("You are user connected"))
+	if err != nil {
+		fmt.Println("Problem writing the message")
+		log.Println(err)
+	}
 }
