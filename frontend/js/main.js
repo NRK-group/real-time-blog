@@ -58,18 +58,20 @@ const CreateWebSocket = () => {
         let cookie = getCookie('session_token');
         if (cookie == null) {
             console.log('No Cookie Found');
-            return
+            return;
         }
 
         console.log('Cookie = ', cookie);
-        socket.send(cookie)
+        socket.send(cookie);
     };
 };
 
 const validateCoookie = () => {
     fetch('/vadidate').then(async (response) => {
         resp = await response.json();
-        if (resp.Msg === 'Login successful') validateUser(resp);
+        if (resp.Msg === 'Login successful') {
+            validateUser(resp);
+        }
     });
 };
 //
@@ -78,6 +80,7 @@ const validateUser = (resp) => {
         //Create the cookie when logged in#
         CreateWebSocket();
         showMessages('Login successful');
+        ShowUsers(resp.Users);
         const loginPageId = document.querySelector('#login-page-id');
         const registerPageId = document.querySelector('#register-page-id');
         const mainPageId = document.querySelector('#main-page-id');
@@ -90,6 +93,26 @@ const validateUser = (resp) => {
     } else {
         showMessages(resp.Msg);
     }
+};
+
+const ShowUsers = (Users) => {
+    let usersDiv = document.getElementById('forum-users-container');
+    let usersDivTitle = document.getElementById('forum-users-title');
+    let users = '';
+    Users.forEach((item, index) => {
+        users =
+            `    <div
+    key=${index}
+    class="forum-user"
+    data-user-id=${item.UserID}
+    onclick="openChatModal(this)"
+>
+    <div class="user-image"></div>
+    <div class="username">@${item.Nickname}</div>
+</div>` + users;
+    });
+    usersDiv.innerHTML = users;
+    usersDivTitle.innerText = `${Users.length} Active User`
 };
 
 const getRegisterData = () => {
@@ -132,6 +155,7 @@ const ClearRegistrationFields = () => {
     password.value = '';
     confirmPassword.value = '';
 };
+
 const registerBtn = document.querySelector('#register-btn-id');
 registerBtn.addEventListener('click', (e) => {
     // CreateWebSocket()
