@@ -28,10 +28,42 @@ const checkRegisterData = (userData) => {
     }
     return [true, ''];
 };
+let socket;
+const CreateWebSocket = () => {
+    socket = new WebSocket('ws://localhost:8800/ws');
+    socket.onopen = () => {
+        //Access The cookie value
+        let cookies = document.cookie;
+        let cookie
+        
+        if (cookies.length === 0) {
+            //No cookies are present
+            console.log('No Cookies Present!');
+            return;
+        } else if (cookies.length !== 1) {
+            //There are multiple cookies so split the cookies to get each cookie
+            let eachCookie = cookies.split(';');
+            eachCookie.forEach((cook) => {
+                //Split each cookie to get the name and value
+                cook.split('=').forEach((name) => {
+                    //check the current cookie is called session_token
+                    if (name[0].replace(' ', '') === 'session_token') {
+                        cookie = name[1];
+                    }
+                });
+            });
+        } else if (cookies.length === 1 && cookies.split('=')[0] === "session_token") {
+            cookie = cookies.split('=')[1];
+        }
 
-//
+        console.log("Cookie Found === ", cookie)
+    };
+}
 const validateUser = (resp) => {
     if (resp.Msg === 'Login successful') {
+        //Create the websocket connection
+        CreateWebSocket()
+
         showMessages('Login successful');
         const loginPageId = document.querySelector('#login-page-id');
         const registerPageId = document.querySelector('#register-page-id');
