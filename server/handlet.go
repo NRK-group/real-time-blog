@@ -33,7 +33,7 @@ func (forum *DB) CheckCookie(w http.ResponseWriter, r *http.Request) {
 				co = strings.Split(c.Value, "&")
 			}
 			if !(forum.CheckSession(co[2])) {
-				page = ReturnData{User: forum.GetUser(""), Posts: forum.AllPost("", ""), Msg: "", Users: forum.GetAllUser()}
+				page = ReturnData{User: forum.GetUser(""), Posts: forum.AllPost("", ""), Msg: "", Users: forum.GetAllUser("")}
 				marshallPage, err := json.Marshal(page)
 				if err != nil {
 					fmt.Println("Error marshalling the data: ", err)
@@ -44,7 +44,8 @@ func (forum *DB) CheckCookie(w http.ResponseWriter, r *http.Request) {
 				return
 
 			}
-			page = ReturnData{User: forum.GetUser(co[1]), Posts: forum.AllPost("", ""), Msg: "Login successful", Users: forum.GetAllUser()}
+		
+			page = ReturnData{User: forum.GetUser(co[1]), Posts: forum.AllPost("", ""), Msg: "Login successful", Users: forum.GetAllUser(co[0])}
 			marshallPage, err := json.Marshal(page)
 			if err != nil {
 				fmt.Println("Error marshalling the data: ", err)
@@ -181,7 +182,7 @@ func (forum *DB) Login(w http.ResponseWriter, r *http.Request) {
 		loginResp := forum.LoginUsers(userLoginData.EmailOrNickname, userLoginData.Password)
 		if loginResp[0] == 'E' {
 
-			page = ReturnData{User: forum.GetUser(""), Posts: forum.AllPost("", ""), Msg: loginResp, Users: forum.GetAllUser()}
+			page = ReturnData{User: forum.GetUser(""), Posts: forum.AllPost("", ""), Msg: loginResp, Users: forum.GetAllUser("")}
 			marshallPage, err := json.Marshal(page)
 			if err != nil {
 				fmt.Println("Error marshalling the data: ", err)
@@ -197,8 +198,8 @@ func (forum *DB) Login(w http.ResponseWriter, r *http.Request) {
 			Value:   loginResp,
 			Expires: time.Now().Add(24 * time.Hour),
 		})
-
-		page = ReturnData{User: forum.GetUser(strings.Split(loginResp, "&")[0]), Posts: forum.AllPost("", ""), Msg: "Login successful", Users: forum.GetAllUser()}
+		userid := strings.Split(loginResp, "&")[0]
+		page = ReturnData{User: forum.GetUser(userid), Posts: forum.AllPost("", ""), Msg: "Login successful", Users: forum.GetAllUser(userid)}
 		marshallPage, err := json.Marshal(page)
 		if err != nil {
 			fmt.Println("Error marshalling the data: ", err)

@@ -167,10 +167,13 @@ func (forum *DB) GetUser(uID string) User {
 // GetAllUser
 // is a methond that return alluser nickname
 
-func (forum *DB) GetAllUser() []User {
+func (forum *DB) GetAllUser(uID string) []User {
 	var user User
 	var users []User
-	rows, err := forum.DB.Query("SELECT * FROM User ")
+	if uID == ""{
+		return users
+	}
+	rows, err := forum.DB.Query("SELECT * FROM User WHERE NOT userID = '" + uID + "'")
 	if err != nil {
 		fmt.Println(err)
 		return users
