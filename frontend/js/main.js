@@ -29,6 +29,15 @@ const checkRegisterData = (userData) => {
     return [true, ''];
 };
 
+
+const validateCoookie = ()=>{
+    fetch('/vadidate')
+    .then( async (response) => {
+      resp = await response.json()
+      if (resp.Msg === "Login successful")
+      validateUser(resp)
+    })
+}
 //
 const validateUser = (resp) => {
     if (resp.Msg === 'Login successful') {
