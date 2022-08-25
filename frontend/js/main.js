@@ -49,6 +49,25 @@ const getRegisterData = () => {
     };
     return [checkRegisterData(userData)[0], userData];
 };
+
+const ClearRegistrationFields = () => {
+    const firstName = document.querySelector('#first-name-id');
+    const nickname = document.querySelector('#nickname-id');
+    const lastName = document.querySelector('#last-name-id');
+    const age = document.querySelector('#age-id');
+    const gender = document.querySelector('#gender-id');
+    const email = document.querySelector('#email-id');
+    const password = document.querySelector('#password-id');
+    const confirmPassword = document.querySelector('#confirm-password-id');
+    firstName.value = '';
+    nickname.value = '';
+    lastName.value = '';
+    age.value = '';
+    gender.value = '';
+    email.value = '';
+    password.value = '';
+    confirmPassword.value = '';
+};
 const registerBtn = document.querySelector('#register-btn-id');
 registerBtn.addEventListener('click', (e) => {
     e.preventDefault();
@@ -77,6 +96,7 @@ registerBtn.addEventListener('click', (e) => {
                         registerPageId.classList.add('close');
                         loginPageId.classList.remove('close');
                         loginPageId.classList.add('open');
+                        ClearRegistrationFields();
                     }, 2500);
                 }
                 return resp;
