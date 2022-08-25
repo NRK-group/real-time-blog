@@ -56,8 +56,13 @@ const CreateWebSocket = () => {
         console.log('Websocket Connected');
         //Access The cookie value
         let cookie = getCookie('session_token');
-        if (cookie == null) console.log('No Cookie Found');
-        else console.log('Cookie = ', cookie);
+        if (cookie == null) {
+            console.log('No Cookie Found');
+            return
+        }
+
+        console.log('Cookie = ', cookie);
+        socket.send(cookie)
     };
 };
 
