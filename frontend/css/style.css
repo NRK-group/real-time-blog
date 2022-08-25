@@ -918,6 +918,41 @@ input[type='email']:focus {
     padding: 0 16px;
     margin: auto;
     margin-top: 5vh;
+<<<<<<< HEAD
+}
+.response-modal-container {
+    display: none;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100vw; /* Full width */
+    height: 100vh; /* Full height */
+    z-index: 1;
+    justify-content: center;
+    /* align-items: center; */
+}
+.response-modal-container::before {
+    content: '';
+    position: absolute;
+    background-color: black;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    left: 0px;
+    opacity: 0.5;
+}
+.response-modal {
+    display: grid;
+    grid-template-rows: 2.7vh 33.3vh 10vh 48vh;
+    background-color: white;
+    min-width: 50vw;
+    height: 95vh;
+    z-index: 1;
+    margin: auto;
+    border-radius: 16px;
+    overflow: scroll;
+    margin: auto;
+    padding: 2px;
 }
 .response-modal-container {
     display: none;

@@ -69,7 +69,25 @@ const CreateWebSocket = () => {
 const validateCoookie = () => {
     fetch('/vadidate').then(async (response) => {
         resp = await response.json();
-        if (resp.Msg === 'Login successful') validateUser(resp);
+        if (resp.Msg === 'Login successful') {
+            validateUser(resp);
+        }
+    });
+};
+
+const Logout = () => {
+    fetch('/logout').then(async (response) => {
+        resp = await response.text();
+        showMessages(resp);
+        const loginPageId = document.querySelector('#login-page-id');
+        const registerPageId = document.querySelector('#register-page-id');
+        const mainPageId = document.querySelector('#main-page-id');
+        loginPageId.classList.remove('close');
+        registerPageId.classList.remove('close');
+        mainPageId.classList.remove('open');
+        loginPageId.classList.add('open');
+        registerPageId.classList.add('close');
+        mainPageId.style.display = 'grid';
     });
 };
 //
@@ -78,6 +96,7 @@ const validateUser = (resp) => {
         //Create the cookie when logged in#
         CreateWebSocket();
         showMessages('Login successful');
+        ShowUsers(resp.Users);
         const loginPageId = document.querySelector('#login-page-id');
         const registerPageId = document.querySelector('#register-page-id');
         const mainPageId = document.querySelector('#main-page-id');
@@ -90,6 +109,26 @@ const validateUser = (resp) => {
     } else {
         showMessages(resp.Msg);
     }
+};
+
+const ShowUsers = (Users) => {
+    let usersDiv = document.getElementById('forum-users-container');
+    let usersDivTitle = document.getElementById('forum-users-title');
+    let users = '';
+    Users.forEach((item, index) => {
+        users =
+            `    <div
+    key=${index}
+    class="forum-user"
+    data-user-id=${item.UserID}
+    onclick="openChatModal(this)"
+>
+    <div class="user-image"></div>
+    <div class="username">@${item.Nickname}</div>
+</div>` + users;
+    });
+    usersDiv.innerHTML = users;
+    usersDivTitle.innerText = `${Users.length} Active User`;
 };
 
 const getRegisterData = () => {
@@ -132,6 +171,13 @@ const ClearRegistrationFields = () => {
     password.value = '';
     confirmPassword.value = '';
 };
+
+const logoutBtn = document.getElementById('logout-btn');
+
+logoutBtn.onclick = () => {
+    Logout();
+};
+
 const registerBtn = document.querySelector('#register-btn-id');
 registerBtn.addEventListener('click', (e) => {
     // CreateWebSocket()

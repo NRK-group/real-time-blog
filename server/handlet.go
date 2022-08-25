@@ -33,7 +33,7 @@ func (forum *DB) CheckCookie(w http.ResponseWriter, r *http.Request) {
 				co = strings.Split(c.Value, "&")
 			}
 			if !(forum.CheckSession(co[2])) {
-				page = ReturnData{User: forum.GetUser(""), Posts: forum.AllPost("", ""), Msg: "", Users: forum.GetAllUser()}
+				page = ReturnData{User: forum.GetUser(""), Posts: forum.AllPost("", ""), Msg: "", Users: forum.GetAllUser("")}
 				marshallPage, err := json.Marshal(page)
 				if err != nil {
 					fmt.Println("Error marshalling the data: ", err)
@@ -44,7 +44,8 @@ func (forum *DB) CheckCookie(w http.ResponseWriter, r *http.Request) {
 				return
 
 			}
-			page = ReturnData{User: forum.GetUser(co[1]), Posts: forum.AllPost("", ""), Msg: "Login successful", Users: forum.GetAllUser()}
+
+			page = ReturnData{User: forum.GetUser(co[1]), Posts: forum.AllPost("", ""), Msg: "Login successful", Users: forum.GetAllUser(co[0])}
 			marshallPage, err := json.Marshal(page)
 			if err != nil {
 				fmt.Println("Error marshalling the data: ", err)
@@ -181,7 +182,7 @@ func (forum *DB) Login(w http.ResponseWriter, r *http.Request) {
 		loginResp := forum.LoginUsers(userLoginData.EmailOrNickname, userLoginData.Password)
 		if loginResp[0] == 'E' {
 
-			page = ReturnData{User: forum.GetUser(""), Posts: forum.AllPost("", ""), Msg: loginResp, Users: forum.GetAllUser()}
+			page = ReturnData{User: forum.GetUser(""), Posts: forum.AllPost("", ""), Msg: loginResp, Users: forum.GetAllUser("")}
 			marshallPage, err := json.Marshal(page)
 			if err != nil {
 				fmt.Println("Error marshalling the data: ", err)
@@ -197,8 +198,8 @@ func (forum *DB) Login(w http.ResponseWriter, r *http.Request) {
 			Value:   loginResp,
 			Expires: time.Now().Add(24 * time.Hour),
 		})
-
-		page = ReturnData{User: forum.GetUser(strings.Split(loginResp, "&")[0]), Posts: forum.AllPost("", ""), Msg: "Login successful", Users: forum.GetAllUser()}
+		userid := strings.Split(loginResp, "&")[0]
+		page = ReturnData{User: forum.GetUser(userid), Posts: forum.AllPost("", ""), Msg: "Login successful", Users: forum.GetAllUser(userid)}
 		marshallPage, err := json.Marshal(page)
 		if err != nil {
 			fmt.Println("Error marshalling the data: ", err)
@@ -211,6 +212,47 @@ func (forum *DB) Login(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Error in login handler")
 	http.Error(w, "400 Bad Request.", http.StatusBadRequest)
 }
+
+
+func (forum *DB) Logout(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/logout" {
+		http.Error(w, "404 not found.", http.StatusNotFound)
+		return
+	}
+	switch r.Method {
+	case "GET":
+		c, err := r.Cookie("session_token")
+		if err != nil {
+			if err == http.ErrNoCookie {
+				// If the cookie is not set, return an unauthorized status
+				w.WriteHeader(http.StatusUnauthorized)
+				return
+			}
+			// For any other type of error, return a bad request status
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+		res := strings.Split(c.Value, "&")
+		err = forum.RemoveSession(res[2])
+		if err != nil {
+			log.Fatal(err)
+		}
+		// Set the new token as the users `session_token` cookie
+		http.SetCookie(w, &http.Cookie{
+			Name:    "session_token",
+			Value:   "",
+			Expires: time.Now(),
+		})
+		w.WriteHeader(http.StatusOK)
+		w.Header().Set("Content-type", "application/text")
+		w.Write([]byte("Logout successful"))
+		fmt.Println("Logout successful")
+	default:
+		http.Error(w, "400 Bad Request.", http.StatusBadRequest)
+		return
+	}
+}
+
 
 func SetupCorsResponse(w http.ResponseWriter, req *http.Request) {
 	(w).Header().Set("Access-Control-Allow-Origin", "*")
