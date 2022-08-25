@@ -223,3 +223,93 @@ const closeNewPost = () => {
 const sendNewPost = () => {
     closeNewPost();
 };
+const CreatePost = (
+    postId,
+    titleValue,
+    userImageValue,
+    usernameValue,
+    postCreatedValue,
+    postCategoryValue,
+    postContentValue,
+    react
+) => {
+    const postContainer = document.createElement('div');
+    postContainer.className = 'post-container';
+    postContainer.setAttribute('data-post-id', postId);
+    const postTitle = document.createElement('div');
+    postTitle.className = 'post-title';
+    postTitle.textContent = titleValue;
+    const postProfile = document.createElement('div');
+    postProfile.className = 'post-profile';
+    const postUserProfile = document.createElement('div');
+    postUserProfile.className = 'post-user-profile';
+    const userImage = document.createElement('div');
+    userImage.className = 'user-image';
+    //create an image to add the image here
+    userImage.value = userImageValue; // this need to be converted to an image
+    const span = document.createElement('span');
+    const username = document.createElement('div');
+    username.className = 'username';
+    username.textContent = usernameValue;
+    const postCreated = document.createElement('div');
+    postCreated.className = 'post-created';
+    postCreated.textContent = postCreatedValue;
+    span.append(username, postCreated);
+    postUserProfile.append(userImage, span);
+    const postCategory = document.createElement('div');
+    if (postCategoryValue === 'GoLang') {
+        postCategory.classList.add(
+            'post-category',
+            'golang',
+            'golang-category'
+        );
+    }
+    if (postCategoryValue === 'JavaScript') {
+        postCategory.classList.add(
+            'post-category',
+            'javascript',
+            'javascript-category'
+        );
+    }
+    if (postCategoryValue === 'Rust') {
+        postCategory.classList.add('post-category', 'rust', 'rust-category');
+    }
+    postCategory.textContent = postCategoryValue;
+    postProfile.append(postUserProfile, postCategory);
+    const postContent = document.createElement('div');
+    postContent.className = 'post-content';
+    postContent.innerHTML = postContentValue;
+    const postButtons = document.createElement('div');
+    postButtons.className = 'post-buttons';
+    const favoriteBtn = document.createElement('div');
+    favoriteBtn.className = 'favorite-btn';
+    favoriteBtn.tabIndex = '1';
+    const favoriteIcon = document.createElement('span');
+    favoriteIcon.className = 'favorite-icon';
+    favoriteIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"> <path d="M48 0H336C362.5 0 384 21.49 384 48V487.7C384 501.1 373.1 512 359.7 512C354.7 512 349.8 510.5 345.7 507.6L192 400L38.28 507.6C34.19 510.5 29.32 512 24.33 512C10.89 512 0 501.1 0 487.7V48C0 21.49 21.49 0 48 0z"/></svg>`;
+    favoriteBtn.append(favoriteIcon);
+    const responseBtn = document.createElement('div');
+    responseBtn.className = 'response-btn';
+    const responseIcon = document.createElement('span');
+    responseIcon.className = 'response-icon';
+    responseIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M256 32C114.6 32 .0272 125.1 .0272 240c0 49.63 21.35 94.98 56.97 130.7c-12.5 50.37-54.27 95.27-54.77 95.77c-2.25 2.25-2.875 5.734-1.5 8.734C1.979 478.2 4.75 480 8 480c66.25 0 115.1-31.76 140.6-51.39C181.2 440.9 217.6 448 256 448c141.4 0 255.1-93.13 255.1-208S397.4 32 256 32z"/></svg>`;
+    responseBtn.append(responseIcon, 'Response');
+    postButtons.append(favoriteBtn, responseBtn);
+    postContainer.append(postTitle, postProfile, postContent, postButtons);
+    const allPostContainer = document.querySelector('.all-post-container');
+    allPostContainer.append(postContainer);
+    console.log(postContainer);
+};
+// this part need to be automated to all the post
+for (let i = 0; i <= 100; i++) {
+    CreatePost(
+        i,
+        'GoLang',
+        '',
+        'Firstname LastName',
+        'January 20, 2022',
+        'JavaScript',
+        'hello',
+        '0'
+    );
+}
