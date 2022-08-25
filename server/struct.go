@@ -94,3 +94,11 @@ type ReturnData struct {
 	Posts []Post
 	Msg   string
 }
+
+type NewMessage struct {
+	Mesg   string `json:"message"`
+	UserID string `json:"userID"`
+	RecieverID string `json:"recieverID"`
+	ChatID string `json:"chatID"`
+	messageType int
+}
