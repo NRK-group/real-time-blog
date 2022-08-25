@@ -209,7 +209,7 @@ func WsEndpoint( w http.ResponseWriter, r *http.Request){
 		fmt.Println("Problem upgrading", err)
 		log.Println()
 	}
-
+	fmt.Println("CONNECTED to Front")
 	err = ws.WriteMessage(1, []byte("You are user connected"))
 	if err != nil {
 		fmt.Println("Problem writing the message")
