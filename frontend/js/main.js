@@ -28,38 +28,36 @@ const checkRegisterData = (userData) => {
     }
     return [true, ''];
 };
+function getCookie(name) {
+    // Split cookie string and get all individual name=value pairs in an array
+    var cookieArr = document.cookie.split(';');
+
+    // Loop through the array elements
+    for (var i = 0; i < cookieArr.length; i++) {
+        var cookiePair = cookieArr[i].split('=');
+
+        /* Removing whitespace at the beginning of the cookie name
+        and compare it with the given string */
+        if (name == cookiePair[0].trim()) {
+            // Decode the cookie value and return
+            return cookiePair[1];
+        }
+    }
+
+    // Return null if not found
+    return null;
+}
 
 let socket;
 const CreateWebSocket = () => {
     console.log('Attempting to open!');
-    socket = new WebSocket('ws://localhost:8800/ws');
-    socket.onopen = () => {
+    let webSocket = new WebSocket('ws://localhost:8800/ws');
+    webSocket.onopen = () => {
         console.log('Websocket Connected');
         //Access The cookie value
-        let cookies = document.cookie.split(';');
-        let cookie;
-
-        if (cookies[0] === '') {
-            //No cookies are present
-            console.log('No Cookies Present!');
-            return;
-        } else if (
-            cookies.length === 1 &&
-            cookies[0].split('=')[0] === 'session_token'
-        ) {
-            cookie = cookies[0].split('=')[1];
-        } else if (cookies.length !== 1) {
-            //There are multiple cookies so find the correct cookie
-            cookies.forEach((cook) => {
-                //Split each cookie to get the name and value
-                cook.split('=').forEach((name) => {
-                    //check the current cookie is called session_token
-                    if (name[0].replace(' ', '') === 'session_token') {
-                        cookie = name[1];
-                    }
-                });
-            });
-        }
+        let cookie = getCookie('session_token');
+        if (cookie == null) console.log('No Cookie Found');
+        else console.log('Cookie = ', cookie);
     };
 };
 
@@ -124,6 +122,7 @@ const ClearRegistrationFields = () => {
 };
 const registerBtn = document.querySelector('#register-btn-id');
 registerBtn.addEventListener('click', (e) => {
+    // CreateWebSocket()
     e.preventDefault();
     const userData = getRegisterData();
     if (userData[0]) {
@@ -333,7 +332,7 @@ const CreatePost = (
     postContainer.append(postTitle, postProfile, postContent, postButtons);
     const allPostContainer = document.querySelector('.all-post-container');
     allPostContainer.append(postContainer);
-    console.log(postContainer);
+    // console.log(postContainer);
 };
 // this part need to be automated to all the post
 for (let i = 0; i <= 100; i++) {

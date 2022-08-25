@@ -10,7 +10,8 @@ import (
 
 // Delete
 // is a method of the database that delete value base on table and where.
-//  ex. Forum.Delete("User", "userID", "185c6549-caec-4eae-95b0-e16023432ef0")
+//
+//	ex. Forum.Delete("User", "userID", "185c6549-caec-4eae-95b0-e16023432ef0")
 func (forum *DB) Delete(table, where, value string) error {
 	dlt := "DELETE FROM " + table + " WHERE " + where
 	stmt, err := forum.DB.Prepare(dlt + " = (?)")
@@ -40,7 +41,8 @@ func (forum *DB) RemoveSession(sessionID string) error {
 
 // Update
 // is a method of database that update a row.
-//  ex. Forum.Update("User", "username", "Adriell,", "userID" "7e2b4fdd-86ad-464c-a97e")
+//
+//	ex. Forum.Update("User", "username", "Adriell,", "userID" "7e2b4fdd-86ad-464c-a97e")
 func (forum *DB) Update(table, set, to, where, id string) error {
 	update := "UPDATE " + table + " SET " + set + " = '" + to + "' WHERE " + where + " = '" + id + "'"
 	stmt, _ := forum.DB.Prepare(update)
@@ -193,7 +195,7 @@ func (forum *DB) GetAllUser() []User {
 		}
 		users = append([]User{user}, users...)
 	}
-	
+
 	return users
 }
 
