@@ -28,6 +28,25 @@ const checkRegisterData = (userData) => {
     }
     return [true, ''];
 };
+
+//
+const validateUser = (resp) => {
+    if (resp.Msg === 'Login successful') {
+        showMessages('Login successful');
+        const loginPageId = document.querySelector('#login-page-id');
+        const registerPageId = document.querySelector('#register-page-id');
+        const mainPageId = document.querySelector('#main-page-id');
+        loginPageId.classList.remove('open');
+        registerPageId.classList.remove('open');
+        mainPageId.classList.remove('close');
+        loginPageId.classList.add('close');
+        registerPageId.classList.add('close');
+        mainPageId.style.display = 'grid';
+    } else {
+        showMessages(resp.Msg);
+    }
+};
+
 const getRegisterData = () => {
     const firstName = document.querySelector('#first-name-id');
     const nickname = document.querySelector('#nickname-id');
@@ -141,18 +160,10 @@ loginBtn.addEventListener('click', (e) => {
         body: JSON.stringify(userLoginData),
     })
         .then((response) => {
-            const loginPageId = document.querySelector('#login-page-id');
-            const registerPageId = document.querySelector('#register-page-id');
-            const mainPageId = document.querySelector('#main-page-id');
-            loginPageId.classList.remove('open');
-            registerPageId.classList.remove('open');
-            mainPageId.classList.remove('close');
-            loginPageId.classList.add('close');
-            registerPageId.classList.add('close');
-            mainPageId.style.display = 'grid';
             return response.json();
         })
         .then((resp) => {
+            validateUser(resp);
             console.log(resp);
         });
 });
