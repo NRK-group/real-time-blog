@@ -61,6 +61,13 @@ const CreateWebSocket = () => {
     };
 };
 
+const validateCoookie = () => {
+    fetch('/vadidate').then(async (response) => {
+        resp = await response.json();
+        if (resp.Msg === 'Login successful') validateUser(resp);
+    });
+};
+//
 const validateUser = (resp) => {
     if (resp.Msg === 'Login successful') {
         //Create the cookie when logged in#
