@@ -30,9 +30,9 @@ const checkRegisterData = (userData) => {
 };
 
 //
-const validateUser = (resp)=>{
-    if(resp.Msg === "Login successful"){
-        showMessages("Login successful")
+const validateUser = (resp) => {
+    if (resp.Msg === 'Login successful') {
+        showMessages('Login successful');
         const loginPageId = document.querySelector('#login-page-id');
         const registerPageId = document.querySelector('#register-page-id');
         const mainPageId = document.querySelector('#main-page-id');
@@ -42,10 +42,10 @@ const validateUser = (resp)=>{
         loginPageId.classList.add('close');
         registerPageId.classList.add('close');
         mainPageId.style.display = 'grid';
-    }else {
-        showMessages(resp.Msg)
+    } else {
+        showMessages(resp.Msg);
     }
-}
+};
 
 const getRegisterData = () => {
     const firstName = document.querySelector('#first-name-id');
@@ -143,7 +143,7 @@ loginBtn.addEventListener('click', (e) => {
             return response.json();
         })
         .then((resp) => {
-            validateUser(resp)
+            validateUser(resp);
             console.log(resp);
         });
 });
