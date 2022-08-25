@@ -31,6 +31,8 @@ const checkRegisterData = (userData) => {
 
 const validateUser = (resp) => {
     if (resp.Msg === 'Login successful') {
+        //Create the cookie when logged in#
+        CreateWebSocket();
         showMessages('Login successful');
         const loginPageId = document.querySelector('#login-page-id');
         const registerPageId = document.querySelector('#register-page-id');
