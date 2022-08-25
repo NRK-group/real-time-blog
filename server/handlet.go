@@ -228,14 +228,19 @@ func WsEndpoint(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("Problem upgrading", err)
 		log.Println()
 	}
-	// Store the new user in the Users map
+	// Get the userId from the cookie value
 	c, cookieErr := r.Cookie("session_token")
 	if cookieErr != nil {
 		fmt.Println("Error accessing cookie: ", cookieErr)
 	}
-
-	// Get the userId from the cookie value
+	
 	userIdVal := strings.Split(c.Value, "&")[0]
-	users[userIdVal] = ws
-	fmt.Println("CONNECTED to JS WebSocket")
+	
+	// Store the new user in the Users map
+	if _, exsists := users[userIdVal]; !exsists {
+		userIdVal := strings.Split(c.Value, "&")[0]
+		users[userIdVal] = ws
+		fmt.Println(userIdVal, " is connected")
+	}
+	go reader(ws)
 }

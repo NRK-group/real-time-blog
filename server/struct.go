@@ -102,3 +102,8 @@ type NewMessage struct {
 	ChatID string `json:"chatID"`
 	messageType int
 }
+
+type SendMessage struct {
+	Sender string `json:"senderID"`
+	Message string `json:"message"`
+}
