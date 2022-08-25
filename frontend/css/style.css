@@ -920,3 +920,35 @@ input[type='email']:focus {
     margin: auto;
     margin-top: 5vh;
 }
+.response-modal-container {
+    display: none;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100vw; /* Full width */
+    height: 100vh; /* Full height */
+    z-index: 1;
+    justify-content: center;
+    /* align-items: center; */
+}
+.response-modal-container::before {
+    content: '';
+    position: absolute;
+    background-color: black;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    left: 0px;
+    opacity: 0.5;
+}
+.response-container {
+    display: grid;
+    grid-template-rows: 2.1vh 10vh 7vh 7vh 27.9vh 7vh;
+    background-color: white;
+    min-width: 40vw;
+    z-index: 1;
+    margin: auto;
+    border-radius: 16px;
+    overflow: scroll;
+    padding: 2px;
+}
