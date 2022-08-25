@@ -25,6 +25,8 @@ func main() {
 	http.HandleFunc("/", database.Home)
 	http.HandleFunc("/register", database.Register)
 	http.HandleFunc("/login", database.Login)
+	http.HandleFunc("/ws", server.WsEndpoint)
+
 	http.HandleFunc("/vadidate", database.CheckCookie)
 	frontend := http.FileServer(http.Dir("./frontend"))
 	http.Handle("/frontend/", http.StripPrefix("/frontend/", frontend)) // handling the CSS
