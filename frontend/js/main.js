@@ -31,13 +31,13 @@ const checkRegisterData = (userData) => {
 
 let socket;
 const CreateWebSocket = () => {
-    console.log("Attempting to open!");
+    console.log('Attempting to open!');
     socket = new WebSocket('ws://localhost:8800/ws');
 };
 const validateUser = (resp) => {
     if (resp.Msg === 'Login successful') {
         //Create the cookie when logged in#
-        CreateWebSocket()
+        CreateWebSocket();
         showMessages('Login successful');
         const loginPageId = document.querySelector('#login-page-id');
         const registerPageId = document.querySelector('#register-page-id');

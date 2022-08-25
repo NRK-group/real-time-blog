@@ -94,5 +94,3 @@ type ReturnData struct {
 	Posts []Post
 	Msg   string
 }
-
-
