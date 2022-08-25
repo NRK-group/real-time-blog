@@ -30,9 +30,9 @@ const checkRegisterData = (userData) => {
 };
 
 //
-const validateUser = (resp)=>{
-    if(resp.Msg === "Login successful"){
-        showMessages("Login successful")
+const validateUser = (resp) => {
+    if (resp.Msg === 'Login successful') {
+        showMessages('Login successful');
         const loginPageId = document.querySelector('#login-page-id');
         const registerPageId = document.querySelector('#register-page-id');
         const mainPageId = document.querySelector('#main-page-id');
@@ -42,10 +42,10 @@ const validateUser = (resp)=>{
         loginPageId.classList.add('close');
         registerPageId.classList.add('close');
         mainPageId.style.display = 'grid';
-    }else {
-        showMessages(resp.Msg)
+    } else {
+        showMessages(resp.Msg);
     }
-}
+};
 
 const getRegisterData = () => {
     const firstName = document.querySelector('#first-name-id');
@@ -68,6 +68,25 @@ const getRegisterData = () => {
     };
     return [checkRegisterData(userData)[0], userData];
 };
+
+const ClearRegistrationFields = () => {
+    const firstName = document.querySelector('#first-name-id');
+    const nickname = document.querySelector('#nickname-id');
+    const lastName = document.querySelector('#last-name-id');
+    const age = document.querySelector('#age-id');
+    const gender = document.querySelector('#gender-id');
+    const email = document.querySelector('#email-id');
+    const password = document.querySelector('#password-id');
+    const confirmPassword = document.querySelector('#confirm-password-id');
+    firstName.value = '';
+    nickname.value = '';
+    lastName.value = '';
+    age.value = '';
+    gender.value = '';
+    email.value = '';
+    password.value = '';
+    confirmPassword.value = '';
+};
 const registerBtn = document.querySelector('#register-btn-id');
 registerBtn.addEventListener('click', (e) => {
     e.preventDefault();
@@ -87,6 +106,7 @@ registerBtn.addEventListener('click', (e) => {
             .then((resp) => {
                 showMessages(resp);
                 if (resp === 'Register successful') {
+                    ClearRegistrationFields();
                     setTimeout(() => {
                         const loginPageId =
                             document.querySelector('#login-page-id');
@@ -143,7 +163,7 @@ loginBtn.addEventListener('click', (e) => {
             return response.json();
         })
         .then((resp) => {
-            validateUser(resp)
+            validateUser(resp);
             console.log(resp);
         });
 });
