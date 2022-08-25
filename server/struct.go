@@ -28,17 +28,17 @@ type Session struct {
 	DateAndTime string
 }
 type Post struct {
-	PostID   string
-	UserID   string
-	Date     string
-	Time     string
-	Title    string
-	Content  string
-	Category string
-	ImgUrl   string
-	Comments []Comment
+	PostID       string
+	UserID       string
+	Date         string
+	Time         string
+	Title        string
+	Content      string
+	Category     string
+	ImgUrl       string
+	Comments     []Comment
 	NumOfComment int
-	Favorite Favorite
+	Favorite     Favorite
 }
 
 type Comment struct {
@@ -89,8 +89,10 @@ type UserLoginData struct {
 }
 
 type ReturnData struct {
-	User        User
-	Users        []User
-	Posts       []Post
-	Msg          string
+	User  User
+	Users []User
+	Posts []Post
+	Msg   string
 }
+
+
