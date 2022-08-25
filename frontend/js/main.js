@@ -176,3 +176,19 @@ const closeChat = () => {
     );
     chatModalContainer.style.display = 'none';
 };
+const openPostModal = (e) => {
+    console.log(e);
+    const postModalContainer = document.querySelector(
+        '#create-post-modal-container-id'
+    );
+    postModalContainer.style.display = 'flex';
+};
+const closeNewPost = () => {
+    const postModalContainer = document.querySelector(
+        '#create-post-modal-container-id'
+    );
+    postModalContainer.style.display = 'none';
+};
+const sendNewPost = () => {
+    closeNewPost();
+};
