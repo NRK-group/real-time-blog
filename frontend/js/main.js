@@ -58,11 +58,11 @@ const CreateWebSocket = () => {
         let cookie = getCookie('session_token');
         if (cookie == null) {
             console.log('No Cookie Found');
-            return
+            return;
         }
 
         console.log('Cookie = ', cookie);
-        socket.send(cookie)
+        socket.send(cookie);
     };
 };
 
@@ -368,3 +368,9 @@ for (let i = 0; i <= 100; i++) {
         '0'
     );
 }
+const closeResponseModal = () => {
+    const responseModal = document.querySelector(
+        '#response-modal-container-id'
+    );
+    responseModal.style.display = 'none';
+};
