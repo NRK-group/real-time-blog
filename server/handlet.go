@@ -21,19 +21,30 @@ func (forum *DB) CheckCookie(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if r.Method == "GET" {
-	c, err := r.Cookie("session_token")
-	co := []string{}
+		c, err := r.Cookie("session_token")
+		co := []string{}
 
-	if err != nil {
-		http.Error(w, "500 Internal error", http.StatusInternalServerError)
-		return
+		if err != nil {
+			http.Error(w, "500 Internal error", http.StatusInternalServerError)
+			return
 
-	} else {
-		if strings.Contains(c.String(), "&") {
-			co = strings.Split(c.Value, "&")
-		}
-		if !(forum.CheckSession(co[2])) {
-			page = ReturnData{User: forum.GetUser(""), Posts: forum.AllPost("", ""), Msg: "", Users: forum.GetAllUser()}
+		} else {
+			if strings.Contains(c.String(), "&") {
+				co = strings.Split(c.Value, "&")
+			}
+			if !(forum.CheckSession(co[2])) {
+				page = ReturnData{User: forum.GetUser(""), Posts: forum.AllPost("", ""), Msg: "", Users: forum.GetAllUser()}
+				marshallPage, err := json.Marshal(page)
+				if err != nil {
+					fmt.Println("Error marshalling the data: ", err)
+				}
+				w.Header().Set("Content-type", "application/text")
+				w.WriteHeader(http.StatusOK)
+				w.Write(marshallPage)
+				return
+
+			}
+			page = ReturnData{User: forum.GetUser(co[1]), Posts: forum.AllPost("", ""), Msg: "Login successful", Users: forum.GetAllUser()}
 			marshallPage, err := json.Marshal(page)
 			if err != nil {
 				fmt.Println("Error marshalling the data: ", err)
@@ -42,19 +53,8 @@ func (forum *DB) CheckCookie(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusOK)
 			w.Write(marshallPage)
 			return
-
 		}
-		page = ReturnData{User: forum.GetUser(co[1]), Posts: forum.AllPost("", ""), Msg: "Login successful", Users: forum.GetAllUser()}
-		marshallPage, err := json.Marshal(page)
-		if err != nil {
-			fmt.Println("Error marshalling the data: ", err)
-		}
-		w.Header().Set("Content-type", "application/text")
-		w.WriteHeader(http.StatusOK)
-		w.Write(marshallPage)
-		return
 	}
-}
 }
 
 func (forum *DB) Home(w http.ResponseWriter, r *http.Request) {
@@ -107,7 +107,7 @@ func (DB *DB) Register(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		//fmt.Print(userData) // this is the data that need to be inserted to the database.
+		// fmt.Print(userData) // this is the data that need to be inserted to the database.
 
 		// Check if the nickname is already in use
 		var allowNickname int
