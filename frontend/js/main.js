@@ -74,6 +74,22 @@ const validateCoookie = () => {
         }
     });
 };
+
+const Logout = () => {
+    fetch('/logout').then(async (response) => {
+        resp = await response.text();
+        showMessages(resp);
+        const loginPageId = document.querySelector('#login-page-id');
+        const registerPageId = document.querySelector('#register-page-id');
+        const mainPageId = document.querySelector('#main-page-id');
+        loginPageId.classList.remove('close');
+        registerPageId.classList.remove('close');
+        mainPageId.classList.remove('open');
+        loginPageId.classList.add('open');
+        registerPageId.classList.add('close');
+        mainPageId.style.display = 'grid';
+    });
+};
 //
 const validateUser = (resp) => {
     if (resp.Msg === 'Login successful') {
@@ -112,7 +128,7 @@ const ShowUsers = (Users) => {
 </div>` + users;
     });
     usersDiv.innerHTML = users;
-    usersDivTitle.innerText = `${Users.length} Active User`
+    usersDivTitle.innerText = `${Users.length} Active User`;
 };
 
 const getRegisterData = () => {
@@ -154,6 +170,12 @@ const ClearRegistrationFields = () => {
     email.value = '';
     password.value = '';
     confirmPassword.value = '';
+};
+
+const logoutBtn = document.getElementById('logout-btn');
+
+logoutBtn.onclick = () => {
+    Logout();
 };
 
 const registerBtn = document.querySelector('#register-btn-id');
