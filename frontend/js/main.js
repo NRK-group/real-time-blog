@@ -385,6 +385,12 @@ const openPostModal = (e) => {
     const postModalContainer = document.querySelector(
         '#create-post-modal-container-id'
     );
+    let postTitle = document.getElementById('new-post-title-id');
+    let postCategory = document.getElementById('new-post-category-id');
+    let postContent = document.getElementById('new-post-content-id');
+    postTitle.value = '';
+    postContent.value = '';
+    postCategory.value = '';
     postModalContainer.style.display = 'flex';
 };
 const closeNewPost = () => {
@@ -397,31 +403,49 @@ const sendNewPost = () => {
     let postTitle = document.getElementById('new-post-title-id').value;
     let postCategory = document.getElementById('new-post-category-id').value;
     let postContent = document.getElementById('new-post-content-id').value;
+    console.log(postContent !== 0, postContent);
+    if (
+        postTitle.length > 5 &&
+        postCategory.length !== 0 &&
+        postContent.length > 10
+    ) {
+        let newPost = {
+            postTitle: postTitle,
+            postCategory: postCategory,
+            postContent: postContent,
+        };
 
-    let newPost = {
-        postTitle: postTitle,
-        postCategory: postCategory,
-        postContent: postContent,
-    };
-
-    fetch('/post', {
-        method: 'POST',
-        headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(newPost),
-    })
-        .then((response) => {
-            return response.json();
+        fetch('/post', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(newPost),
         })
-        .then((resp) => {
-            console.log(resp);
-            showMessages(resp.Msg);
-            DisplayAllPost(resp.Posts);
-        });
-
-    closeNewPost();
+            .then((response) => {
+                return response.json();
+            })
+            .then((resp) => {
+                console.log(resp);
+                showMessages(resp.Msg);
+                DisplayAllPost(resp.Posts);
+            });
+        closeNewPost();
+        return;
+    }
+    if (postTitle.length <= 5) {
+        showMessages('Invalid length of title');
+        return;
+    }
+    if (postCategory.length === 0) {
+        showMessages('Choice category');
+        return;
+    }
+    if (postContent.length <= 10) {
+        showMessages('Invalid length of content');
+        return;
+    }
 };
 const openResponseModal = (e) => {
     // console.log(e);
@@ -519,29 +543,31 @@ const closeResponseModal = () => {
 const DisplayAllPost = (post) => {
     const allPostContainer = document.querySelector('#all-post-container-id');
     removeAllChildNodes(allPostContainer);
-    post.forEach(
-        ({
-            PostID,
-            Title,
-            ImgUrl,
-            UserID,
-            Date,
-            Category,
-            Content,
-            Favorite,
-        }) => {
-            allPostContainer.append(
-                CreatePost(
-                    PostID,
-                    Title,
-                    ImgUrl,
-                    UserID,
-                    Date,
-                    Category,
-                    Content,
-                    Favorite.React
-                )
-            );
-        }
-    );
+    if (post) {
+        post.forEach(
+            ({
+                PostID,
+                Title,
+                ImgUrl,
+                UserID,
+                Date,
+                Category,
+                Content,
+                Favorite,
+            }) => {
+                allPostContainer.append(
+                    CreatePost(
+                        PostID,
+                        Title,
+                        ImgUrl,
+                        UserID,
+                        Date,
+                        Category,
+                        Content,
+                        Favorite.React
+                    )
+                );
+            }
+        );
+    }
 };
