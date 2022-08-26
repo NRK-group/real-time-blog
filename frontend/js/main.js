@@ -48,6 +48,43 @@ function getCookie(name) {
     return null;
 }
 
+const DisplayMessage = (messageText, classType) => {
+    //Make the div that will hold everything
+    const MSG_HOLDER = document.createElement('div');
+    MSG_HOLDER.className = classType;
+    //Create the inside divs
+    const PROFILE_IMG = document.createElement('div');
+    PROFILE_IMG.className = 'user-image';
+
+    const MSG_CONTAINER = document.createElement('div');
+    MSG_CONTAINER.className = 'chat-content';
+    MSG_CONTAINER.innerHTML = messageText;
+
+    MSG_HOLDER.append(PROFILE_IMG, MSG_CONTAINER);
+    const CHAT_CONTENT_CONTAINER = document.querySelector(
+        '.chat-content-container'
+    );
+    CHAT_CONTENT_CONTAINER.append(MSG_HOLDER);
+    CHAT_CONTENT_CONTAINER.scroll({
+        top: CHAT_CONTENT_CONTAINER.scrollHeight,
+        behavior: 'smooth',
+    });
+    console.log('Message Added');
+};
+
+// ProccessMessage is a function that will display the message in the chat if the user has it open.
+const ProcessMessage = (message) => {
+    // Check if the chat modal is open and that the reciever id is the ID of the user who sent the message
+    const CHAT_MODAL_CONTAINER = document.querySelector(
+        '#chat-modal-container-id'
+    ), SEND_BTN = document.querySelector('.send-chat-btn');
+
+    if (CHAT_MODAL_CONTAINER.style.display === 'flex' && SEND_BTN.getAttribute("data-reciever-id") == message.senderID) {
+        //Display the message in the chat modal
+        DisplayMessage(message.message, "chat")
+    }
+}
+
 let socket;
 const CreateWebSocket = () => {
     console.log('Attempting to connect!');
@@ -65,7 +102,9 @@ const CreateWebSocket = () => {
         // socket.send(cookie);
     };
     socket.onmessage = (text) => {
-        console.log('message receieved: ', JSON.parse(text.data));
+        const MESSAGE_INFO = JSON.parse(text.data);
+        console.log('message receieved: ', MESSAGE_INFO);
+        ProcessMessage(MESSAGE_INFO);
     };
 };
 
@@ -293,6 +332,7 @@ const openChatModal = (e) => {
     const chatModalContainer = document.querySelector(
         '#chat-modal-container-id'
     );
+    console.log("Chat modal container === ",chatModalContainer)
     const RECIEVER_ID = e.getAttribute('data-user-id'); //data-user-id is the id of the user where we click on. This will be use to access the data on the database
     //when open a specific chat, we're going to get the chat data between the current user and the user tat they click
     chatModalContainer.style.display = 'flex';
@@ -319,6 +359,8 @@ const SendMessage = () => {
 
     if (MSG.trim().length !== 0) {
         socket.send(JSON.stringify(INFORMATION));
+        DisplayMessage(MSG, "chat sender");
+        TEXT_BOX.value = ""
         console.log('Message sent');
     }
 };
