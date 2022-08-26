@@ -241,6 +241,12 @@ func (forum *DB) Logout(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Fatal(err)
 		}
+
+		//Remove the user from ws connection map
+		if _ , exsists := users[res[0]]; exsists {
+			delete(users, res[0])
+			fmt.Println(res[0], " removed from users.")
+		}
 		// Set the new token as the users `session_token` cookie
 		http.SetCookie(w, &http.Cookie{
 			Name:    "session_token",
@@ -327,13 +333,10 @@ func WsEndpoint(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("Error accessing cookie: ", cookieErr)
 	}
 
-	userIdVal := strings.Split(c.Value, "&")[0]
-
 	// Store the new user in the Users map
-	if _, exsists := users[userIdVal]; !exsists {
-		userIdVal := strings.Split(c.Value, "&")[0]
-		users[userIdVal] = ws
-		fmt.Println(userIdVal, " is connected")
-	}
+
+	userIdVal := strings.Split(c.Value, "&")[0]
+	users[userIdVal] = ws
+	fmt.Println(userIdVal, " is connected.")
 	go reader(ws)
 }
