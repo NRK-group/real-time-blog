@@ -78,6 +78,22 @@ const validateCoookie = () => {
     });
 };
 
+const Logout = () => {
+    fetch('/logout').then(async (response) => {
+        resp = await response.text();
+        showMessages(resp);
+        const loginPageId = document.querySelector('#login-page-id');
+        const registerPageId = document.querySelector('#register-page-id');
+        const mainPageId = document.querySelector('#main-page-id');
+        loginPageId.classList.remove('close');
+        registerPageId.classList.remove('close');
+        mainPageId.classList.remove('open');
+        loginPageId.classList.add('open');
+        registerPageId.classList.add('close');
+        mainPageId.style.display = 'grid';
+    });
+};
+
 const validateUser = (resp) => {
     if (resp.Msg === 'Login successful') {
         //Create the cookie when logged in#
@@ -115,7 +131,7 @@ const ShowUsers = (Users) => {
 </div>` + users;
     });
     usersDiv.innerHTML = users;
-    usersDivTitle.innerText = `${Users.length} Active User`;
+    usersDivTitle.innerText = `${Users.length} Active User`;;
 };
 
 const getRegisterData = () => {
@@ -157,6 +173,12 @@ const ClearRegistrationFields = () => {
     email.value = '';
     password.value = '';
     confirmPassword.value = '';
+};
+
+const logoutBtn = document.getElementById('logout-btn');
+
+logoutBtn.onclick = () => {
+    Logout();
 };
 
 const registerBtn = document.querySelector('#register-btn-id');
@@ -319,7 +341,40 @@ const closeNewPost = () => {
     postModalContainer.style.display = 'none';
 };
 const sendNewPost = () => {
+    let postTitle = document.getElementById('new-post-title-id').value;
+    let postCategory = document.getElementById('new-post-category-id').value;
+    let postContent = document.getElementById('new-post-content-id').value;
+
+    let newPost = {
+        postTitle: postTitle,
+        postCategory: postCategory,
+        postContent: postContent,
+    };
+
+    fetch('/post', {
+        method: 'POST',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newPost),
+    })
+        .then((response) => {
+            return response.text();
+        })
+        .then((resp) => {
+            showMessages(resp);
+            console.log(resp);
+        });
+
     closeNewPost();
+};
+const openResponseModal = (e) => {
+    console.log(e);
+    const responseModal = document.querySelector(
+        '#response-modal-container-id'
+    );
+    responseModal.style.display = 'flex';
 };
 const CreatePost = (
     postId,
@@ -391,12 +446,14 @@ const CreatePost = (
     const responseIcon = document.createElement('span');
     responseIcon.className = 'response-icon';
     responseIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M256 32C114.6 32 .0272 125.1 .0272 240c0 49.63 21.35 94.98 56.97 130.7c-12.5 50.37-54.27 95.27-54.77 95.77c-2.25 2.25-2.875 5.734-1.5 8.734C1.979 478.2 4.75 480 8 480c66.25 0 115.1-31.76 140.6-51.39C181.2 440.9 217.6 448 256 448c141.4 0 255.1-93.13 255.1-208S397.4 32 256 32z"/></svg>`;
+    responseBtn.onclick = (e) => {
+        openResponseModal(e);
+    };
     responseBtn.append(responseIcon, 'Response');
     postButtons.append(favoriteBtn, responseBtn);
     postContainer.append(postTitle, postProfile, postContent, postButtons);
     const allPostContainer = document.querySelector('.all-post-container');
     allPostContainer.append(postContainer);
-    // console.log(postContainer);
 };
 // this part need to be automated to all the post
 for (let i = 0; i <= 100; i++) {
@@ -411,3 +468,9 @@ for (let i = 0; i <= 100; i++) {
         '0'
     );
 }
+const closeResponseModal = () => {
+    const responseModal = document.querySelector(
+        '#response-modal-container-id'
+    );
+    responseModal.style.display = 'none';
+};

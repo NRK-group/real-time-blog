@@ -96,14 +96,20 @@ type ReturnData struct {
 }
 
 type NewMessage struct {
-	Mesg   string `json:"message"`
-	UserID string `json:"userID"`
-	RecieverID string `json:"recieverID"`
-	ChatID string `json:"chatID"`
+	Mesg        string `json:"message"`
+	UserID      string `json:"userID"`
+	RecieverID  string `json:"recieverID"`
+	ChatID      string `json:"chatID"`
 	messageType int
 }
 
 type SendMessage struct {
 	Sender string `json:"senderID"`
 	Message string `json:"message"`
+}
+
+type PostData struct {
+	Title    string `json:"postTitle"`
+	Category string `json:"postCategory"`
+	Content  string `json:"postContent"`
 }
