@@ -76,14 +76,18 @@ const DisplayMessage = (messageText, classType) => {
 const ProcessMessage = (message) => {
     // Check if the chat modal is open and that the reciever id is the ID of the user who sent the message
     const CHAT_MODAL_CONTAINER = document.querySelector(
-        '#chat-modal-container-id'
-    ), SEND_BTN = document.querySelector('.send-chat-btn');
+            '#chat-modal-container-id'
+        ),
+        SEND_BTN = document.querySelector('.send-chat-btn');
 
-    if (CHAT_MODAL_CONTAINER.style.display === 'flex' && SEND_BTN.getAttribute("data-reciever-id") == message.senderID) {
+    if (
+        CHAT_MODAL_CONTAINER.style.display === 'flex' &&
+        SEND_BTN.getAttribute('data-reciever-id') == message.senderID
+    ) {
         //Display the message in the chat modal
-        DisplayMessage(message.message, "chat")
+        DisplayMessage(message.message, 'chat');
     }
-}
+};
 
 let socket;
 const CreateWebSocket = () => {
@@ -332,7 +336,7 @@ const openChatModal = (e) => {
     const chatModalContainer = document.querySelector(
         '#chat-modal-container-id'
     );
-    console.log("Chat modal container === ",chatModalContainer)
+    console.log('Chat modal container === ', chatModalContainer);
     const RECIEVER_ID = e.getAttribute('data-user-id'); //data-user-id is the id of the user where we click on. This will be use to access the data on the database
     //when open a specific chat, we're going to get the chat data between the current user and the user tat they click
     chatModalContainer.style.display = 'flex';
@@ -359,8 +363,8 @@ const SendMessage = () => {
 
     if (MSG.trim().length !== 0) {
         socket.send(JSON.stringify(INFORMATION));
-        DisplayMessage(MSG, "chat sender");
-        TEXT_BOX.value = ""
+        DisplayMessage(MSG, 'chat sender');
+        TEXT_BOX.value = '';
         console.log('Message sent');
     }
 };
