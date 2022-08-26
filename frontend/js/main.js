@@ -313,6 +313,32 @@ const closeNewPost = () => {
     postModalContainer.style.display = 'none';
 };
 const sendNewPost = () => {
+    let postTitle = document.getElementById('new-post-title-id').value;
+    let postCategory = document.getElementById('new-post-category-id').value;
+    let postContent = document.getElementById('new-post-content-id').value;
+
+    let newPost = {
+        postTitle: postTitle,
+        postCategory: postCategory,
+        postContent: postContent,
+    };
+
+    fetch('/post', {
+        method: 'POST',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newPost),
+    })
+        .then((response) => {
+            return response.text();
+        })
+        .then((resp) => {
+            showMessages(resp);
+            console.log(resp);
+        });
+
     closeNewPost();
 };
 const openResponseModal = (e) => {

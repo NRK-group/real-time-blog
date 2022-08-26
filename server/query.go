@@ -170,7 +170,7 @@ func (forum *DB) GetUser(uID string) User {
 func (forum *DB) GetAllUser(uID string) []User {
 	var user User
 	var users []User
-	if uID == ""{
+	if uID == "" {
 		return users
 	}
 	rows, err := forum.DB.Query("SELECT * FROM User WHERE NOT userID = '" + uID + "'")
@@ -326,4 +326,20 @@ func (forum *DB) GetFavoritesInPost(pID string) Favorite {
 		favorite.React = react
 	}
 	return favorite
+}
+
+// CreatePost
+// is a method of database that add post in it.
+func (forum *DB) CreatePost(userID, title, category, imgurl, content string) (string, error) {
+	date := time.Now().Format("2006 January 02")
+	time := time.Now()
+	postID := uuid.NewV4()
+	stmt, _ := forum.DB.Prepare(`
+		INSERT INTO Post (postID, userID, title, category, date, time, imgurl, content) values (?, ?, ?, ?, ?, ?, ?, ?)
+	`)
+	_, err := stmt.Exec(postID, userID, title, category, date, time, imgurl, content)
+	if err != nil {
+		return "", err
+	}
+	return postID.String(), nil
 }

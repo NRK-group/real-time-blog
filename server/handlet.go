@@ -213,7 +213,6 @@ func (forum *DB) Login(w http.ResponseWriter, r *http.Request) {
 	http.Error(w, "400 Bad Request.", http.StatusBadRequest)
 }
 
-
 func (forum *DB) Logout(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/logout" {
 		http.Error(w, "404 not found.", http.StatusNotFound)
@@ -253,6 +252,50 @@ func (forum *DB) Logout(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (forum *DB) Post(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/post" {
+		http.Error(w, "404 not found.", http.StatusNotFound)
+		return
+	}
+	c, err := r.Cookie("session_token")
+	if err != nil {
+		if err == http.ErrNoCookie {
+			// If the cookie is not set, return an unauthorized status
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+		// For any other type of error, return a bad request status
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	res := strings.Split(c.Value, "&")
+
+	if r.Method == "POST" {
+
+		var postData PostData
+		err := json.NewDecoder(r.Body).Decode(&postData)
+		if err != nil {
+			fmt.Print(err)
+			http.Error(w, "500 Internal Server Error.", http.StatusInternalServerError)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
+		if forum.CheckSession(res[2]) {
+
+			postID, err := forum.CreatePost(res[0], postData.Title, postData.Category, "imgurl", postData.Content)
+			fmt.Println(postID)
+			fmt.Println(err)
+
+			w.WriteHeader(http.StatusOK)
+			w.Header().Set("Content-type", "application/text")
+			w.Write([]byte("successful Post"))
+			return
+		}
+
+	}
+	http.Error(w, "400 Bad Request.", http.StatusBadRequest)
+}
 
 func SetupCorsResponse(w http.ResponseWriter, req *http.Request) {
 	(w).Header().Set("Access-Control-Allow-Origin", "*")
