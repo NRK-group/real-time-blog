@@ -50,9 +50,9 @@ function getCookie(name) {
 
 let socket;
 const CreateWebSocket = () => {
-    console.log('Attempting to open!');
-    let webSocket = new WebSocket('ws://localhost:8800/ws');
-    webSocket.onopen = () => {
+    console.log('Attempting to connect!');
+    socket = new WebSocket('ws://localhost:8800/ws');
+    socket.onopen = () => {
         console.log('Websocket Connected');
         //Access The cookie value
         let cookie = getCookie('session_token');
@@ -62,8 +62,11 @@ const CreateWebSocket = () => {
         }
 
         console.log('Cookie = ', cookie);
-        socket.send(cookie);
+        // socket.send(cookie);
     };
+    socket.onmessage = (text) => {
+        console.log("message receieved: ", JSON.parse(text.data))
+    }
 };
 
 const validateCoookie = () => {
@@ -90,7 +93,7 @@ const Logout = () => {
         mainPageId.style.display = 'grid';
     });
 };
-//
+
 const validateUser = (resp) => {
     if (resp.Msg === 'Login successful') {
         //Create the cookie when logged in#
@@ -128,7 +131,7 @@ const ShowUsers = (Users) => {
 </div>` + users;
     });
     usersDiv.innerHTML = users;
-    usersDivTitle.innerText = `${Users.length} Active User`;
+    usersDivTitle.innerText = `${Users.length} Active User`;;
 };
 
 const getRegisterData = () => {
@@ -284,14 +287,38 @@ function revealPasswordBtn(id, className) {
     unSet(inputFields, revealBtn);
 }
 const openChatModal = (e) => {
-    console.log(e);
+    // console.log(e);
     const chatModalContainer = document.querySelector(
         '#chat-modal-container-id'
     );
-    const userID = e.getAttribute('data-user-id'); //data-user-id is the id of the user where we click on. This will be use to access the data on the database
+    const RECIEVER_ID = e.getAttribute('data-user-id'); //data-user-id is the id of the user where we click on. This will be use to access the data on the database
     //when open a specific chat, we're going to get the chat data between the current user and the user tat they click
     chatModalContainer.style.display = 'flex';
-    console.log(userID);
+    console.log(RECIEVER_ID);
+    //Add the data to the send btn
+    const SEND_BTN = document.querySelector('.send-chat-btn');
+    // const INFO_DIV = document.querySelector('.')
+    SEND_BTN.setAttribute('data-reciever-id', RECIEVER_ID);
+};
+
+const SendMessage = () => {
+    //Get the message from the text box
+    const TEXT_BOX = document.querySelector('.chat-input-box');
+    const MSG = TEXT_BOX.value
+    //Get information using the send btns attributes
+    const SEND_BTN = document.querySelector('.send-chat-btn');
+    const SEND_TO = SEND_BTN.getAttribute('data-reciever-id');
+    const SEND_FROM = getCookie("session_token").split("&")[0]
+    const INFORMATION = {
+        message: MSG,
+        userID: SEND_FROM,
+        recieverID: SEND_TO,
+    };
+
+    if (MSG.trim().length !== 0) {
+        socket.send(JSON.stringify(INFORMATION))
+        console.log("Message sent")
+    }
 };
 const closeChat = () => {
     const chatModalContainer = document.querySelector(
@@ -299,6 +326,7 @@ const closeChat = () => {
     );
     chatModalContainer.style.display = 'none';
 };
+
 const openPostModal = (e) => {
     console.log(e);
     const postModalContainer = document.querySelector(

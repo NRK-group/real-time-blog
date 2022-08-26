@@ -103,6 +103,11 @@ type NewMessage struct {
 	messageType int
 }
 
+type SendMessage struct {
+	Sender string `json:"senderID"`
+	Message string `json:"message"`
+}
+
 type PostData struct {
 	Title    string `json:"postTitle"`
 	Category string `json:"postCategory"`
