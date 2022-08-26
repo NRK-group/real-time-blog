@@ -300,7 +300,7 @@ func (forum *DB) GetComments(pID string) []Comment {
 }
 
 func (forum *DB) GetFavoritesInPost(pID string) Favorite {
-	rows, err := forum.DB.Query("SELECT favoriteID, postID, userID, react FROM Reaction WHERE postID = '" + pID + "'")
+	rows, err := forum.DB.Query("SELECT favoriteID, postID, userID, react FROM Favorite WHERE postID = '" + pID + "'")
 	var favorite Favorite
 
 	if err != nil {
