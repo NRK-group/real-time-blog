@@ -74,16 +74,27 @@ const DisplayMessage = (messageText, classType) => {
 
 // ProccessMessage is a function that will display the message in the chat if the user has it open.
 const ProcessMessage = (message) => {
-    // Check if the chat modal is open and that the reciever id is the ID of the user who sent the message
     const CHAT_MODAL_CONTAINER = document.querySelector(
             '#chat-modal-container-id'
         ),
         SEND_BTN = document.querySelector('.send-chat-btn');
+    // Check if the chat modal is open and that the reciever id is the ID of the user who sent the message
 
     if (
         CHAT_MODAL_CONTAINER.style.display === 'flex' &&
         SEND_BTN.getAttribute('data-reciever-id') == message.senderID
     ) {
+        if (message.message === ' ') {
+            {
+                console.log('typing');
+                window.alert('This user is typing');
+                return;
+            }
+        }
+        if (message.message === '  ') {
+            window.alert('This user has stopped typing!!!!!!!');
+            return;
+        }
         //Display the message in the chat modal
         DisplayMessage(message.message, 'chat');
     }
@@ -139,6 +150,44 @@ const Logout = () => {
         registerPageId.classList.add('close');
         mainPageId.style.display = 'grid';
     });
+};
+
+let debounce;
+
+const Debounce = (callback, time) => {
+    window.clearTimeout(debounce);
+    debounce = window.setTimeout(callback, time);
+};
+
+const TypingMessage = (val) => {
+    const USER_ID = getCookie('session_token').split('&')[0];
+    const RECIEVER = document
+        .querySelector('.send-chat-btn')
+        .getAttribute('data-reciever-id');
+
+    return JSON.stringify({
+        message: val,
+        userID: USER_ID,
+        recieverID: RECIEVER,
+    });
+};
+
+let typing;
+
+const StoppedTyping = () => {
+    socket.send(TypingMessage('  '));
+    typing = false;
+};
+const IsTyping = () => {
+    //Send typing message when they start
+    if (!typing) {
+        socket.send(TypingMessage(' '));
+        typing = true;
+    }
+
+    Debounce(StoppedTyping, 2500);
+
+    // socket.send(JSON.stringify(TYPING))
 };
 
 const validateUser = (resp) => {

@@ -776,8 +776,9 @@ input[type='email']:focus {
     width: 100%;
     display: flex;
     margin: 20px 0 0 0;
-    overflow: scroll;
+    overflow-y: scroll;
     border-bottom: 1px solid #00000020;
+    padding: 1%;
 }
 .chat-content {
     background-color: white;

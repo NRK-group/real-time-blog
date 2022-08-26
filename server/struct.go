@@ -113,3 +113,10 @@ type PostData struct {
 	Category string `json:"postCategory"`
 	Content  string `json:"postContent"`
 }
+
+type CheckTyping struct {
+	Typer string `json:"typerID"`
+	Reciever string `json:"recieverID"`
+	Typing string `json:"value"`
+
+}
