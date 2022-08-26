@@ -198,17 +198,22 @@ func (forum *DB) Login(w http.ResponseWriter, r *http.Request) {
 			Value:   loginResp,
 			Expires: time.Now().Add(24 * time.Hour),
 		})
+
 		userid := strings.Split(loginResp, "&")[0]
+
 		page = ReturnData{User: forum.GetUser(userid), Posts: forum.AllPost("", ""), Msg: "Login successful", Users: forum.GetAllUser(userid)}
 		marshallPage, err := json.Marshal(page)
 		if err != nil {
 			fmt.Println("Error marshalling the data: ", err)
 		}
+
 		w.Header().Set("Content-type", "application/text")
 		w.WriteHeader(http.StatusOK)
 		w.Write(marshallPage)
+
 		return
 	}
+
 	fmt.Println("Error in login handler")
 	http.Error(w, "400 Bad Request.", http.StatusBadRequest)
 }
