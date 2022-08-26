@@ -65,8 +65,8 @@ const CreateWebSocket = () => {
         // socket.send(cookie);
     };
     socket.onmessage = (text) => {
-        console.log("message receieved: ", JSON.parse(text.data))
-    }
+        console.log('message receieved: ', JSON.parse(text.data));
+    };
 };
 
 const validateCoookie = () => {
@@ -115,23 +115,25 @@ const validateUser = (resp) => {
 };
 
 const ShowUsers = (Users) => {
-    let usersDiv = document.getElementById('forum-users-container');
-    let usersDivTitle = document.getElementById('forum-users-title');
-    let users = '';
-    Users.forEach((item, index) => {
-        users =
-            `    <div
-    key=${index}
-    class="forum-user"
-    data-user-id=${item.UserID}
-    onclick="openChatModal(this)"
->
-    <div class="user-image"></div>
-    <div class="username">@${item.Nickname}</div>
-</div>` + users;
-    });
-    usersDiv.innerHTML = users;
-    usersDivTitle.innerText = `${Users.length} Active User`;;
+    if (Users) {
+        let usersDiv = document.getElementById('forum-users-container');
+        let usersDivTitle = document.getElementById('forum-users-title');
+        let users = '';
+        Users.forEach((item, index) => {
+            users =
+                `<div
+                    key=${index}
+                    class="forum-user"
+                    data-user-id=${item.UserID}
+                    onclick="openChatModal(this)"
+                >
+                <div class="user-image"></div>
+                <div class="username">@${item.Nickname}</div>
+                </div>` + users;
+        });
+        usersDiv.innerHTML = users;
+        usersDivTitle.innerText = `${Users.length} Active User`;
+    }
 };
 
 const getRegisterData = () => {
@@ -304,11 +306,11 @@ const openChatModal = (e) => {
 const SendMessage = () => {
     //Get the message from the text box
     const TEXT_BOX = document.querySelector('.chat-input-box');
-    const MSG = TEXT_BOX.value
+    const MSG = TEXT_BOX.value;
     //Get information using the send btns attributes
     const SEND_BTN = document.querySelector('.send-chat-btn');
     const SEND_TO = SEND_BTN.getAttribute('data-reciever-id');
-    const SEND_FROM = getCookie("session_token").split("&")[0]
+    const SEND_FROM = getCookie('session_token').split('&')[0];
     const INFORMATION = {
         message: MSG,
         userID: SEND_FROM,
@@ -316,8 +318,8 @@ const SendMessage = () => {
     };
 
     if (MSG.trim().length !== 0) {
-        socket.send(JSON.stringify(INFORMATION))
-        console.log("Message sent")
+        socket.send(JSON.stringify(INFORMATION));
+        console.log('Message sent');
     }
 };
 const closeChat = () => {
