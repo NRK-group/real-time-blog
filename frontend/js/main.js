@@ -77,7 +77,11 @@ const validateCoookie = () => {
         }
     });
 };
-
+const removeAllChildNodes = (parent) => {
+    while (parent.firstChild) {
+        parent.removeChild(parent.firstChild);
+    }
+};
 const Logout = () => {
     fetch('/logout').then(async (response) => {
         resp = await response.text();
@@ -100,6 +104,7 @@ const validateUser = (resp) => {
         CreateWebSocket();
         showMessages('Login successful');
         ShowUsers(resp.Users);
+        DisplayAllPost(resp.Posts);
         const loginPageId = document.querySelector('#login-page-id');
         const registerPageId = document.querySelector('#register-page-id');
         const mainPageId = document.querySelector('#main-page-id');
@@ -261,7 +266,7 @@ loginBtn.addEventListener('click', (e) => {
         })
         .then((resp) => {
             validateUser(resp);
-            console.log(resp);
+            // console.log(resp, '---------------------');
         });
 });
 
@@ -296,7 +301,7 @@ const openChatModal = (e) => {
     const RECIEVER_ID = e.getAttribute('data-user-id'); //data-user-id is the id of the user where we click on. This will be use to access the data on the database
     //when open a specific chat, we're going to get the chat data between the current user and the user tat they click
     chatModalContainer.style.display = 'flex';
-    console.log(RECIEVER_ID);
+    // console.log(RECIEVER_ID);
     //Add the data to the send btn
     const SEND_BTN = document.querySelector('.send-chat-btn');
     // const INFO_DIV = document.querySelector('.')
@@ -319,7 +324,7 @@ const SendMessage = () => {
 
     if (MSG.trim().length !== 0) {
         socket.send(JSON.stringify(INFORMATION));
-        console.log('Message sent');
+        // console.log('Message sent');
     }
 };
 const closeChat = () => {
@@ -330,7 +335,7 @@ const closeChat = () => {
 };
 
 const openPostModal = (e) => {
-    console.log(e);
+    // console.log(e);
     const postModalContainer = document.querySelector(
         '#create-post-modal-container-id'
     );
@@ -362,17 +367,18 @@ const sendNewPost = () => {
         body: JSON.stringify(newPost),
     })
         .then((response) => {
-            return response.text();
+            return response.json();
         })
         .then((resp) => {
-            showMessages(resp);
             console.log(resp);
+            showMessages(resp.Msg);
+            DisplayAllPost(resp.Posts);
         });
 
     closeNewPost();
 };
 const openResponseModal = (e) => {
-    console.log(e);
+    // console.log(e);
     const responseModal = document.querySelector(
         '#response-modal-container-id'
     );
@@ -412,21 +418,21 @@ const CreatePost = (
     span.append(username, postCreated);
     postUserProfile.append(userImage, span);
     const postCategory = document.createElement('div');
-    if (postCategoryValue === 'GoLang') {
+    if (postCategoryValue === 'golang') {
         postCategory.classList.add(
             'post-category',
             'golang',
             'golang-category'
         );
     }
-    if (postCategoryValue === 'JavaScript') {
+    if (postCategoryValue === 'javascript') {
         postCategory.classList.add(
             'post-category',
             'javascript',
             'javascript-category'
         );
     }
-    if (postCategoryValue === 'Rust') {
+    if (postCategoryValue === 'rust') {
         postCategory.classList.add('post-category', 'rust', 'rust-category');
     }
     postCategory.textContent = postCategoryValue;
@@ -454,25 +460,42 @@ const CreatePost = (
     responseBtn.append(responseIcon, 'Response');
     postButtons.append(favoriteBtn, responseBtn);
     postContainer.append(postTitle, postProfile, postContent, postButtons);
-    const allPostContainer = document.querySelector('.all-post-container');
-    allPostContainer.append(postContainer);
+    return postContainer;
 };
 // this part need to be automated to all the post
-for (let i = 0; i <= 100; i++) {
-    CreatePost(
-        i,
-        'GoLang',
-        '',
-        'Firstname LastName',
-        'January 20, 2022',
-        'JavaScript',
-        'hello',
-        '0'
-    );
-}
+
 const closeResponseModal = () => {
     const responseModal = document.querySelector(
         '#response-modal-container-id'
     );
     responseModal.style.display = 'none';
+};
+const DisplayAllPost = (post) => {
+    const allPostContainer = document.querySelector('#all-post-container-id');
+    removeAllChildNodes(allPostContainer);
+    post.forEach(
+        ({
+            PostID,
+            Title,
+            ImgUrl,
+            UserID,
+            Date,
+            Category,
+            Content,
+            Favorite,
+        }) => {
+            allPostContainer.append(
+                CreatePost(
+                    PostID,
+                    Title,
+                    ImgUrl,
+                    UserID,
+                    Date,
+                    Category,
+                    Content,
+                    Favorite.React
+                )
+            );
+        }
+    );
 };
