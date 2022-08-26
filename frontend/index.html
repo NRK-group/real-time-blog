@@ -379,7 +379,8 @@
                     </div>
                 </div>
                 <div class="chat-input-container">
-                    <textarea class="chat-input-box"></textarea>
+                    <div class="user-typing"></div>
+                    <textarea class="chat-input-box" onkeydown="IsTyping()"></textarea>
                     <div
                         class="send-chat-btn"
                         tabindex="1"
