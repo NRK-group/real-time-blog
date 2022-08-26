@@ -104,7 +104,7 @@ type NewMessage struct {
 }
 
 type SendMessage struct {
-	Sender string `json:"senderID"`
+	Sender  string `json:"senderID"`
 	Message string `json:"message"`
 }
 
