@@ -291,10 +291,14 @@ func (forum *DB) Post(w http.ResponseWriter, r *http.Request) {
 			postID, err := forum.CreatePost(res[0], postData.Title, postData.Category, "imgurl", postData.Content)
 			fmt.Println(postID)
 			fmt.Println(err)
-
+			page = ReturnData{Posts: forum.AllPost("", ""), Msg: "successful Post"}
+			marshallPage, err := json.Marshal(page)
+			if err != nil {
+				fmt.Println("Error marshalling the data: ", err)
+			}
 			w.WriteHeader(http.StatusOK)
-			w.Header().Set("Content-type", "application/text")
-			w.Write([]byte("successful Post"))
+			w.Header().Set("Content-type", "application/json")
+			w.Write(marshallPage)
 			return
 		}
 
