@@ -72,6 +72,24 @@ const DisplayMessage = (messageText, classType) => {
     console.log('Message Added');
 };
 
+// let ;
+let typing, debounce;
+
+const StoppedTyping = () => {
+    TYPING_MSG = document
+        .querySelector('.fa-message')
+        .classList.remove('animate-typing');
+    typing = false;
+    console.log('TYPING STOPPED AND typing = ', typing);
+};
+
+const Debounce = (callback, time) => {
+    window.clearTimeout(debounce);
+    debounce = window.setTimeout(callback, time);
+};
+
+let allUsers
+
 // ProccessMessage is a function that will display the message in the chat if the user has it open.
 const ProcessMessage = (message) => {
     const CHAT_MODAL_CONTAINER = document.querySelector(
@@ -84,19 +102,30 @@ const ProcessMessage = (message) => {
         CHAT_MODAL_CONTAINER.style.display === 'flex' &&
         SEND_BTN.getAttribute('data-reciever-id') == message.senderID
     ) {
+        const TYPING_MSG = document.querySelector('.fa-message');
         if (message.message === ' ') {
-            {
-                console.log('typing');
-                window.alert('This user is typing');
-                return;
+            { 
+                let username;
+                for (let i = 0; i < allUsers.length; i++) {
+                    if (allUsers[i].UserID === message.senderID) {
+                        username = allUsers[i].Nickname;
+                    }
+                }
+                //User has started typing
+                TYPING_MSG.innerHTML = `${username} Is Typing ...`;
+                TYPING_MSG.classList.add('animate-typing');
+                Debounce(StoppedTyping, 1750);
+                // return;
             }
+        } else {
+            DisplayMessage(message.message, 'chat');
         }
-        if (message.message === '  ') {
-            window.alert('This user has stopped typing!!!!!!!');
-            return;
-        }
+        // if (message.message === '  ') {
+        //     //user has stopped typing
+        //     TYPING_MSG.classList.remove('animate-typing');
+        //     return;
+        // }
         //Display the message in the chat modal
-        DisplayMessage(message.message, 'chat');
     }
 };
 
@@ -152,13 +181,6 @@ const Logout = () => {
     });
 };
 
-let debounce;
-
-const Debounce = (callback, time) => {
-    window.clearTimeout(debounce);
-    debounce = window.setTimeout(callback, time);
-};
-
 const TypingMessage = (val) => {
     const USER_ID = getCookie('session_token').split('&')[0];
     const RECIEVER = document
@@ -172,20 +194,13 @@ const TypingMessage = (val) => {
     });
 };
 
-let typing;
-
-const StoppedTyping = () => {
-    socket.send(TypingMessage('  '));
-    typing = false;
-};
 const IsTyping = () => {
     //Send typing message when they start
-    if (!typing) {
-        socket.send(TypingMessage(' '));
-        typing = true;
-    }
-
-    Debounce(StoppedTyping, 2500);
+    console.log(typing);
+    // if (!typing) {
+    socket.send(TypingMessage(' '));
+    typing = true;
+    // }
 
     // socket.send(JSON.stringify(TYPING))
 };
@@ -196,6 +211,8 @@ const validateUser = (resp) => {
         CreateWebSocket();
         showMessages('Login successful');
         ShowUsers(resp.Users);
+        allUsers = resp.Users
+        console.log("All Users -> ", allUsers)
         DisplayAllPost(resp.Posts);
         const loginPageId = document.querySelector('#login-page-id');
         const registerPageId = document.querySelector('#register-page-id');
@@ -233,6 +250,16 @@ const ShowUsers = (Users) => {
     }
 };
 
+const CheckRequirements = (userInfo) => {
+    //Check the username is between 3 and 11
+    if (userInfo.nickname.length < 3 || userInfo.nickname.length > 11)
+        return 'Nicknames must be 3-11 characters';
+    if (userInfo.age > 115) return 'Max age is 115';
+    if (userInfo.confirmPassword != userInfo.password)
+        return "The passwords don't match";
+    return '';
+};
+
 const getRegisterData = () => {
     const firstName = document.querySelector('#first-name-id');
     const nickname = document.querySelector('#nickname-id');
@@ -252,7 +279,13 @@ const getRegisterData = () => {
         password: password.value,
         confirmPassword: confirmPassword.value,
     };
-    return [checkRegisterData(userData)[0], userData];
+    const RESULT = [checkRegisterData(userData)[0], userData];
+    if (!RESULT) return;
+    if (CheckRequirements(userData) != '') {
+        return [false, showMessages(CheckRequirements(userData))];
+    }
+
+    return RESULT;
 };
 
 const ClearRegistrationFields = () => {
@@ -427,6 +460,8 @@ const closeChat = () => {
         '#chat-modal-container-id'
     );
     chatModalContainer.style.display = 'none';
+    //clear the text box
+    document.querySelector('.chat-input-box').value = '';
 };
 
 const openPostModal = (e) => {
