@@ -323,13 +323,10 @@ func WsEndpoint(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("Error accessing cookie: ", cookieErr)
 	}
 
-	userIdVal := strings.Split(c.Value, "&")[0]
-
 	// Store the new user in the Users map
-	if _, exsists := users[userIdVal]; !exsists {
-		userIdVal := strings.Split(c.Value, "&")[0]
-		users[userIdVal] = ws
-		fmt.Println(userIdVal, " is connected")
-	}
+
+	userIdVal := strings.Split(c.Value, "&")[0]
+	users[userIdVal] = ws
+	fmt.Println(userIdVal, " is connected. Conn == ", ws)
 	go reader(ws)
 }
