@@ -487,7 +487,6 @@ const sendNewPost = () => {
     let postTitle = document.getElementById('new-post-title-id').value;
     let postCategory = document.getElementById('new-post-category-id').value;
     let postContent = document.getElementById('new-post-content-id').value;
-    console.log(postContent !== 0, postContent);
     if (
         postTitle.length > 5 &&
         postCategory.length !== 0 &&
@@ -625,9 +624,11 @@ const closeResponseModal = () => {
     responseModal.style.display = 'none';
 };
 const DisplayAllPost = (post) => {
-    const allPostContainer = document.querySelector('#all-post-container-id');
-    removeAllChildNodes(allPostContainer);
     if (post) {
+        const allPostContainer = document.querySelector(
+            '#all-post-container-id'
+        );
+        removeAllChildNodes(allPostContainer);
         post.forEach(
             ({
                 PostID,
