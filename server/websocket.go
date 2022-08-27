@@ -59,7 +59,7 @@ func SendMsgs() {
 				// fmt.Println("Attempting to send: ", msg)
 				// Add consition to check the user exsists
 				if _, valid := users[msg.RecieverID]; valid {
-					sendMess := SendMessage{Sender: msg.UserID, Message: msg.Mesg}
+					sendMess := SendMessage{Sender: msg.UserID, Message: msg.Mesg, Date: msg.Date}
 					// fmt.Println("SENDING BACK", sendMess)
 					res, marshErr := json.Marshal(sendMess)
 					if marshErr != nil {

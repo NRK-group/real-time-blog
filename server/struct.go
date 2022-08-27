@@ -100,12 +100,14 @@ type NewMessage struct {
 	UserID      string `json:"userID"`
 	RecieverID  string `json:"recieverID"`
 	ChatID      string `json:"chatID"`
+	Date        string `json:"date"`
 	messageType int
 }
 
 type SendMessage struct {
 	Sender  string `json:"senderID"`
 	Message string `json:"message"`
+	Date    string `json:"date"`
 }
 
 type PostData struct {
@@ -115,8 +117,7 @@ type PostData struct {
 }
 
 type CheckTyping struct {
-	Typer string `json:"typerID"`
+	Typer    string `json:"typerID"`
 	Reciever string `json:"recieverID"`
-	Typing string `json:"value"`
-
+	Typing   string `json:"value"`
 }

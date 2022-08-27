@@ -48,7 +48,7 @@ function getCookie(name) {
     return null;
 }
 
-const DisplayMessage = (messageText, classType) => {
+const DisplayMessage = (messageText, classType, sentTime) => {
     //Make the div that will hold everything
     const MSG_HOLDER = document.createElement('div');
     MSG_HOLDER.className = classType;
@@ -58,8 +58,18 @@ const DisplayMessage = (messageText, classType) => {
 
     const MSG_CONTAINER = document.createElement('div');
     MSG_CONTAINER.className = 'chat-content';
-    MSG_CONTAINER.innerHTML = messageText;
-
+    //Create a p for the message text
+    const TEXT = document.createElement('p')
+    TEXT.innerHTML = messageText
+    MSG_CONTAINER.append(TEXT) 
+    //Create a div for the date
+    const DATE = document.createElement('div');
+    DATE.innerHTML = `${sentTime[2]} ${sentTime[1]} ${
+        sentTime[3]
+    } ${sentTime[4].slice(0, -3)}`;
+    DATE.classList.add('message-date');
+    MSG_CONTAINER.append(DATE)
+    
     MSG_HOLDER.append(PROFILE_IMG, MSG_CONTAINER);
     const CHAT_CONTENT_CONTAINER = document.querySelector(
         '.chat-content-container'
@@ -88,7 +98,7 @@ const Debounce = (callback, time) => {
     debounce = window.setTimeout(callback, time);
 };
 
-let allUsers
+let allUsers;
 
 // ProccessMessage is a function that will display the message in the chat if the user has it open.
 const ProcessMessage = (message) => {
@@ -104,7 +114,7 @@ const ProcessMessage = (message) => {
     ) {
         const TYPING_MSG = document.querySelector('.fa-message');
         if (message.message === ' ') {
-            { 
+            {
                 let username;
                 for (let i = 0; i < allUsers.length; i++) {
                     if (allUsers[i].UserID === message.senderID) {
@@ -118,7 +128,8 @@ const ProcessMessage = (message) => {
                 // return;
             }
         } else {
-            DisplayMessage(message.message, 'chat');
+            console.log("new messsage: ", message)
+            DisplayMessage(message.message, 'chat', message.date.split(' '));
         }
         // if (message.message === '  ') {
         //     //user has stopped typing
@@ -211,8 +222,8 @@ const validateUser = (resp) => {
         CreateWebSocket();
         showMessages('Login successful');
         ShowUsers(resp.Users);
-        allUsers = resp.Users
-        console.log("All Users -> ", allUsers)
+        allUsers = resp.Users;
+        console.log('All Users -> ', allUsers);
         DisplayAllPost(resp.Posts);
         const loginPageId = document.querySelector('#login-page-id');
         const registerPageId = document.querySelector('#register-page-id');
@@ -442,15 +453,19 @@ const SendMessage = () => {
     const SEND_BTN = document.querySelector('.send-chat-btn');
     const SEND_TO = SEND_BTN.getAttribute('data-reciever-id');
     const SEND_FROM = getCookie('session_token').split('&')[0];
+    const SENT_TIME = new Date();
+    const SORTED = SENT_TIME.toString();
     const INFORMATION = {
         message: MSG,
         userID: SEND_FROM,
         recieverID: SEND_TO,
+        date: SORTED
     };
 
     if (MSG.trim().length !== 0) {
         socket.send(JSON.stringify(INFORMATION));
-        DisplayMessage(MSG, 'chat sender');
+        DisplayMessage(MSG, 'chat sender', SORTED.split(' '));
+        console.log(SORTED[1], SORTED[2], SORTED[3], SORTED[4]);
         TEXT_BOX.value = '';
         console.log('Message sent');
     }

@@ -784,6 +784,7 @@ input[type='email']:focus {
     padding: 1%;
 }
 .chat-content {
+    display: block;
     background-color: white;
     min-width: 80px;
     min-height: 10px;
@@ -1108,4 +1109,9 @@ input[type='email']:focus {
         opacity: 1;
         color: #4b4b4b;
     }
+}
+
+.message-date {
+    width: 100%;
+    font-size: 60%;
 }
