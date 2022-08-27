@@ -59,17 +59,17 @@ const DisplayMessage = (messageText, classType, sentTime) => {
     const MSG_CONTAINER = document.createElement('div');
     MSG_CONTAINER.className = 'chat-content';
     //Create a p for the message text
-    const TEXT = document.createElement('p')
-    TEXT.innerHTML = messageText
-    MSG_CONTAINER.append(TEXT) 
+    const TEXT = document.createElement('p');
+    TEXT.innerHTML = messageText;
+    MSG_CONTAINER.append(TEXT);
     //Create a div for the date
     const DATE = document.createElement('div');
     DATE.innerHTML = `${sentTime[2]} ${sentTime[1]} ${
         sentTime[3]
     } ${sentTime[4].slice(0, -3)}`;
     DATE.classList.add('message-date');
-    MSG_CONTAINER.append(DATE)
-    
+    MSG_CONTAINER.append(DATE);
+
     MSG_HOLDER.append(PROFILE_IMG, MSG_CONTAINER);
     const CHAT_CONTENT_CONTAINER = document.querySelector(
         '.chat-content-container'
@@ -79,7 +79,6 @@ const DisplayMessage = (messageText, classType, sentTime) => {
         top: CHAT_CONTENT_CONTAINER.scrollHeight,
         behavior: 'smooth',
     });
-    console.log('Message Added');
 };
 
 // let ;
@@ -90,7 +89,6 @@ const StoppedTyping = () => {
         .querySelector('.fa-message')
         .classList.remove('animate-typing');
     typing = false;
-    console.log('TYPING STOPPED AND typing = ', typing);
 };
 
 const Debounce = (callback, time) => {
@@ -125,40 +123,27 @@ const ProcessMessage = (message) => {
                 TYPING_MSG.innerHTML = `${username} Is Typing ...`;
                 TYPING_MSG.classList.add('animate-typing');
                 Debounce(StoppedTyping, 1750);
-                // return;
             }
         } else {
-            console.log("new messsage: ", message)
             DisplayMessage(message.message, 'chat', message.date.split(' '));
         }
-        // if (message.message === '  ') {
-        //     //user has stopped typing
-        //     TYPING_MSG.classList.remove('animate-typing');
-        //     return;
-        // }
-        //Display the message in the chat modal
     }
 };
 
 let socket;
 const CreateWebSocket = () => {
-    console.log('Attempting to connect!');
     socket = new WebSocket('ws://localhost:8800/ws');
     socket.onopen = () => {
-        console.log('Websocket Connected');
         //Access The cookie value
         let cookie = getCookie('session_token');
         if (cookie == null) {
-            console.log('No Cookie Found');
             return;
         }
 
-        console.log('Cookie = ', cookie);
         // socket.send(cookie);
     };
     socket.onmessage = (text) => {
         const MESSAGE_INFO = JSON.parse(text.data);
-        console.log('message receieved: ', MESSAGE_INFO);
         ProcessMessage(MESSAGE_INFO);
     };
 };
@@ -207,13 +192,7 @@ const TypingMessage = (val) => {
 
 const IsTyping = () => {
     //Send typing message when they start
-    console.log(typing);
-    // if (!typing) {
     socket.send(TypingMessage(' '));
-    typing = true;
-    // }
-
-    // socket.send(JSON.stringify(TYPING))
 };
 
 const validateUser = (resp) => {
@@ -223,7 +202,6 @@ const validateUser = (resp) => {
         showMessages('Login successful');
         ShowUsers(resp.Users);
         allUsers = resp.Users;
-        console.log('All Users -> ', allUsers);
         DisplayAllPost(resp.Posts);
         const loginPageId = document.querySelector('#login-page-id');
         const registerPageId = document.querySelector('#register-page-id');
@@ -402,7 +380,6 @@ loginBtn.addEventListener('click', (e) => {
         })
         .then((resp) => {
             validateUser(resp);
-            // console.log(resp, '---------------------');
         });
 });
 
@@ -430,15 +407,12 @@ function revealPasswordBtn(id, className) {
     unSet(inputFields, revealBtn);
 }
 const openChatModal = (e) => {
-    // console.log(e);
     const chatModalContainer = document.querySelector(
         '#chat-modal-container-id'
     );
-    console.log('Chat modal container === ', chatModalContainer);
     const RECIEVER_ID = e.getAttribute('data-user-id'); //data-user-id is the id of the user where we click on. This will be use to access the data on the database
     //when open a specific chat, we're going to get the chat data between the current user and the user tat they click
     chatModalContainer.style.display = 'flex';
-    // console.log(RECIEVER_ID);
     //Add the data to the send btn
     const SEND_BTN = document.querySelector('.send-chat-btn');
     // const INFO_DIV = document.querySelector('.')
@@ -459,15 +433,13 @@ const SendMessage = () => {
         message: MSG,
         userID: SEND_FROM,
         recieverID: SEND_TO,
-        date: SORTED
+        date: SORTED,
     };
 
     if (MSG.trim().length !== 0) {
         socket.send(JSON.stringify(INFORMATION));
         DisplayMessage(MSG, 'chat sender', SORTED.split(' '));
-        console.log(SORTED[1], SORTED[2], SORTED[3], SORTED[4]);
         TEXT_BOX.value = '';
-        console.log('Message sent');
     }
 };
 const closeChat = () => {
@@ -480,7 +452,6 @@ const closeChat = () => {
 };
 
 const openPostModal = (e) => {
-    // console.log(e);
     const postModalContainer = document.querySelector(
         '#create-post-modal-container-id'
     );
@@ -525,7 +496,6 @@ const sendNewPost = () => {
                 return response.json();
             })
             .then((resp) => {
-                console.log(resp);
                 showMessages(resp.Msg);
                 DisplayAllPost(resp.Posts);
             });
@@ -546,7 +516,6 @@ const sendNewPost = () => {
     }
 };
 const openResponseModal = (e) => {
-    // console.log(e);
     const responseModal = document.querySelector(
         '#response-modal-container-id'
     );
