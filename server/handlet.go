@@ -328,6 +328,7 @@ func WsEndpoint(w http.ResponseWriter, r *http.Request) {
 	c, cookieErr := r.Cookie("session_token")
 	if cookieErr != nil {
 		fmt.Println("Error accessing cookie: ", cookieErr)
+		return
 	}
 
 	// Store the new user in the Users map

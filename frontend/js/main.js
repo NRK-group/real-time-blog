@@ -430,7 +430,7 @@ const SendMessage = () => {
     const SENT_TIME = new Date();
     const SORTED = SENT_TIME.toString();
     const INFORMATION = {
-        message: MSG,
+        message: MSG.trim(),
         userID: SEND_FROM,
         recieverID: SEND_TO,
         date: SORTED,
