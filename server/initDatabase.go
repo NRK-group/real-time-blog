@@ -11,7 +11,7 @@ func initUser(db *sql.DB) {
 		"imgUrl"	TEXT NOT NULL,
 		"firstName"	CHARACTER(20) NOT NULL,
 		"lastName"	CHARACTER(20) NOT NULL,
-		"nickName"	CHARACTER(20) UNIQUE NOT NULL,
+		"nickName"	CHARACTER(11) UNIQUE NOT NULL,
 		"gender"	CHARACTER(20) NOT NULL,
 		"age"   int,
 		"status"  CHARACTER(20) NOT NULL,
