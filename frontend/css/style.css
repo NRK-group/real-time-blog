@@ -63,9 +63,13 @@ button {
     scrollbar-width: none; /* Firefox */
 }
 .right-container {
-    display: grid;
-    grid-template-rows: 50% 50%;
+    /* display: grid;
+    grid-template-rows: 50vh 50vh; */
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
     border-left: 2px solid #e8e8e8;
+    overflow: scroll;
 }
 .title-container {
     display: flex;
@@ -116,6 +120,7 @@ button {
     -webkit-transition: all 0.5s;
     -moz-transition: all 0.5s;
     transition: all 0.5s;
+    box-shadow: 0 0 10px rgb(220, 220, 220) inset;
 }
 .access-page {
     width: 100vw;
@@ -194,6 +199,7 @@ button {
     -webkit-transition: all 0.5s;
     -moz-transition: all 0.5s;
     transition: all 0.5s;
+    box-shadow: 0 0 10px rgb(220, 220, 220) inset;
 }
 .access-btn:focus {
     background-color: #543de0;
@@ -267,6 +273,7 @@ input[type='text']:focus {
     -webkit-transition: all 0.3s;
     -moz-transition: all 0.3s;
     transition: all 0.3s;
+    box-shadow: 0 0 10px rgb(220, 220, 220) inset;
 }
 
 input[type='number']:focus {
@@ -275,6 +282,7 @@ input[type='number']:focus {
     -webkit-transition: all 0.3s;
     -moz-transition: all 0.3s;
     transition: all 0.3s;
+    box-shadow: 0 0 10px rgb(220, 220, 220) inset;
 }
 input[type='password']:focus {
     outline: 2px solid #543de0;
@@ -282,6 +290,7 @@ input[type='password']:focus {
     -webkit-transition: all 0.3s;
     -moz-transition: all 0.3s;
     transition: all 0.3s;
+    box-shadow: 0 0 10px rgb(220, 220, 220) inset;
 }
 
 input[type='email']:focus {
@@ -290,11 +299,11 @@ input[type='email']:focus {
     -webkit-transition: all 0.3s;
     -moz-transition: all 0.3s;
     transition: all 0.3s;
+    box-shadow: 0 0 10px rgb(220, 220, 220) inset;
 }
 
 .profile-container {
     padding: 10%;
-    height: 50vh;
 }
 .profile-card {
     height: 350px;
@@ -329,6 +338,7 @@ input[type='email']:focus {
     -webkit-transition: all 0.5s;
     -moz-transition: all 0.5s;
     transition: all 0.5s;
+    box-shadow: 0 0 10px rgb(220, 220, 220) inset;
 }
 .edit-icon {
     color: white;
@@ -371,6 +381,7 @@ input[type='email']:focus {
     -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
     animation: fadein 0.5s, fadeout 0.5s 2.5s;
     z-index: 5;
+    box-shadow: 0 0 10px rgb(220, 220, 220) inset;
 }
 
 @-webkit-keyframes fadein {
@@ -683,7 +694,6 @@ input[type='email']:focus {
     fill: currentColor;
 }
 .users-container {
-    height: 50vh;
     padding: 0 10% 0 10%;
 }
 .forum-users-container {
@@ -1087,8 +1097,8 @@ input[type='email']:focus {
     padding: 2.5%;
 }
 
-.fa-message>* {
-    color:white
+.fa-message > * {
+    color: white;
 }
 
 .animate-typing {
@@ -1098,8 +1108,6 @@ input[type='email']:focus {
     0% {
         opacity: 1;
         color: #4b4b4b;
-
-
     }
     50% {
         opacity: 0.5;
@@ -1114,4 +1122,82 @@ input[type='email']:focus {
 .message-date {
     width: 100%;
     font-size: 60%;
+}
+.profile-modal-container {
+    display: none;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100vw; /* Full width */
+    height: 100vh; /* Full height */
+    z-index: 1;
+    justify-content: center;
+    /* align-items: center; */
+}
+.profile-modal-container::before {
+    content: '';
+    position: absolute;
+    background-color: black;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    left: 0px;
+    opacity: 0.5;
+}
+.profile-modal {
+    display: grid;
+    grid-template-rows: 2.7vh 78.3vh 9vh;
+    background-color: white;
+    min-width: 60vw;
+    height: 95vh;
+    z-index: 1;
+    border-radius: 16px;
+    padding: 2px;
+}
+.edit-profile-buttons {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+.discard-changes-btn {
+    width: 20%;
+    display: flex;
+    justify-content: center;
+    padding: 10px 20px;
+    color: #543de0;
+    border-radius: 16px;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgb(220, 220, 220);
+    /* border: 1px solid #533de0; */
+}
+.discard-changes-btn:hover {
+    box-shadow: 0 0 10px rgb(220, 220, 220) inset;
+}
+
+.save-changes-btn {
+    width: 20%;
+    display: flex;
+    justify-content: center;
+    padding: 10px 20px;
+    color: white;
+    background-color: #543de0;
+    border-radius: 16px;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgb(220, 220, 220);
+}
+.save-icon {
+    color: white;
+    fill: currentColor;
+    display: inline-block;
+    margin-right: 10px;
+    width: 15px;
+    height: 15px;
+}
+.save-changes-btn:hover {
+    color: #533de0;
+    background-color: white;
+    box-shadow: 0 0 10px rgb(220, 220, 220) inset;
+}
+.save-changes-btn:hover > .save-icon {
+    color: #533de0;
 }

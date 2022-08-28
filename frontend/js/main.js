@@ -199,7 +199,6 @@ const validateUser = (resp) => {
     if (resp.Msg === 'Login successful') {
         //Create the cookie when logged in#
         CreateWebSocket();
-        showMessages('Login successful');
         ShowUsers(resp.Users);
         allUsers = resp.Users;
         DisplayAllPost(resp.Posts);
@@ -380,6 +379,7 @@ loginBtn.addEventListener('click', (e) => {
         })
         .then((resp) => {
             validateUser(resp);
+            showMessages(resp.Msg);
         });
 });
 
@@ -639,4 +639,12 @@ const DisplayAllPost = (post) => {
             }
         );
     }
+};
+const openProfileModal = () => {
+    const profileModal = document.querySelector('#profile-moadal-container-id');
+    profileModal.style.display = 'flex';
+};
+const closeProfileModal = () => {
+    const profileModal = document.querySelector('#profile-moadal-container-id');
+    profileModal.style.display = 'none';
 };
