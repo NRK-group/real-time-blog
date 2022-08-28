@@ -108,7 +108,6 @@ func (DB *DB) Register(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		// fmt.Print(userData) // this is the data that need to be inserted to the database.
 
 		// Check if the nickname is already in use
 		var allowNickname int
@@ -157,7 +156,6 @@ func (DB *DB) Register(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Register successful"))
 		return
 	}
-	fmt.Println("Error in register handler")
 
 	http.Error(w, "400 Bad Request.", http.StatusBadRequest)
 }
@@ -242,10 +240,9 @@ func (forum *DB) Logout(w http.ResponseWriter, r *http.Request) {
 			log.Fatal(err)
 		}
 
-		//Remove the user from ws connection map
-		if _ , exsists := users[res[0]]; exsists {
+		// Remove the user from ws connection map
+		if _, exsists := users[res[0]]; exsists {
 			delete(users, res[0])
-			fmt.Println(res[0], " removed from users.")
 		}
 		// Set the new token as the users `session_token` cookie
 		http.SetCookie(w, &http.Cookie{
@@ -331,6 +328,7 @@ func WsEndpoint(w http.ResponseWriter, r *http.Request) {
 	c, cookieErr := r.Cookie("session_token")
 	if cookieErr != nil {
 		fmt.Println("Error accessing cookie: ", cookieErr)
+		return
 	}
 
 	// Store the new user in the Users map

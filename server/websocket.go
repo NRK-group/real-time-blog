@@ -27,20 +27,17 @@ func reader(conn *websocket.Conn) {
 			return
 		}
 
-		// fmt.Println("p Before", string(p))
-
 		var details NewMessage
 
 		errMarsh := json.Unmarshal(p, &details)
 
 		if errMarsh != nil {
 			fmt.Println("Error unmarshalling: ", errMarsh)
+			return
 		}
 
 		details.messageType = messageType
 
-		// print out that message for clarity
-		fmt.Println("Msg revieved: ", details)
 
 		// Add To the channel instead of writing the message back
 		if _, recieverValid := users[details.RecieverID]; !recieverValid {
@@ -48,6 +45,7 @@ func reader(conn *websocket.Conn) {
 		} else {
 			chat <- details
 		}
+		//Now add the messafe to the database
 	}
 }
 
@@ -56,17 +54,15 @@ func SendMsgs() {
 		select {
 		case msg, ok := <-chat:
 			if ok {
-				// fmt.Println("Attempting to send: ", msg)
 				// Add consition to check the user exsists
 				if _, valid := users[msg.RecieverID]; valid {
-					sendMess := SendMessage{Sender: msg.UserID, Message: msg.Mesg}
-					// fmt.Println("SENDING BACK", sendMess)
+					sendMess := SendMessage{Sender: msg.UserID, Message: msg.Mesg, Date: msg.Date}
 					res, marshErr := json.Marshal(sendMess)
 					if marshErr != nil {
 						fmt.Println("Error MArshalling the data before sending: ", marshErr)
+						return
 					}
 					err := users[msg.RecieverID].WriteMessage(msg.messageType, res)
-					// fmt.Println(users[msg.RecieverID])
 					if err != nil {
 						log.Printf("error: %v", err)
 						users[msg.RecieverID].Close()
