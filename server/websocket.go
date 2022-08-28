@@ -46,6 +46,8 @@ func reader(conn *websocket.Conn) {
 			chat <- details
 		}
 		//Now add the messafe to the database
+
+		
 	}
 }
 

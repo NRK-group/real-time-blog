@@ -343,3 +343,33 @@ func (forum *DB) CreatePost(userID, title, category, imgurl, content string) (st
 	}
 	return postID.String(), nil
 }
+
+func (forum *DB) CheckChatID(userID, recieverID string) string {
+	// Query the DB and check if there is a chatId between the two users
+	searchOne := ""
+	chatID, err := forum.DB.Query(`SELECT chatID from Chat WHERE user1ID = ? AND user2ID = ?`, userID, recieverID)
+	if err != nil {
+		fmt.Println("Error executing chatID search 1: ", err)
+		return searchOne
+	}
+
+	for chatID.Next() {
+		chatID.Scan(&searchOne)
+	}
+
+	searchTwo := ""
+	secondChatID, err2 := forum.DB.Query(`SELECT chatID from Chat WHERE user1ID = ? AND user2ID = ?`, recieverID, userID)
+	if err2 != nil {
+		fmt.Println("Error executing chatID search 2: ", err2)
+		return searchTwo
+	}
+
+	for secondChatID.Next() {
+		secondChatID.Scan(&searchTwo)
+	}
+	fmt.Println("search One === ", searchOne, "search Two === ", searchTwo)
+	if searchOne != "" {
+		return searchOne
+	}
+	return searchTwo
+}

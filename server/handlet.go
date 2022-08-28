@@ -309,6 +309,18 @@ func (forum *DB) Post(w http.ResponseWriter, r *http.Request) {
 	http.Error(w, "400 Bad Request.", http.StatusBadRequest)
 }
 
+func (forum *DB) GetMessages(w http.ResponseWriter, r *http.Request) {
+	// Check the url is correct
+	if r.URL.Path != "/get-messages" {
+		http.Error(w, "404 not found.", http.StatusNotFound)
+		return
+	}
+	if r.Method == "POST" {
+		// Unmarshal the data sent back
+		// Check if there is a chat between the two users
+	}
+}
+
 func SetupCorsResponse(w http.ResponseWriter, req *http.Request) {
 	(w).Header().Set("Access-Control-Allow-Origin", "*")
 	(w).Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
