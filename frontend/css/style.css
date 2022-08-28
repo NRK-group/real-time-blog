@@ -1146,7 +1146,7 @@ input[type='email']:focus {
 }
 .profile-modal {
     display: grid;
-    grid-template-rows: 2.7vh 78.3vh 9vh;
+    grid-template-rows: 2.7vh 22vh 60.3vh 9vh;
     background-color: white;
     min-width: 60vw;
     height: 95vh;
@@ -1200,4 +1200,31 @@ input[type='email']:focus {
 }
 .save-changes-btn:hover > .save-icon {
     color: #533de0;
+}
+.profile-picture-container {
+    display: flex;
+    justify-content: center;
+}
+.profile-info-container {
+    display: flex;
+    justify-content: center;
+}
+.profile-info {
+    min-width: 50vw;
+    border-top: 1px solid rgb(220, 220, 220);
+    padding-left: 5vw;
+}
+.edit-profile-input {
+    margin: 15px auto;
+}
+.edit-profile-fields {
+    width: 20vw;
+    height: inherit;
+    background-color: inherit;
+    color: inherit;
+    border-radius: 10px;
+    color: black;
+    padding: 7px;
+    font-size: 15px;
+    margin: auto;
 }
