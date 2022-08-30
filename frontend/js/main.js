@@ -609,6 +609,18 @@ const openResponseModal = (postId) => {
     const responsePostContainer = document.querySelector(
         '#response-post-container'
     );
+    let category = '';
+    if (post.Category === 'golang') {
+        category =
+            '<div class="post-category golang golang-category">GoLang</div>';
+    }
+    if (post.Category === 'javascript') {
+        category =
+            '<div class="post-category javascript javascript-category">GoLang</div>';
+    }
+    if (post.Category === 'rust') {
+        category = '<div class="post-category rust rust-category">GoLang</div>';
+    }
     responsePostContainer.innerHTML = `
     <div class="post-title">${post.Title}</div>
     <div class="post-profile"> 
@@ -619,7 +631,7 @@ const openResponseModal = (postId) => {
                 <div class="post-created">${post.Date}</div>
             </span>
         </div>
-        <div class="post-category golang golang-category">GoLang</div>
+        ${category}
     </div>
     <div class="post-content overflow scrollbar-hidden">${post.Content}</div>`;
     responseModal.style.display = 'flex';
