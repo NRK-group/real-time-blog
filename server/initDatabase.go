@@ -105,9 +105,8 @@ func initMessage(db *sql.DB) {
 	CREATE TABLE IF NOT EXISTS "Message" (
 		"messageID" TEXT UNIQUE NOT NULL,
 		"chatID"	TEXT NOT NULL,
-		"countent"	TEXT NOT NULL,
+		"content"	TEXT NOT NULL,
 		"date"      TEXT NOT NULL,
-		"time"      TEXT NOT NULL,
 		"userID"	TEXT NOT NULL,
 		PRIMARY KEY("messageID")
 		FOREIGN KEY ("chatID")

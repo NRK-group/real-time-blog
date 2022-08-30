@@ -41,8 +41,7 @@ button {
 }
 
 .left-container {
-    display: grid;
-    grid-template-rows: 30% 30%;
+    height: 100vh;
     border-right: 2px solid #e8e8e8;
 }
 
@@ -53,7 +52,7 @@ button {
     padding-top: 30px;
 }
 /* Hide scrollbar for Chrome, Safari and Opera */
-.scrollbar-hidden::-webkit-scrollbar {
+::-webkit-scrollbar {
     display: none;
 }
 
@@ -509,7 +508,7 @@ input[type='email']:focus {
     display: flex;
     justify-content: center;
     align-items: center;
-    border-radius: 40px;
+    border-radius: 16px;
     border: 1px solid white;
     cursor: pointer;
 }
@@ -518,8 +517,8 @@ input[type='email']:focus {
 }
 .golang:hover {
     color: #6ad6e3;
-    background-color: #6ad6e320;
     border-color: #6ad6e3;
+    box-shadow: 0 0 10px rgb(220, 220, 220) inset;
     -webkit-transition: all 0.3s;
     -moz-transition: all 0.3s;
     transition: all 0.3s;
@@ -529,7 +528,7 @@ input[type='email']:focus {
 }
 .javascript:hover {
     color: #f0db4f;
-    background-color: #f0db4f20;
+    box-shadow: 0 0 10px rgb(220, 220, 220) inset;
     border-color: #f0db4f;
     -webkit-transition: all 0.3s;
     -moz-transition: all 0.3s;
@@ -540,7 +539,7 @@ input[type='email']:focus {
 }
 .rust:hover {
     color: #000000;
-    background-color: #00000020;
+    box-shadow: 0 0 10px rgb(220, 220, 220) inset;
     border-color: #000000;
     -webkit-transition: all 0.3s;
     -moz-transition: all 0.3s;
@@ -597,15 +596,12 @@ input[type='email']:focus {
     display: flex;
     justify-content: center;
     align-items: center;
-    border-radius: 40px;
+    border-radius: 16px;
     border: 1px solid white;
     cursor: pointer;
     color: #6ad6e3;
-    background-color: #6ad6e320;
+    box-shadow: 0 0 10px rgb(220, 220, 220) inset;
     border-color: #6ad6e3;
-    -webkit-transition: all 0.3s;
-    -moz-transition: all 0.3s;
-    transition: all 0.3s;
 }
 .javascript-category {
     width: 150px;
@@ -614,15 +610,12 @@ input[type='email']:focus {
     display: flex;
     justify-content: center;
     align-items: center;
-    border-radius: 40px;
+    border-radius: 16px;
     border: 1px solid white;
     cursor: pointer;
     color: #f0db4f;
-    background-color: #f0db4f20;
+    box-shadow: 0 0 10px rgb(220, 220, 220) inset;
     border-color: #f0db4f;
-    -webkit-transition: all 0.3s;
-    -moz-transition: all 0.3s;
-    transition: all 0.3s;
 }
 .rust-category {
     width: 150px;
@@ -631,15 +624,12 @@ input[type='email']:focus {
     display: flex;
     justify-content: center;
     align-items: center;
-    border-radius: 40px;
+    border-radius: 16px;
     border: 1px solid white;
     cursor: pointer;
     color: #000000;
-    background-color: #00000020;
+    box-shadow: 0 0 20px rgb(220, 220, 220) inset;
     border-color: #000000;
-    -webkit-transition: all 0.3s;
-    -moz-transition: all 0.3s;
-    transition: all 0.3s;
 }
 .post-buttons {
     margin-top: 40px;
@@ -1227,4 +1217,87 @@ input[type='email']:focus {
     padding: 7px;
     font-size: 15px;
     margin: auto;
+}
+.post-filter-container {
+    height: 40vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 1vw;
+}
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 1vw;
+}
+.filter {
+    margin-top: 10px;
+    height: 5vh;
+    display: flex;
+    /* justify-content: center; */
+    padding: 20px;
+    align-items: center;
+    border-radius: 16px;
+    cursor: pointer;
+    font-size: 1vw;
+    border: 1px solid #00000000;
+}
+.home-icon {
+    color: #533de0;
+    fill: currentColor;
+    display: inline-block;
+    margin-right: 10px;
+    width: 15px;
+    height: 15px;
+}
+.filter:hover {
+    background-color: white;
+    box-shadow: 0 0 10px rgb(220, 220, 220) inset;
+}
+.all-post {
+    color: #533de0;
+}
+.all-post:hover {
+    color: #533de0;
+    border: 1px solid #533de0;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    transition: all 0.3s;
+}
+.all-post-active {
+    color: #533de0;
+    border: 1px solid #533de0;
+    box-shadow: 0 0 10px rgb(220, 220, 220) inset;
+}
+.golang-active {
+    color: #6ad6e3;
+    border: 1px solid #6ad6e3;
+    box-shadow: 0 0 10px rgb(220, 220, 220) inset;
+}
+.javascript-active {
+    color: #f0db4f;
+    border: 1px solid #f0db4f;
+    box-shadow: 0 0 10px rgb(220, 220, 220) inset;
+}
+.rust-active {
+    color: #000000;
+    border: 1px solid #000000;
+    box-shadow: 0 0 10px rgb(220, 220, 220) inset;
+}
+.filter-title {
+    opacity: 0.5;
+}
+.personal-filter-container {
+    height: 40vh;
+    display: flex;
+    flex-direction: column;
+    padding: 1vw;
+}
+.icon {
+    color: #533de0;
+    fill: currentColor;
+    display: inline-block;
+    margin-right: 10px;
+    width: 15px;
+    height: 15px;
 }

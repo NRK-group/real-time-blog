@@ -18,7 +18,7 @@ var (
 	chat  = make(chan NewMessage)
 )
 
-func reader(conn *websocket.Conn) {
+func (forum *DB) reader(conn *websocket.Conn) {
 	for {
 		// read in a message
 		messageType, p, err := conn.ReadMessage()
@@ -46,6 +46,9 @@ func reader(conn *websocket.Conn) {
 			chat <- details
 		}
 		//Now add the messafe to the database
+		if details.Mesg != " "{
+			forum.InsertMessage(details)
+		}	
 	}
 }
 
