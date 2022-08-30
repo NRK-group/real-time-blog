@@ -373,3 +373,37 @@ func (forum *DB) CheckChatID(userID, recieverID string) string {
 	}
 	return searchTwo
 }
+
+func (forum *DB) CreateChatID(userID, recieverID string) string {
+	// Create the chatID using uuid
+	chatID := uuid.NewV4().String()
+
+	insertChat, _ := forum.DB.Prepare(`
+		INSERT INTO Chat (chatID, user1ID, user2ID) values (?, ?, ?)
+	`)
+	_, err := insertChat.Exec(chatID, userID, recieverID)
+	if err != nil {
+		fmt.Println("Error inserting the chat id: ", err)
+		return ""
+	}
+	fmt.Println("chatID added between user: ", userID, " AND user: ", recieverID)
+	return chatID
+}
+
+func (forum *DB) InsertMessage(details NewMessage) {
+	insertMessage, err1 := forum.DB.Prepare(`
+	INSERT INTO Message VALUES (?,?,?,?,?)
+	`)
+	if err1 != nil {
+		fmt.Println("Error Preparing message: ", err1)
+		return
+	}
+
+	messageID := uuid.NewV4().String()
+
+	_, err := insertMessage.Exec(messageID, details.ChatID, details.Mesg, details.Date, details.UserID)
+
+	if err != nil {
+		fmt.Println("Error inserting message: ", err)
+	}
+}

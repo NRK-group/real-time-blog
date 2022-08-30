@@ -311,13 +311,32 @@ func (forum *DB) Post(w http.ResponseWriter, r *http.Request) {
 
 func (forum *DB) GetMessages(w http.ResponseWriter, r *http.Request) {
 	// Check the url is correct
-	if r.URL.Path != "/get-messages" {
+	if r.URL.Path != "/MessageInfo" {
 		http.Error(w, "404 not found.", http.StatusNotFound)
 		return
 	}
 	if r.Method == "POST" {
-		// Unmarshal the data sent back
+		// Unmarshal the data recieved
+		var chatDetails ReturnMessages
+		err := json.NewDecoder(r.Body).Decode(&chatDetails)
+		if err != nil {
+			fmt.Println("Error opening")
+		}
+
 		// Check if there is a chat between the two users
+		if chatDetails.ChatID = forum.CheckChatID(chatDetails.User, chatDetails.Reciever); chatDetails.ChatID == ""{
+			chatDetails.ChatID = forum.CreateChatID(chatDetails.User, chatDetails.Reciever ) 
+		} 
+		
+
+		marshallChat, marshErr := json.Marshal(chatDetails)
+			if marshErr != nil {
+				fmt.Println("Error marshalling getMessages: ", marshErr)
+			}
+
+		w.WriteHeader(http.StatusOK)
+			w.Header().Set("Content-type", "application/json")
+			w.Write(marshallChat)
 	}
 }
 
@@ -327,7 +346,7 @@ func SetupCorsResponse(w http.ResponseWriter, req *http.Request) {
 	(w).Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Authorization")
 }
 
-func WsEndpoint(w http.ResponseWriter, r *http.Request) {
+func (forum *DB) WsEndpoint(w http.ResponseWriter, r *http.Request) {
 	upgrader.CheckOrigin = func(r *http.Request) bool { return true }
 
 	// upgrade this connection to a WebSocket
@@ -348,5 +367,5 @@ func WsEndpoint(w http.ResponseWriter, r *http.Request) {
 	userIdVal := strings.Split(c.Value, "&")[0]
 	users[userIdVal] = ws
 	fmt.Println(userIdVal, " is connected.")
-	go reader(ws)
+	go forum.reader(ws)
 }

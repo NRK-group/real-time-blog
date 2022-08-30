@@ -110,11 +110,11 @@ type SendMessage struct {
 	Date    string `json:"date"`
 }
 
-type ReutrnMessages struct {
+type ReturnMessages struct {
 	User string `json:"userID"`
 	Reciever string `json:"recieverID"`
 	ChatID string `json:"chatID"`
-	messages []SendMessage
+	Messages []SendMessage
 }
 
 type PostData struct {
