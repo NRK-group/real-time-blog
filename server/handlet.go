@@ -45,7 +45,7 @@ func (forum *DB) CheckCookie(w http.ResponseWriter, r *http.Request) {
 
 			}
 
-			page = ReturnData{User: forum.GetUser(co[1]), Posts: forum.AllPost("", ""), Msg: "Login successful", Users: forum.GetAllUser(co[0])}
+			page = ReturnData{User: forum.GetUser(co[0]), Posts: forum.AllPost("", ""), Msg: "Login successful", Users: forum.GetAllUser(co[0])}
 			marshallPage, err := json.Marshal(page)
 			if err != nil {
 				fmt.Println("Error marshalling the data: ", err)

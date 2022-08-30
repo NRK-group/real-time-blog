@@ -211,10 +211,30 @@ const validateUser = (resp) => {
         loginPageId.classList.add('close');
         registerPageId.classList.add('close');
         mainPageId.style.display = 'grid';
+        UpdateUserProfile(resp);
     } else {
         showMessages(resp.Msg);
     }
 };
+
+const UpdateUserProfile = (resp) => {
+    document.getElementById(
+        'profile-name'
+    ).innerText = `${resp.User.Firstname}  ${resp.User.Lastname}`;
+    document.getElementById(
+        'profile-username'
+    ).innerText = `@${resp.User.Nickname}`;
+
+    //User model
+    document.getElementById("edit-first-name-id").value = resp.User.Firstname
+    document.getElementById("edit-last-name-id").value = resp.User.Lastname
+    document.getElementById("edit-nickname-id").value = resp.User.Nickname
+    document.getElementById("edit-age-id").value = resp.User.Age
+    document.getElementById("edit-emial-id").value = resp.User.Email
+   
+};
+
+
 
 const ShowUsers = (Users) => {
     if (Users) {
