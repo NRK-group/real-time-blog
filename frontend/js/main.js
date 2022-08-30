@@ -210,7 +210,7 @@ const validateUser = (resp) => {
         loginPageId.classList.add('close');
         registerPageId.classList.add('close');
         mainPageId.style.display = 'grid';
-        console.log(resp)
+        console.log(resp);
         UpdateUserProfile(resp);
     } else {
         showMessages(resp.Msg);
@@ -226,15 +226,12 @@ const UpdateUserProfile = (resp) => {
     ).innerText = `@${resp.User.Nickname}`;
 
     //User model
-    document.getElementById("edit-first-name-id").value = resp.User.Firstname
-    document.getElementById("edit-last-name-id").value = resp.User.Lastname
-    document.getElementById("edit-nickname-id").value = resp.User.Nickname
-    document.getElementById("edit-age-id").value = resp.User.Age
-    document.getElementById("edit-emial-id").value = resp.User.Email
-   
+    document.getElementById('edit-first-name-id').value = resp.User.Firstname;
+    document.getElementById('edit-last-name-id').value = resp.User.Lastname;
+    document.getElementById('edit-nickname-id').value = resp.User.Nickname;
+    document.getElementById('edit-age-id').value = resp.User.Age;
+    document.getElementById('edit-emial-id').value = resp.User.Email;
 };
-
-
 
 const ShowUsers = (Users) => {
     if (Users) {
@@ -437,11 +434,11 @@ const openChatModal = (e) => {
     const SEND_BTN = document.querySelector('.send-chat-btn');
     // const INFO_DIV = document.querySelector('.')
     SEND_BTN.setAttribute('data-reciever-id', RECIEVER_ID);
-    //Now check golang for the chatID 
-    const USER_ID = getCookie("session_token").split("&")[0]
+    //Now check golang for the chatID
+    const USER_ID = getCookie('session_token').split('&')[0];
     let users = {
         userID: USER_ID,
-        recieverID: RECIEVER_ID
+        recieverID: RECIEVER_ID,
     };
 
     fetch('/MessageInfo', {
@@ -452,10 +449,10 @@ const openChatModal = (e) => {
         },
         body: JSON.stringify(users),
     }).then(async (response) => {
-        resp = await response.json()  
-        console.log(resp.chatID)
-         SEND_BTN.setAttribute('data-chat-id', resp.chatID);
-        return resp
+        resp = await response.json();
+        console.log(resp.chatID);
+        SEND_BTN.setAttribute('data-chat-id', resp.chatID);
+        return resp;
     });
 };
 
@@ -469,13 +466,13 @@ const SendMessage = () => {
     const SEND_FROM = getCookie('session_token').split('&')[0];
     const SENT_TIME = new Date();
     const SORTED = SENT_TIME.toString();
-    const CHAT_ID = SEND_BTN.getAttribute("data-chat-id")
+    const CHAT_ID = SEND_BTN.getAttribute('data-chat-id');
     const INFORMATION = {
         message: MSG.trim(),
         userID: SEND_FROM,
         recieverID: SEND_TO,
         date: SORTED,
-        chatID: CHAT_ID
+        chatID: CHAT_ID,
     };
 
     if (MSG.trim().length !== 0) {
@@ -689,39 +686,44 @@ const closeProfileModal = () => {
     const profileModal = document.querySelector('#profile-moadal-container-id');
     profileModal.style.display = 'none';
 };
-const openAllPost = (e) => {
+const selectFilter = (e) => {
+    const allPost = document.querySelector('#all-post-id');
+    allPost.classList.remove('all-post-active');
     const golangPost = document.querySelector('#golang-post-id');
-    const javaScriptPost = document.querySelector('#javascript-post-id');
-    const rustPost = document.querySelector('#rust-post-id');
     golangPost.classList.remove('golang-active');
+    const javaScriptPost = document.querySelector('#javascript-post-id');
     javaScriptPost.classList.remove('javascript-active');
+    const rustPost = document.querySelector('#rust-post-id');
     rustPost.classList.remove('rust-active');
-    e.classList.add('all-post-active');
+    const yourPost = document.querySelector('#your-post-id');
+    yourPost.classList.remove('all-post-active');
+    const favoritePost = document.querySelector('#favorite-post-id');
+    favoritePost.classList.remove('all-post-active');
+    if (e.id === 'golang-post-id') {
+        e.classList.add('golang-active');
+    } else if (e.id === 'javascript-post-id') {
+        e.classList.add('javascript-active');
+    } else if (e.id === 'rust-post-id') {
+        e.classList.add('rust-active');
+    } else {
+        e.classList.add('all-post-active');
+    }
+};
+const openAllPost = (e) => {
+    selectFilter(e);
 };
 const openGoLangPost = (e) => {
-    const allPost = document.querySelector('#all-post-id');
-    const javaScriptPost = document.querySelector('#javascript-post-id');
-    const rustPost = document.querySelector('#rust-post-id');
-    allPost.classList.remove('all-post-active');
-    javaScriptPost.classList.remove('javascript-active');
-    rustPost.classList.remove('rust-active');
-    e.classList.add('golang-active');
+    selectFilter(e);
 };
 const openJavaScriptPost = (e) => {
-    const allPost = document.querySelector('#all-post-id');
-    const golangPost = document.querySelector('#golang-post-id');
-    const rustPost = document.querySelector('#rust-post-id');
-    allPost.classList.remove('all-post-active');
-    golangPost.classList.remove('golang-active');
-    rustPost.classList.remove('rust-active');
-    e.classList.add('javascript-active');
+    selectFilter(e);
 };
 const openRustPost = (e) => {
-    const allPost = document.querySelector('#all-post-id');
-    const golangPost = document.querySelector('#golang-post-id');
-    const javaScriptPost = document.querySelector('#javascript-post-id');
-    allPost.classList.remove('all-post-active');
-    golangPost.classList.remove('golang-active');
-    javaScriptPost.classList.remove('javascript-active');
-    e.classList.add('rust-active');
+    selectFilter(e);
+};
+const openFavoritePost = (e) => {
+    selectFilter(e);
+};
+const openYourPost = (e) => {
+    selectFilter(e);
 };
