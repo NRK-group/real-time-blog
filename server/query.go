@@ -343,3 +343,67 @@ func (forum *DB) CreatePost(userID, title, category, imgurl, content string) (st
 	}
 	return postID.String(), nil
 }
+
+func (forum *DB) CheckChatID(userID, recieverID string) string {
+	// Query the DB and check if there is a chatId between the two users
+	searchOne := ""
+	chatID, err := forum.DB.Query(`SELECT chatID from Chat WHERE user1ID = ? AND user2ID = ?`, userID, recieverID)
+	if err != nil {
+		fmt.Println("Error executing chatID search 1: ", err)
+		return searchOne
+	}
+
+	for chatID.Next() {
+		chatID.Scan(&searchOne)
+	}
+
+	searchTwo := ""
+	secondChatID, err2 := forum.DB.Query(`SELECT chatID from Chat WHERE user1ID = ? AND user2ID = ?`, recieverID, userID)
+	if err2 != nil {
+		fmt.Println("Error executing chatID search 2: ", err2)
+		return searchTwo
+	}
+
+	for secondChatID.Next() {
+		secondChatID.Scan(&searchTwo)
+	}
+	fmt.Println("search One === ", searchOne, "search Two === ", searchTwo)
+	if searchOne != "" {
+		return searchOne
+	}
+	return searchTwo
+}
+
+func (forum *DB) CreateChatID(userID, recieverID string) string {
+	// Create the chatID using uuid
+	chatID := uuid.NewV4().String()
+
+	insertChat, _ := forum.DB.Prepare(`
+		INSERT INTO Chat (chatID, user1ID, user2ID) values (?, ?, ?)
+	`)
+	_, err := insertChat.Exec(chatID, userID, recieverID)
+	if err != nil {
+		fmt.Println("Error inserting the chat id: ", err)
+		return ""
+	}
+	fmt.Println("chatID added between user: ", userID, " AND user: ", recieverID)
+	return chatID
+}
+
+func (forum *DB) InsertMessage(details NewMessage) {
+	insertMessage, err1 := forum.DB.Prepare(`
+	INSERT INTO Message VALUES (?,?,?,?,?)
+	`)
+	if err1 != nil {
+		fmt.Println("Error Preparing message: ", err1)
+		return
+	}
+
+	messageID := uuid.NewV4().String()
+
+	_, err := insertMessage.Exec(messageID, details.ChatID, details.Mesg, details.Date, details.UserID)
+
+	if err != nil {
+		fmt.Println("Error inserting message: ", err)
+	}
+}

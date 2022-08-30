@@ -88,7 +88,6 @@ const StoppedTyping = () => {
     TYPING_MSG = document
         .querySelector('.fa-message')
         .classList.remove('animate-typing');
-    typing = false;
 };
 
 const Debounce = (callback, time) => {
@@ -438,6 +437,26 @@ const openChatModal = (e) => {
     const SEND_BTN = document.querySelector('.send-chat-btn');
     // const INFO_DIV = document.querySelector('.')
     SEND_BTN.setAttribute('data-reciever-id', RECIEVER_ID);
+    //Now check golang for the chatID 
+    const USER_ID = getCookie("session_token").split("&")[0]
+    let users = {
+        userID: USER_ID,
+        recieverID: RECIEVER_ID
+    };
+
+    fetch('/MessageInfo', {
+        method: 'POST',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(users),
+    }).then(async (response) => {
+        resp = await response.json()  
+        console.log(resp.chatID)
+         SEND_BTN.setAttribute('data-chat-id', resp.chatID);
+        return resp
+    });
 };
 
 const SendMessage = () => {
@@ -450,11 +469,13 @@ const SendMessage = () => {
     const SEND_FROM = getCookie('session_token').split('&')[0];
     const SENT_TIME = new Date();
     const SORTED = SENT_TIME.toString();
+    const CHAT_ID = SEND_BTN.getAttribute("data-chat-id")
     const INFORMATION = {
         message: MSG.trim(),
         userID: SEND_FROM,
         recieverID: SEND_TO,
         date: SORTED,
+        chatID: CHAT_ID
     };
 
     if (MSG.trim().length !== 0) {
