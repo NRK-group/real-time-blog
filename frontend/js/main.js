@@ -483,7 +483,6 @@ const sendNewPost = () => {
             postCategory: postCategory,
             postContent: postContent,
         };
-
         fetch('/post', {
             method: 'POST',
             headers: {
@@ -647,4 +646,40 @@ const openProfileModal = () => {
 const closeProfileModal = () => {
     const profileModal = document.querySelector('#profile-moadal-container-id');
     profileModal.style.display = 'none';
+};
+const openAllPost = (e) => {
+    const golangPost = document.querySelector('#golang-post-id');
+    const javaScriptPost = document.querySelector('#javascript-post-id');
+    const rustPost = document.querySelector('#rust-post-id');
+    golangPost.classList.remove('golang-active');
+    javaScriptPost.classList.remove('javascript-active');
+    rustPost.classList.remove('rust-active');
+    e.classList.add('all-post-active');
+};
+const openGoLangPost = (e) => {
+    const allPost = document.querySelector('#all-post-id');
+    const javaScriptPost = document.querySelector('#javascript-post-id');
+    const rustPost = document.querySelector('#rust-post-id');
+    allPost.classList.remove('all-post-active');
+    javaScriptPost.classList.remove('javascript-active');
+    rustPost.classList.remove('rust-active');
+    e.classList.add('golang-active');
+};
+const openJavaScriptPost = (e) => {
+    const allPost = document.querySelector('#all-post-id');
+    const golangPost = document.querySelector('#golang-post-id');
+    const rustPost = document.querySelector('#rust-post-id');
+    allPost.classList.remove('all-post-active');
+    golangPost.classList.remove('golang-active');
+    rustPost.classList.remove('rust-active');
+    e.classList.add('javascript-active');
+};
+const openRustPost = (e) => {
+    const allPost = document.querySelector('#all-post-id');
+    const golangPost = document.querySelector('#golang-post-id');
+    const javaScriptPost = document.querySelector('#javascript-post-id');
+    allPost.classList.remove('all-post-active');
+    golangPost.classList.remove('golang-active');
+    javaScriptPost.classList.remove('javascript-active');
+    e.classList.add('rust-active');
 };
