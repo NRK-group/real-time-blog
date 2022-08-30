@@ -1219,7 +1219,7 @@ input[type='email']:focus {
     margin: auto;
 }
 .post-filter-container {
-    height: 50vh;
+    height: 40vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -1242,7 +1242,7 @@ ul {
     font-size: 1vw;
     border: 1px solid #00000000;
 }
-.circle-icon {
+.home-icon {
     color: #533de0;
     fill: currentColor;
     display: inline-block;
@@ -1284,6 +1284,20 @@ ul {
     border: 1px solid #000000;
     box-shadow: 0 0 10px rgb(220, 220, 220) inset;
 }
-.post-filter-title {
+.filter-title {
     opacity: 0.5;
+}
+.personal-filter-container {
+    height: 40vh;
+    display: flex;
+    flex-direction: column;
+    padding: 1vw;
+}
+.icon {
+    color: #533de0;
+    fill: currentColor;
+    display: inline-block;
+    margin-right: 10px;
+    width: 15px;
+    height: 15px;
 }
