@@ -53,9 +53,9 @@ type Comment struct {
 
 type Favorite struct {
 	FavoriteID string
-	PostID     string
+	PostID     string `json:"postID"`
 	UserID     string
-	React      int
+	React      int    `json:"react"`
 }
 
 type Chat struct {

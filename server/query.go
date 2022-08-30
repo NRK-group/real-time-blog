@@ -328,6 +328,21 @@ func (forum *DB) GetFavoritesInPost(pID string) Favorite {
 	return favorite
 }
 
+// ReactInPost
+// is a method of database that add reaction in the post in it.
+// Ex. Forum.Forum.ReactInPost("b081d711-aad2-4f90-acea-2f2842e28512", "b53124c2-39f0-4f10-8e02-b7244b406b86", 1)
+func (forum *DB) ReactInPost(postID, userID string, react int) (string, error) {
+	favoriteID := uuid.NewV4()
+	stmt, _ := forum.DB.Prepare(`
+		INSERT INTO Favorite (favoriteID, postID, userID, react) values (?, ?, ?, ?)
+	`)
+	_, err := stmt.Exec(favoriteID, postID, userID, react)
+	if err != nil {
+		return "", err
+	}
+	return favoriteID.String(), nil
+}
+
 // CreatePost
 // is a method of database that add post in it.
 func (forum *DB) CreatePost(userID, title, category, imgurl, content string) (string, error) {

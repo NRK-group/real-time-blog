@@ -789,19 +789,32 @@ const selectFilter = (e) => {
 };
 const openAllPost = (e) => {
     selectFilter(e);
+    DisplayAllPost(allPost)
 };
 const openGoLangPost = (e) => {
     selectFilter(e);
+    filterPost("golang")
 };
 const openJavaScriptPost = (e) => {
     selectFilter(e);
+    filterPost("javascript")
 };
 const openRustPost = (e) => {
     selectFilter(e);
+    filterPost("rust")
 };
 const openFavoritePost = (e) => {
     selectFilter(e);
 };
 const openYourPost = (e) => {
     selectFilter(e);
+    let newAllPost = allPost.filter(post => post.UserID === getCookie('session_token').split('&')[1]);
+    DisplayAllPost(newAllPost)
+    
 };
+
+
+const filterPost = (tag)=>{
+    let newAllPost = allPost.filter(post => post.Category === tag);
+    DisplayAllPost(newAllPost)
+}
