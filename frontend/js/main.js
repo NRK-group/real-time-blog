@@ -31,7 +31,7 @@ const checkRegisterData = (userData) => {
 function getCookie(name) {
     // Split cookie string and get all individual name=value pairs in an array
     var cookieArr = document.cookie.split(';');
-
+    
     // Loop through the array elements
     for (var i = 0; i < cookieArr.length; i++) {
         var cookiePair = cookieArr[i].split('=');
@@ -43,12 +43,29 @@ function getCookie(name) {
             return cookiePair[1];
         }
     }
-
+    
     // Return null if not found
     return null;
 }
+const LoadMessages = (messageText, classType, sentTime) => {
+    const MSG = AddMessages(messageText, classType, sentTime);
+    const CHAT_CONTENT_CONTAINER = document.querySelector(
+        '.chat-content-container'
+    );
+    const FIRST_MSG = document.querySelector('.chat');
+    if (FIRST_MSG === null) {
+        CHAT_CONTENT_CONTAINER.append(MSG);
+        
+    } else {
+        FIRST_MSG.before(MSG)
+    }
+     CHAT_CONTENT_CONTAINER.scroll({
+         top: CHAT_CONTENT_CONTAINER.scrollHeight,
+         behavior: 'smooth',
+     });
+};
 
-const DisplayMessage = (messageText, classType, sentTime) => {
+const AddMessages = (messageText, classType, sentTime) => {
     //Make the div that will hold everything
     const MSG_HOLDER = document.createElement('div');
     MSG_HOLDER.className = classType;
@@ -71,15 +88,21 @@ const DisplayMessage = (messageText, classType, sentTime) => {
     MSG_CONTAINER.append(DATE);
 
     MSG_HOLDER.append(PROFILE_IMG, MSG_CONTAINER);
+    return MSG_HOLDER;
+};
+
+const DisplayMessage = (messageText, classType, sentTime) => {
+    const MSG = AddMessages(messageText, classType, sentTime);
     const CHAT_CONTENT_CONTAINER = document.querySelector(
         '.chat-content-container'
     );
-    CHAT_CONTENT_CONTAINER.append(MSG_HOLDER);
+    CHAT_CONTENT_CONTAINER.append(MSG);
     CHAT_CONTENT_CONTAINER.scroll({
         top: CHAT_CONTENT_CONTAINER.scrollHeight,
         behavior: 'smooth',
     });
 };
+
 
 // let ;
 let typing, debounce;
@@ -210,7 +233,7 @@ const validateUser = (resp) => {
         loginPageId.classList.add('close');
         registerPageId.classList.add('close');
         mainPageId.style.display = 'grid';
-        console.log(resp)
+        console.log(resp);
         UpdateUserProfile(resp);
     } else {
         showMessages(resp.Msg);
@@ -226,15 +249,12 @@ const UpdateUserProfile = (resp) => {
     ).innerText = `@${resp.User.Nickname}`;
 
     //User model
-    document.getElementById("edit-first-name-id").value = resp.User.Firstname
-    document.getElementById("edit-last-name-id").value = resp.User.Lastname
-    document.getElementById("edit-nickname-id").value = resp.User.Nickname
-    document.getElementById("edit-age-id").value = resp.User.Age
-    document.getElementById("edit-emial-id").value = resp.User.Email
-   
+    document.getElementById('edit-first-name-id').value = resp.User.Firstname;
+    document.getElementById('edit-last-name-id').value = resp.User.Lastname;
+    document.getElementById('edit-nickname-id').value = resp.User.Nickname;
+    document.getElementById('edit-age-id').value = resp.User.Age;
+    document.getElementById('edit-emial-id').value = resp.User.Email;
 };
-
-
 
 const ShowUsers = (Users) => {
     if (Users) {
@@ -426,6 +446,26 @@ function revealPasswordBtn(id, className) {
 
     unSet(inputFields, revealBtn);
 }
+
+const DisplayTenMessages = (messages) => {
+    // console.log('cookie === ', getCookie('session_token').split('&'));
+    const CURR_USER_ID = getCookie('session_token').split('&')[0];
+    messages.forEach((msg) => {
+        let classNames = 'chat';
+        console.log(
+            'SENDERID === ',
+            msg.senderID === CURR_USER_ID,
+            '   CURR user ID == ',
+            typeof CURR_USER_ID
+        );
+        if (msg.senderID === CURR_USER_ID) {
+            classNames = 'chat sender';
+        }
+            
+        LoadMessages(msg.message, classNames, msg.date.split(' '));
+    });
+};
+
 const openChatModal = (e) => {
     const chatModalContainer = document.querySelector(
         '#chat-modal-container-id'
@@ -437,11 +477,11 @@ const openChatModal = (e) => {
     const SEND_BTN = document.querySelector('.send-chat-btn');
     // const INFO_DIV = document.querySelector('.')
     SEND_BTN.setAttribute('data-reciever-id', RECIEVER_ID);
-    //Now check golang for the chatID 
-    const USER_ID = getCookie("session_token").split("&")[0]
+    //Now check golang for the chatID
+    const USER_ID = getCookie('session_token').split('&')[0];
     let users = {
         userID: USER_ID,
-        recieverID: RECIEVER_ID
+        recieverID: RECIEVER_ID,
     };
 
     fetch('/MessageInfo', {
@@ -452,10 +492,13 @@ const openChatModal = (e) => {
         },
         body: JSON.stringify(users),
     }).then(async (response) => {
-        resp = await response.json()  
-        console.log(resp.chatID)
-         SEND_BTN.setAttribute('data-chat-id', resp.chatID);
-        return resp
+        resp = await response.json();
+        console.log(resp.Messages);
+        SEND_BTN.setAttribute('data-chat-id', resp.chatID);
+        //Add the first 10 messages
+        console.log('MESSAGES: ', resp.Messages);
+        DisplayTenMessages(resp.Messages);
+        return resp;
     });
 };
 
@@ -469,13 +512,13 @@ const SendMessage = () => {
     const SEND_FROM = getCookie('session_token').split('&')[0];
     const SENT_TIME = new Date();
     const SORTED = SENT_TIME.toString();
-    const CHAT_ID = SEND_BTN.getAttribute("data-chat-id")
+    const CHAT_ID = SEND_BTN.getAttribute('data-chat-id');
     const INFORMATION = {
         message: MSG.trim(),
         userID: SEND_FROM,
         recieverID: SEND_TO,
         date: SORTED,
-        chatID: CHAT_ID
+        chatID: CHAT_ID,
     };
 
     if (MSG.trim().length !== 0) {

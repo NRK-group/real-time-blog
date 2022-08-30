@@ -128,3 +128,8 @@ type CheckTyping struct {
 	Reciever string `json:"recieverID"`
 	Typing   string `json:"value"`
 }
+
+type MessageRequest struct {
+	ChatID string `json:"chatID"`
+	Rows string `json:"rows"`
+}

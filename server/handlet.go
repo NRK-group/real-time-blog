@@ -326,9 +326,12 @@ func (forum *DB) GetMessages(w http.ResponseWriter, r *http.Request) {
 		// Check if there is a chat between the two users
 		if chatDetails.ChatID = forum.CheckChatID(chatDetails.User, chatDetails.Reciever); chatDetails.ChatID == ""{
 			chatDetails.ChatID = forum.CreateChatID(chatDetails.User, chatDetails.Reciever ) 
-		} 
-		
+		} else {
+			//Get the first 10 messages
+			chatDetails.Messages = forum.TenMessages(chatDetails.ChatID, 0)
 
+		}
+		
 		marshallChat, marshErr := json.Marshal(chatDetails)
 			if marshErr != nil {
 				fmt.Println("Error marshalling getMessages: ", marshErr)
