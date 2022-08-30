@@ -116,6 +116,11 @@ type PostData struct {
 	Content  string `json:"postContent"`
 }
 
+type ResponseData struct {
+	PostID    string `json:"postID"`
+	Content  string `json:"responseContent"`
+}
+
 type CheckTyping struct {
 	Typer    string `json:"typerID"`
 	Reciever string `json:"recieverID"`

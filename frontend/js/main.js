@@ -1,3 +1,7 @@
+const SendResponsebtn = document.getElementById("send-response-btn")
+
+let allPost 
+
 const openRegristerModal = () => {
     const loginPageId = document.querySelector('#login-page-id');
     const registerPageId = document.querySelector('#register-page-id');
@@ -201,6 +205,7 @@ const validateUser = (resp) => {
         CreateWebSocket();
         ShowUsers(resp.Users);
         allUsers = resp.Users;
+        allPost = resp.Posts
         DisplayAllPost(resp.Posts);
         const loginPageId = document.querySelector('#login-page-id');
         const registerPageId = document.querySelector('#register-page-id');
@@ -211,6 +216,7 @@ const validateUser = (resp) => {
         loginPageId.classList.add('close');
         registerPageId.classList.add('close');
         mainPageId.style.display = 'grid';
+        console.log(resp)
         UpdateUserProfile(resp);
     } else {
         showMessages(resp.Msg);
@@ -357,6 +363,9 @@ registerBtn.addEventListener('click', (e) => {
             });
     }
 });
+
+
+
 const openLoginModal = () => {
     const loginPageId = document.querySelector('#login-page-id');
     const registerPageId = document.querySelector('#register-page-id');
@@ -517,6 +526,7 @@ const sendNewPost = () => {
             })
             .then((resp) => {
                 showMessages(resp.Msg);
+                allPost = resp.Posts
                 DisplayAllPost(resp.Posts);
             });
         closeNewPost();
@@ -535,12 +545,77 @@ const sendNewPost = () => {
         return;
     }
 };
-const openResponseModal = (e) => {
+
+const SendResponse = (e)=> {
+    let content = document.getElementById("create-response-input-box").value
+    let newResponse = {
+        postID: e.getAttribute('data-post-id'),
+        responseContent: content
+    }
+    
+    fetch('/response', {
+        method: 'POST',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newResponse),
+    })
+        .then((response) => {
+            return response.json();
+        })
+        .then((resp) => {
+            showMessages(resp.Msg);
+            allPost = resp.Posts
+            DisplayAllPost(resp.Posts);
+            closeResponseModal();
+        });
+       
+    return;
+    }
+
+const openResponseModal = (postId) => {
     const responseModal = document.querySelector(
         '#response-modal-container-id'
     );
+    SendResponsebtn.setAttribute('data-post-id', postId);
+    allPost.forEach((item)=>{
+        if(item.PostID === postId){
+            CreateResponses(item.Comments)
+        }
+    })
+   
     responseModal.style.display = 'flex';
 };
+
+const CreateResponses = (allComments)=> {
+let comments = ""
+let responseContainer = document.getElementById("all-reponse-container")
+if(allComments){
+    allComments.forEach((item) => {
+    comments =   `
+    <div class="response-container">
+    <div class="response-user-profile">
+        <div class="user-image"></div>
+        <span>
+            <div class="response-username">
+                @${item.UserID}
+                <span class="response-created"
+                    >${item.Date}</span
+                >
+            </div>
+            <div class="response-content">
+              ${item.Content}
+            </div>
+        </span>
+    </div>
+</div>` + comments
+    })
+}
+responseContainer.innerHTML = comments
+
+}
+
 const CreatePost = (
     postId,
     titleValue,
@@ -611,8 +686,8 @@ const CreatePost = (
     const responseIcon = document.createElement('span');
     responseIcon.className = 'response-icon';
     responseIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M256 32C114.6 32 .0272 125.1 .0272 240c0 49.63 21.35 94.98 56.97 130.7c-12.5 50.37-54.27 95.27-54.77 95.77c-2.25 2.25-2.875 5.734-1.5 8.734C1.979 478.2 4.75 480 8 480c66.25 0 115.1-31.76 140.6-51.39C181.2 440.9 217.6 448 256 448c141.4 0 255.1-93.13 255.1-208S397.4 32 256 32z"/></svg>`;
-    responseBtn.onclick = (e) => {
-        openResponseModal(e);
+    responseBtn.onclick = () => {
+        openResponseModal(postId);
     };
     responseBtn.append(responseIcon, 'Response');
     postButtons.append(favoriteBtn, responseBtn);
@@ -625,6 +700,7 @@ const closeResponseModal = () => {
     const responseModal = document.querySelector(
         '#response-modal-container-id'
     );
+    SendResponsebtn.setAttribute('data-post-id', "");
     responseModal.style.display = 'none';
 };
 const DisplayAllPost = (post) => {
