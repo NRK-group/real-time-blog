@@ -177,8 +177,81 @@
             </div>
             <div class="bottom-container">
                 <div class="left-container">
+                    <div class="post-filter-container">
+                        <div class="post-filter-title">General Filter</div>
+                        <nav class="post-filter">
+                            <ul>
+                                <li>
+                                    <div
+                                        class="filter all-post all-post-active"
+                                        onclick="openAllPost(this)"
+                                        id="all-post-id"
+                                    >
+                                        <span class="circle-icon">
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                viewBox="0 0 512 512"
+                                            >
+                                                <path
+                                                    d="M0 256C0 114.6 114.6 0 256 0C397.4 0 512 114.6 512 256C512 397.4 397.4 512 256 512C114.6 512 0 397.4 0 256zM256 352C309 352 352 309 352 256C352 202.1 309 160 256 160C202.1 160 160 202.1 160 256C160 309 202.1 352 256 352z"
+                                                />
+                                            </svg>
+                                        </span>
+                                        All
+                                    </div>
+                                </li>
+                                <li>
+                                    <div
+                                        class="filter golang"
+                                        onclick="openGoLangPost(this)"
+                                        id="golang-post-id"
+                                    >
+                                        <span>
+                                            <img
+                                                src="https://raw.githubusercontent.com/devicons/devicon/master/icons/go/go-original.svg"
+                                                alt="go"
+                                                width="25"
+                                                height="25" /></span
+                                        >Golang
+                                    </div>
+                                </li>
+                                <li>
+                                    <div
+                                        class="filter javascript"
+                                        onclick="openJavaScriptPost(this)"
+                                        id="javascript-post-id"
+                                    >
+                                        <span>
+                                            <img
+                                                src="https://raw.githubusercontent.com/devicons/devicon/master/icons/javascript/javascript-original.svg"
+                                                alt="javascript"
+                                                width="25"
+                                                height="25"
+                                            />
+                                        </span>
+                                        JavaScript
+                                    </div>
+                                </li>
+                                <li>
+                                    <div
+                                        class="filter rust"
+                                        onclick="openRustPost(this)"
+                                        id="rust-post-id"
+                                    >
+                                        <span>
+                                            <img
+                                                src="https://raw.githubusercontent.com/devicons/devicon/master/icons/rust/rust-plain.svg"
+                                                alt="rust"
+                                                width="30"
+                                                height="30"
+                                        /></span>
+                                        Rust
+                                    </div>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
                     <div class="personal-filter-container"></div>
-                    <div class="post-filter-container"></div>
                 </div>
                 <div class="middle-container scrollbar-hidden">
                     <div class="new-post-container">
@@ -250,57 +323,34 @@
                             <div id="profile-username" class="profile-username">
                                 @username
                             </div>
-                                <button
-                                    class="profile-button"
-                                    onclick="openProfileModal()"
-                                >
-                                    <span class="edit-icon"
-                                        ><svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            viewBox="0 0 576 512"
-                                        >
-                                            <!-- Font Awesome Pro 5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) -->
-                                            <path
-                                                d="M402.6 83.2l90.2 90.2c3.8 3.8 3.8 10 0 13.8L274.4 405.6l-92.8 10.3c-12.4 1.4-22.9-9.1-21.5-21.5l10.3-92.8L388.8 83.2c3.8-3.8 10-3.8 13.8 0zm162-22.9l-48.8-48.8c-15.2-15.2-39.9-15.2-55.2 0l-35.4 35.4c-3.8 3.8-3.8 10 0 13.8l90.2 90.2c3.8 3.8 10 3.8 13.8 0l35.4-35.4c15.2-15.3 15.2-40 0-55.2zM384 346.2V448H64V128h229.8c3.2 0 6.2-1.3 8.5-3.5l40-40c7.6-7.6 2.2-20.5-8.5-20.5H48C21.5 64 0 85.5 0 112v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V306.2c0-10.7-12.9-16-20.5-8.5l-40 40c-2.2 2.3-3.5 5.3-3.5 8.5z"
-                                            /></svg></span
-                                    >edit
-                                </button>
-                            </div>
+                            <button
+                                class="profile-button"
+                                onclick="openProfileModal()"
+                            >
+                                <span class="edit-icon">
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 576 512"
+                                    >
+                                        <!-- Font Awesome Pro 5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) -->
+                                        <path
+                                            d="M402.6 83.2l90.2 90.2c3.8 3.8 3.8 10 0 13.8L274.4 405.6l-92.8 10.3c-12.4 1.4-22.9-9.1-21.5-21.5l10.3-92.8L388.8 83.2c3.8-3.8 10-3.8 13.8 0zm162-22.9l-48.8-48.8c-15.2-15.2-39.9-15.2-55.2 0l-35.4 35.4c-3.8 3.8-3.8 10 0 13.8l90.2 90.2c3.8 3.8 10 3.8 13.8 0l35.4-35.4c15.2-15.3 15.2-40 0-55.2zM384 346.2V448H64V128h229.8c3.2 0 6.2-1.3 8.5-3.5l40-40c7.6-7.6 2.2-20.5-8.5-20.5H48C21.5 64 0 85.5 0 112v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V306.2c0-10.7-12.9-16-20.5-8.5l-40 40c-2.2 2.3-3.5 5.3-3.5 8.5z"
+                                        />
+                                    </svg>
+                                </span>
+                                edit
+                            </button>
                         </div>
                     </div>
                     <div class="users-container">
-                        <div id="forum-users-title" class="forum-users-title">
-                            3 Active User
-                        </div>
+                        <div
+                            id="forum-users-title"
+                            class="forum-users-title"
+                        ></div>
                         <div
                             id="forum-users-container"
                             class="forum-users-container"
-                        >
-                            <div
-                                class="forum-user"
-                                data-user-id="1"
-                                onclick="openChatModal(this)"
-                            >
-                                <div class="user-image"></div>
-                                <div class="username">@username</div>
-                            </div>
-                            <div
-                                class="forum-user"
-                                data-user-id="2"
-                                onclick="openChatModal(this);"
-                            >
-                                <div class="user-image"></div>
-                                <div class="username">@username</div>
-                            </div>
-                            <div
-                                class="forum-user"
-                                data-user-id="3"
-                                onclick="openChatModal(this);"
-                            >
-                                <div class="user-image"></div>
-                                <div class="username">@username</div>
-                            </div>
-                        </div>
+                        ></div>
                     </div>
                 </div>
             </div>
@@ -574,7 +624,9 @@
                             />
                         </div>
                         <div class="edit-profile-input">
-                            <label for="edit-email-id">Confirm new password:</label>
+                            <label for="edit-email-id"
+                                >Confirm new password:</label
+                            >
                             <input
                                 type="text"
                                 name=""
