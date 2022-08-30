@@ -198,7 +198,6 @@ const validateUser = (resp) => {
     if (resp.Msg === 'Login successful') {
         //Create the cookie when logged in#
         CreateWebSocket();
-        showMessages('Login successful');
         ShowUsers(resp.Users);
         allUsers = resp.Users;
         DisplayAllPost(resp.Posts);
@@ -211,10 +210,31 @@ const validateUser = (resp) => {
         loginPageId.classList.add('close');
         registerPageId.classList.add('close');
         mainPageId.style.display = 'grid';
+        console.log(resp)
+        UpdateUserProfile(resp);
     } else {
         showMessages(resp.Msg);
     }
 };
+
+const UpdateUserProfile = (resp) => {
+    document.getElementById(
+        'profile-name'
+    ).innerText = `${resp.User.Firstname}  ${resp.User.Lastname}`;
+    document.getElementById(
+        'profile-username'
+    ).innerText = `@${resp.User.Nickname}`;
+
+    //User model
+    document.getElementById("edit-first-name-id").value = resp.User.Firstname
+    document.getElementById("edit-last-name-id").value = resp.User.Lastname
+    document.getElementById("edit-nickname-id").value = resp.User.Nickname
+    document.getElementById("edit-age-id").value = resp.User.Age
+    document.getElementById("edit-emial-id").value = resp.User.Email
+   
+};
+
+
 
 const ShowUsers = (Users) => {
     if (Users) {
@@ -379,6 +399,7 @@ loginBtn.addEventListener('click', (e) => {
         })
         .then((resp) => {
             validateUser(resp);
+            showMessages(resp.Msg);
         });
 });
 
@@ -504,7 +525,6 @@ const sendNewPost = () => {
             postCategory: postCategory,
             postContent: postContent,
         };
-
         fetch('/post', {
             method: 'POST',
             headers: {
@@ -661,4 +681,47 @@ const DisplayAllPost = (post) => {
         );
     }
 };
-
+const openProfileModal = () => {
+    const profileModal = document.querySelector('#profile-moadal-container-id');
+    profileModal.style.display = 'flex';
+};
+const closeProfileModal = () => {
+    const profileModal = document.querySelector('#profile-moadal-container-id');
+    profileModal.style.display = 'none';
+};
+const openAllPost = (e) => {
+    const golangPost = document.querySelector('#golang-post-id');
+    const javaScriptPost = document.querySelector('#javascript-post-id');
+    const rustPost = document.querySelector('#rust-post-id');
+    golangPost.classList.remove('golang-active');
+    javaScriptPost.classList.remove('javascript-active');
+    rustPost.classList.remove('rust-active');
+    e.classList.add('all-post-active');
+};
+const openGoLangPost = (e) => {
+    const allPost = document.querySelector('#all-post-id');
+    const javaScriptPost = document.querySelector('#javascript-post-id');
+    const rustPost = document.querySelector('#rust-post-id');
+    allPost.classList.remove('all-post-active');
+    javaScriptPost.classList.remove('javascript-active');
+    rustPost.classList.remove('rust-active');
+    e.classList.add('golang-active');
+};
+const openJavaScriptPost = (e) => {
+    const allPost = document.querySelector('#all-post-id');
+    const golangPost = document.querySelector('#golang-post-id');
+    const rustPost = document.querySelector('#rust-post-id');
+    allPost.classList.remove('all-post-active');
+    golangPost.classList.remove('golang-active');
+    rustPost.classList.remove('rust-active');
+    e.classList.add('javascript-active');
+};
+const openRustPost = (e) => {
+    const allPost = document.querySelector('#all-post-id');
+    const golangPost = document.querySelector('#golang-post-id');
+    const javaScriptPost = document.querySelector('#javascript-post-id');
+    allPost.classList.remove('all-post-active');
+    golangPost.classList.remove('golang-active');
+    javaScriptPost.classList.remove('javascript-active');
+    e.classList.add('rust-active');
+};
