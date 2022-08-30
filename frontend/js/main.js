@@ -597,40 +597,65 @@ const openResponseModal = (postId) => {
         '#response-modal-container-id'
     );
     SendResponsebtn.setAttribute('data-post-id', postId);
+
+    let post;
+    for (let item of allPost) {
+        if (item.PostID === postId) {
+            post = item;
+            break;
+        }
+    }
     CreateResponses(allPost, postId);
+    const responsePostContainer = document.querySelector(
+        '#response-post-container'
+    );
+    responsePostContainer.innerHTML = `
+    <div class="post-title">${post.Title}</div>
+    <div class="post-profile"> 
+        <div class="post-user-profile">
+            <div class="user-image"></div>
+            <span>
+                <div class="username">${post.UserID}</div>
+                <div class="post-created">${post.Date}</div>
+            </span>
+        </div>
+        <div class="post-category golang golang-category">GoLang</div>
+    </div>
+    <div class="post-content overflow scrollbar-hidden">${post.Content}</div>`;
     responseModal.style.display = 'flex';
 };
 
 const CreateResponses = (allPost, postID) => {
+    let comments = '';
     let allComments;
-    allPost.forEach((item) => {
+    for (let item of allPost) {
         if (item.PostID === postID) {
             allComments = item.Comments;
+            break;
         }
-    });
-
-    let comments = '';
+    }
     let responseContainer = document.getElementById('all-reponse-container');
     if (allComments) {
         allComments.forEach((item) => {
             comments =
                 `
-    <div class="response-container">
-    <div class="response-user-profile">
-        <div class="user-image"></div>
-        <span>
-            <div class="response-username">
-                @${item.UserID}
-                <span class="response-created"
-                    >${item.Date}</span
-                >
-            </div>
-            <div class="response-content">
-              ${item.Content}
-            </div>
-        </span>
-    </div>
-</div>` + comments;
+                <div class="response-container">
+                    <div class="response-user-profile">
+                        <div class="user-image">
+                        </div>
+                        <span>
+                            <div class="response-username">
+                                @${item.UserID}
+                                <span class="response-created">
+                                ${item.Date}
+                                </span>
+                            </div>
+                            <div class="response-content">
+                                ${item.Content}
+                            </div>
+                        </span>
+                    </div>
+                </div>` + comments;
         });
     }
     responseContainer.innerHTML = comments;
