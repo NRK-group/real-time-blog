@@ -547,11 +547,10 @@ input[type='email']:focus {
 }
 .all-post-container {
     display: flex;
-    /* align-items: center; */
-    justify-content: center;
+    align-items: center;
+    /* justify-content: center; */
     flex-direction: column;
     padding-bottom: 100px;
-    display: grid;
 }
 .post-container {
     width: 700px;
@@ -1042,7 +1041,7 @@ input[type='email']:focus {
 .response-container {
     /* background: #000000; */
     width: 45vw;
-    height: 100px;
+    min-height: 50px;
     margin: 10px auto;
     display: flex;
     flex-direction: column;
@@ -1300,4 +1299,13 @@ ul {
     margin-right: 10px;
     width: 15px;
     height: 15px;
+}
+.response-post-container {
+    width: 700px;
+    /* min-height: 250px; */
+    padding: 0 5vh 0 5vh;
+}
+.overflow {
+    overflow: scroll;
+    height: 150px;
 }
