@@ -527,11 +527,22 @@ const SendMessage = () => {
         TEXT_BOX.value = '';
     }
 };
+
+function deleteChild() {
+    var e = document.querySelector('.chat-content-container');
+    //e.firstElementChild can be used.
+    var child = e.lastElementChild;
+    while (child) {
+        e.removeChild(child);
+        child = e.lastElementChild;
+    }
+}
 const closeChat = () => {
     const chatModalContainer = document.querySelector(
         '#chat-modal-container-id'
     );
     chatModalContainer.style.display = 'none';
+    deleteChild()
     //clear the text box
     document.querySelector('.chat-input-box').value = '';
 };
