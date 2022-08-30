@@ -1,6 +1,6 @@
-const SendResponsebtn = document.getElementById("send-response-btn")
+const SendResponsebtn = document.getElementById('send-response-btn');
 
-let allPost 
+let allPost;
 
 const openRegristerModal = () => {
     const loginPageId = document.querySelector('#login-page-id');
@@ -204,7 +204,7 @@ const validateUser = (resp) => {
         CreateWebSocket();
         ShowUsers(resp.Users);
         allUsers = resp.Users;
-        allPost = resp.Posts
+        allPost = resp.Posts;
         DisplayAllPost(resp.Posts);
         const loginPageId = document.querySelector('#login-page-id');
         const registerPageId = document.querySelector('#register-page-id');
@@ -359,8 +359,6 @@ registerBtn.addEventListener('click', (e) => {
             });
     }
 });
-
-
 
 const openLoginModal = () => {
     const loginPageId = document.querySelector('#login-page-id');
@@ -543,7 +541,7 @@ const sendNewPost = () => {
             })
             .then((resp) => {
                 showMessages(resp.Msg);
-                allPost = resp.Posts
+                allPost = resp.Posts;
                 DisplayAllPost(resp.Posts);
             });
         closeNewPost();
@@ -563,54 +561,60 @@ const sendNewPost = () => {
     }
 };
 
-const SendResponse = (e)=> {
-    let content = document.getElementById("create-response-input-box").value
-    let newResponse = {
-        postID: e.getAttribute('data-post-id'),
-        responseContent: content
-    }
-    
-    fetch('/response', {
-        method: 'POST',
-        headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(newResponse),
-    })
-        .then((response) => {
-            return response.json();
+const SendResponse = (e) => {
+    let content = document.getElementById('create-response-input-box').value;
+    if (content !== '') {
+        let newResponse = {
+            postID: e.getAttribute('data-post-id'),
+            responseContent: content,
+        };
+
+        fetch('/response', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(newResponse),
         })
-        .then((resp) => {
-            showMessages(resp.Msg);
-            allPost = resp.Posts
-            DisplayAllPost(resp.Posts);
-            closeResponseModal();
-        });
-       
-    return;
+            .then((response) => {
+                return response.json();
+            })
+            .then((resp) => {
+                allPost = resp.Posts;
+                DisplayAllPost(resp.Posts);
+                document.getElementById('create-response-input-box').value = '';
+                CreateResponses(allPost, e.getAttribute('data-post-id'));
+            });
+
+        return;
     }
+    showMessages('Invalid length of content');
+};
 
 const openResponseModal = (postId) => {
     const responseModal = document.querySelector(
         '#response-modal-container-id'
     );
     SendResponsebtn.setAttribute('data-post-id', postId);
-    allPost.forEach((item)=>{
-        if(item.PostID === postId){
-            CreateResponses(item.Comments)
-        }
-    })
-   
+    CreateResponses(allPost, postId);
     responseModal.style.display = 'flex';
 };
 
-const CreateResponses = (allComments)=> {
-let comments = ""
-let responseContainer = document.getElementById("all-reponse-container")
-if(allComments){
-    allComments.forEach((item) => {
-    comments =   `
+const CreateResponses = (allPost, postID) => {
+    let allComments;
+    allPost.forEach((item) => {
+        if (item.PostID === postID) {
+            allComments = item.Comments;
+        }
+    });
+
+    let comments = '';
+    let responseContainer = document.getElementById('all-reponse-container');
+    if (allComments) {
+        allComments.forEach((item) => {
+            comments =
+                `
     <div class="response-container">
     <div class="response-user-profile">
         <div class="user-image"></div>
@@ -626,12 +630,11 @@ if(allComments){
             </div>
         </span>
     </div>
-</div>` + comments
-    })
-}
-responseContainer.innerHTML = comments
-
-}
+</div>` + comments;
+        });
+    }
+    responseContainer.innerHTML = comments;
+};
 
 const CreatePost = (
     postId,
@@ -717,7 +720,7 @@ const closeResponseModal = () => {
     const responseModal = document.querySelector(
         '#response-modal-container-id'
     );
-    SendResponsebtn.setAttribute('data-post-id', "");
+    SendResponsebtn.setAttribute('data-post-id', '');
     responseModal.style.display = 'none';
 };
 const DisplayAllPost = (post) => {

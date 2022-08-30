@@ -324,19 +324,18 @@ func (forum *DB) GetMessages(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// Check if there is a chat between the two users
-		if chatDetails.ChatID = forum.CheckChatID(chatDetails.User, chatDetails.Reciever); chatDetails.ChatID == ""{
-			chatDetails.ChatID = forum.CreateChatID(chatDetails.User, chatDetails.Reciever ) 
-		} 
-		
+		if chatDetails.ChatID = forum.CheckChatID(chatDetails.User, chatDetails.Reciever); chatDetails.ChatID == "" {
+			chatDetails.ChatID = forum.CreateChatID(chatDetails.User, chatDetails.Reciever)
+		}
 
 		marshallChat, marshErr := json.Marshal(chatDetails)
-			if marshErr != nil {
-				fmt.Println("Error marshalling getMessages: ", marshErr)
-			}
+		if marshErr != nil {
+			fmt.Println("Error marshalling getMessages: ", marshErr)
+		}
 
 		w.WriteHeader(http.StatusOK)
-			w.Header().Set("Content-type", "application/json")
-			w.Write(marshallChat)
+		w.Header().Set("Content-type", "application/json")
+		w.Write(marshallChat)
 	}
 }
 
@@ -359,39 +358,37 @@ func (forum *DB) Response(w http.ResponseWriter, r *http.Request) {
 	res := strings.Split(c.Value, "&")
 
 	if r.Method == "POST" {
-
 		if forum.CheckSession(res[2]) {
-		var responseData ResponseData
-		err := json.NewDecoder(r.Body).Decode(&responseData)
-		if err != nil {
-			fmt.Print(err)
-			http.Error(w, "500 Internal Server Error.", http.StatusInternalServerError)
-			w.WriteHeader(http.StatusInternalServerError)
+			var responseData ResponseData
+			err := json.NewDecoder(r.Body).Decode(&responseData)
+			if err != nil {
+				fmt.Print(err)
+				http.Error(w, "500 Internal Server Error.", http.StatusInternalServerError)
+				w.WriteHeader(http.StatusInternalServerError)
+				return
+			}
+
+			responseID, err := forum.CreateComment(res[0], responseData.PostID, responseData.Content)
+			if err != nil {
+				fmt.Print(err)
+				http.Error(w, "500 Internal Server Error."+err.Error(), http.StatusInternalServerError)
+				w.WriteHeader(http.StatusInternalServerError)
+				return
+			}
+
+			page = ReturnData{Posts: forum.AllPost("", ""), Msg: "successful response--" + responseID}
+			marshallPage, err := json.Marshal(page)
+			if err != nil {
+				fmt.Println("Error marshalling the data: ", err.Error())
+			}
+			w.WriteHeader(http.StatusOK)
+			w.Header().Set("Content-type", "application/json")
+			w.Write(marshallPage)
 			return
 		}
-
-		responseID, err := forum.CreateComment(res[0], responseData.PostID, responseData.Content)
-		if err != nil {
-			fmt.Print(err)
-			http.Error(w, "500 Internal Server Error."+err.Error(), http.StatusInternalServerError)
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-
-		page = ReturnData{Posts: forum.AllPost("", ""), Msg: "successful response--"+ responseID}
-		marshallPage, err := json.Marshal(page)
-		if err != nil {
-			fmt.Println("Error marshalling the data: ", err.Error())
-		}
-		w.WriteHeader(http.StatusOK)
-		w.Header().Set("Content-type", "application/json")
-		w.Write(marshallPage)
-		return
-		}
 	}
-		http.Error(w, "400 Bad Request.", http.StatusBadRequest)
-	}
-
+	http.Error(w, "400 Bad Request.", http.StatusBadRequest)
+}
 
 func SetupCorsResponse(w http.ResponseWriter, req *http.Request) {
 	(w).Header().Set("Access-Control-Allow-Origin", "*")

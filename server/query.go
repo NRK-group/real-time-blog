@@ -231,7 +231,6 @@ func (forum *DB) AllPost(filter, uID string) []Post {
 			NumOfComment: len(forum.GetComments(postID)),
 			Favorite:     forum.GetFavoritesInPost(postID),
 		}
-		fmt.Println(postID)
 		var username string
 		rows2, err := forum.DB.Query("SELECT nickName FROM User WHERE userID = '" + userID + "'")
 		if err != nil {
@@ -266,7 +265,6 @@ func (forum *DB) AllPost(filter, uID string) []Post {
 // Get Comments
 // is a method of forum that return all the comment with that specific postID
 func (forum *DB) GetComments(pID string) []Comment {
-	
 	rows, err := forum.DB.Query("SELECT * FROM Comment WHERE postID = '" + pID + "'")
 	var comment Comment
 	var comments []Comment
@@ -404,7 +402,6 @@ func (forum *DB) InsertMessage(details NewMessage) {
 	messageID := uuid.NewV4().String()
 
 	_, err := insertMessage.Exec(messageID, details.ChatID, details.Mesg, details.Date, details.UserID)
-
 	if err != nil {
 		fmt.Println("Error inserting message: ", err)
 	}
