@@ -231,7 +231,6 @@ func (forum *DB) AllPost(filter, uID string) []Post {
 			NumOfComment: len(forum.GetComments(postID)),
 			Favorite:     forum.GetFavoritesInPost(postID),
 		}
-
 		var username string
 		rows2, err := forum.DB.Query("SELECT nickName FROM User WHERE userID = '" + userID + "'")
 		if err != nil {
@@ -273,15 +272,16 @@ func (forum *DB) GetComments(pID string) []Comment {
 		fmt.Print(err)
 		return comments
 	}
-	var commentID, postID, userID, date, time, content string
+	var commentID, postID, userID, date, time, imgUrl, content string
 	for rows.Next() {
-		rows.Scan(&commentID, &postID, &userID, &date, &time, &content)
+		rows.Scan(&commentID, &postID, &userID, &date, &time, &imgUrl, &content)
 		comment = Comment{
 			CommentID: commentID,
 			PostID:    postID,
 			UserID:    userID,
 			Date:      date,
 			Time:      time,
+			ImgUrl:    imgUrl,
 			Content:   content,
 		}
 		var username string
@@ -402,8 +402,23 @@ func (forum *DB) InsertMessage(details NewMessage) {
 	messageID := uuid.NewV4().String()
 
 	_, err := insertMessage.Exec(messageID, details.ChatID, details.Mesg, details.Date, details.UserID)
-
 	if err != nil {
 		fmt.Println("Error inserting message: ", err)
 	}
+}
+
+// CreateComment
+// is a method of database that add comment in it.
+func (forum *DB) CreateComment(userID, postID, content string) (string, error) {
+	date := time.Now().Format("2006 January 02")
+	time := time.Now()
+	commentID := uuid.NewV4()
+	stmt, _ := forum.DB.Prepare(`
+		INSERT INTO Comment (commentID, postID, userID, date, time, imgUrl, content) values (?, ?, ?, ?, ?,?,?)
+	`)
+	_, err := stmt.Exec(commentID, postID, userID, date, time, "imgUrl", content)
+	if err != nil {
+		return "", err
+	}
+	return commentID.String(), nil
 }

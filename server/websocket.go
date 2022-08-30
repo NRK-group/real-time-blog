@@ -38,17 +38,16 @@ func (forum *DB) reader(conn *websocket.Conn) {
 
 		details.messageType = messageType
 
-
 		// Add To the channel instead of writing the message back
 		if _, recieverValid := users[details.RecieverID]; !recieverValid {
 			fmt.Println("User sending two isnt active UserID: ", details.RecieverID)
 		} else {
 			chat <- details
 		}
-		//Now add the messafe to the database
-		if details.Mesg != " "{
+		// Now add the messafe to the database
+		if details.Mesg != " " {
 			forum.InsertMessage(details)
-		}	
+		}
 	}
 }
 
