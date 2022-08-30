@@ -686,81 +686,44 @@ const closeProfileModal = () => {
     const profileModal = document.querySelector('#profile-moadal-container-id');
     profileModal.style.display = 'none';
 };
-const openAllPost = (e) => {
+const selectFilter = (e) => {
+    const allPost = document.querySelector('#all-post-id');
+    allPost.classList.remove('all-post-active');
     const golangPost = document.querySelector('#golang-post-id');
-    const javaScriptPost = document.querySelector('#javascript-post-id');
-    const rustPost = document.querySelector('#rust-post-id');
     golangPost.classList.remove('golang-active');
+    const javaScriptPost = document.querySelector('#javascript-post-id');
     javaScriptPost.classList.remove('javascript-active');
+    const rustPost = document.querySelector('#rust-post-id');
     rustPost.classList.remove('rust-active');
-    e.classList.add('all-post-active');
     const yourPost = document.querySelector('#your-post-id');
     yourPost.classList.remove('all-post-active');
     const favoritePost = document.querySelector('#favorite-post-id');
     favoritePost.classList.remove('all-post-active');
+    if (e.id === 'golang-post-id') {
+        e.classList.add('golang-active');
+    } else if (e.id === 'javascript-post-id') {
+        e.classList.add('javascript-active');
+    } else if (e.id === 'rust-post-id') {
+        e.classList.add('rust-active');
+    } else {
+        e.classList.add('all-post-active');
+    }
+};
+const openAllPost = (e) => {
+    selectFilter(e);
 };
 const openGoLangPost = (e) => {
-    const allPost = document.querySelector('#all-post-id');
-    const javaScriptPost = document.querySelector('#javascript-post-id');
-    const rustPost = document.querySelector('#rust-post-id');
-    allPost.classList.remove('all-post-active');
-    javaScriptPost.classList.remove('javascript-active');
-    rustPost.classList.remove('rust-active');
-    e.classList.add('golang-active');
-    const yourPost = document.querySelector('#your-post-id');
-    yourPost.classList.remove('all-post-active');
-    const favoritePost = document.querySelector('#favorite-post-id');
-    favoritePost.classList.remove('all-post-active');
+    selectFilter(e);
 };
 const openJavaScriptPost = (e) => {
-    const allPost = document.querySelector('#all-post-id');
-    const golangPost = document.querySelector('#golang-post-id');
-    const rustPost = document.querySelector('#rust-post-id');
-    allPost.classList.remove('all-post-active');
-    golangPost.classList.remove('golang-active');
-    rustPost.classList.remove('rust-active');
-    e.classList.add('javascript-active');
-    const yourPost = document.querySelector('#your-post-id');
-    yourPost.classList.remove('all-post-active');
-    const favoritePost = document.querySelector('#favorite-post-id');
-    favoritePost.classList.remove('all-post-active');
+    selectFilter(e);
 };
 const openRustPost = (e) => {
-    const allPost = document.querySelector('#all-post-id');
-    const golangPost = document.querySelector('#golang-post-id');
-    const javaScriptPost = document.querySelector('#javascript-post-id');
-    allPost.classList.remove('all-post-active');
-    golangPost.classList.remove('golang-active');
-    javaScriptPost.classList.remove('javascript-active');
-    e.classList.add('rust-active');
-    const yourPost = document.querySelector('#your-post-id');
-    yourPost.classList.remove('all-post-active');
-    const favoritePost = document.querySelector('#favorite-post-id');
-    favoritePost.classList.remove('all-post-active');
+    selectFilter(e);
 };
 const openFavoritePost = (e) => {
-    const allPost = document.querySelector('#all-post-id');
-    const golangPost = document.querySelector('#golang-post-id');
-    const javaScriptPost = document.querySelector('#javascript-post-id');
-    const rustPost = document.querySelector('#rust-post-id');
-    allPost.classList.remove('all-post-active');
-    golangPost.classList.remove('golang-active');
-    javaScriptPost.classList.remove('javascript-active');
-    rustPost.classList.remove('rust-active');
-    e.classList.add('all-post-active');
-    const yourPost = document.querySelector('#your-post-id');
-    yourPost.classList.remove('all-post-active');
+    selectFilter(e);
 };
 const openYourPost = (e) => {
-    const allPost = document.querySelector('#all-post-id');
-    const golangPost = document.querySelector('#golang-post-id');
-    const javaScriptPost = document.querySelector('#javascript-post-id');
-    const rustPost = document.querySelector('#rust-post-id');
-    allPost.classList.remove('all-post-active');
-    golangPost.classList.remove('golang-active');
-    javaScriptPost.classList.remove('javascript-active');
-    rustPost.classList.remove('rust-active');
-    e.classList.add('all-post-active');
-    const favoritePost = document.querySelector('#favorite-post-id');
-    favoritePost.classList.remove('all-post-active');
+    selectFilter(e);
 };
