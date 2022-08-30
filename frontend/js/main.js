@@ -211,6 +211,7 @@ const validateUser = (resp) => {
         loginPageId.classList.add('close');
         registerPageId.classList.add('close');
         mainPageId.style.display = 'grid';
+        console.log(resp)
         UpdateUserProfile(resp);
     } else {
         showMessages(resp.Msg);
