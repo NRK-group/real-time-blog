@@ -547,11 +547,10 @@ input[type='email']:focus {
 }
 .all-post-container {
     display: flex;
-    /* align-items: center; */
-    justify-content: center;
+    align-items: center;
+    /* justify-content: center; */
     flex-direction: column;
     padding-bottom: 100px;
-    display: grid;
 }
 .post-container {
     width: 700px;
@@ -1042,7 +1041,7 @@ input[type='email']:focus {
 .response-container {
     /* background: #000000; */
     width: 45vw;
-    height: 100px;
+    min-height: 50px;
     margin: 10px auto;
     display: flex;
     flex-direction: column;
@@ -1219,7 +1218,7 @@ input[type='email']:focus {
     margin: auto;
 }
 .post-filter-container {
-    height: 50vh;
+    height: 40vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -1242,7 +1241,7 @@ ul {
     font-size: 1vw;
     border: 1px solid #00000000;
 }
-.circle-icon {
+.home-icon {
     color: #533de0;
     fill: currentColor;
     display: inline-block;
@@ -1284,6 +1283,29 @@ ul {
     border: 1px solid #000000;
     box-shadow: 0 0 10px rgb(220, 220, 220) inset;
 }
-.post-filter-title {
+.filter-title {
     opacity: 0.5;
+}
+.personal-filter-container {
+    height: 40vh;
+    display: flex;
+    flex-direction: column;
+    padding: 1vw;
+}
+.icon {
+    color: #533de0;
+    fill: currentColor;
+    display: inline-block;
+    margin-right: 10px;
+    width: 15px;
+    height: 15px;
+}
+.response-post-container {
+    width: 700px;
+    /* min-height: 250px; */
+    padding: 0 5vh 0 5vh;
+}
+.overflow {
+    overflow: scroll;
+    height: 150px;
 }

@@ -1,3 +1,7 @@
+const SendResponsebtn = document.getElementById('send-response-btn');
+
+let allPost;
+
 const openRegristerModal = () => {
     const loginPageId = document.querySelector('#login-page-id');
     const registerPageId = document.querySelector('#register-page-id');
@@ -223,6 +227,7 @@ const validateUser = (resp) => {
         CreateWebSocket();
         ShowUsers(resp.Users);
         allUsers = resp.Users;
+        allPost = resp.Posts;
         DisplayAllPost(resp.Posts);
         const loginPageId = document.querySelector('#login-page-id');
         const registerPageId = document.querySelector('#register-page-id');
@@ -233,7 +238,7 @@ const validateUser = (resp) => {
         loginPageId.classList.add('close');
         registerPageId.classList.add('close');
         mainPageId.style.display = 'grid';
-        console.log(resp);
+        console.log(resp);;
         UpdateUserProfile(resp);
     } else {
         showMessages(resp.Msg);
@@ -377,6 +382,7 @@ registerBtn.addEventListener('click', (e) => {
             });
     }
 });
+
 const openLoginModal = () => {
     const loginPageId = document.querySelector('#login-page-id');
     const registerPageId = document.querySelector('#register-page-id');
@@ -592,6 +598,7 @@ const sendNewPost = () => {
             })
             .then((resp) => {
                 showMessages(resp.Msg);
+                allPost = resp.Posts;
                 DisplayAllPost(resp.Posts);
             });
         closeNewPost();
@@ -610,12 +617,119 @@ const sendNewPost = () => {
         return;
     }
 };
-const openResponseModal = (e) => {
+
+const SendResponse = (e) => {
+    let content = document.getElementById('create-response-input-box').value;
+    if (content !== '') {
+        let newResponse = {
+            postID: e.getAttribute('data-post-id'),
+            responseContent: content,
+        };
+
+        fetch('/response', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(newResponse),
+        })
+            .then((response) => {
+                return response.json();
+            })
+            .then((resp) => {
+                allPost = resp.Posts;
+                DisplayAllPost(resp.Posts);
+                document.getElementById('create-response-input-box').value = '';
+                CreateResponses(allPost, e.getAttribute('data-post-id'));
+            });
+
+        return;
+    }
+    showMessages('Invalid length of content');
+};
+
+const openResponseModal = (postId) => {
     const responseModal = document.querySelector(
         '#response-modal-container-id'
     );
+    SendResponsebtn.setAttribute('data-post-id', postId);
+
+    let post;
+    for (let item of allPost) {
+        if (item.PostID === postId) {
+            post = item;
+            break;
+        }
+    }
+    CreateResponses(allPost, postId);
+    const responsePostContainer = document.querySelector(
+        '#response-post-container'
+    );
+    let category = '';
+    if (post.Category === 'golang') {
+        category =
+            '<div class="post-category golang golang-category">GoLang</div>';
+    }
+    if (post.Category === 'javascript') {
+        category =
+            '<div class="post-category javascript javascript-category">GoLang</div>';
+    }
+    if (post.Category === 'rust') {
+        category = '<div class="post-category rust rust-category">GoLang</div>';
+    }
+    responsePostContainer.innerHTML = `
+    <div class="post-title">${post.Title}</div>
+    <div class="post-profile"> 
+        <div class="post-user-profile">
+            <div class="user-image"></div>
+            <span>
+                <div class="username">${post.UserID}</div>
+                <div class="post-created">${post.Date}</div>
+            </span>
+        </div>
+        ${category}
+    </div>
+    <div class="post-content overflow scrollbar-hidden">${post.Content}</div>`;
     responseModal.style.display = 'flex';
 };
+
+const CreateResponses = (allPost, postID) => {
+    let comments = '';
+    let allComments;
+    for (let item of allPost) {
+        if (item.PostID === postID) {
+            allComments = item.Comments;
+            break;
+        }
+    }
+    let responseContainer = document.getElementById('all-reponse-container');
+    if (allComments) {
+        allComments.forEach((item) => {
+            comments =
+                `
+                <div class="response-container">
+                    <div class="response-user-profile">
+                        <div class="user-image">
+                        </div>
+                        <span>
+                            <div class="response-username">
+                                @${item.UserID}
+                                <span class="response-created">
+                                ${item.Date}
+                                </span>
+                            </div>
+                            <div class="response-content">
+                                ${item.Content}
+                            </div>
+                        </span>
+                    </div>
+                </div>` + comments;
+        });
+    }
+    responseContainer.innerHTML = comments;
+};
+
 const CreatePost = (
     postId,
     titleValue,
@@ -686,8 +800,8 @@ const CreatePost = (
     const responseIcon = document.createElement('span');
     responseIcon.className = 'response-icon';
     responseIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M256 32C114.6 32 .0272 125.1 .0272 240c0 49.63 21.35 94.98 56.97 130.7c-12.5 50.37-54.27 95.27-54.77 95.77c-2.25 2.25-2.875 5.734-1.5 8.734C1.979 478.2 4.75 480 8 480c66.25 0 115.1-31.76 140.6-51.39C181.2 440.9 217.6 448 256 448c141.4 0 255.1-93.13 255.1-208S397.4 32 256 32z"/></svg>`;
-    responseBtn.onclick = (e) => {
-        openResponseModal(e);
+    responseBtn.onclick = () => {
+        openResponseModal(postId);
     };
     responseBtn.append(responseIcon, 'Response');
     postButtons.append(favoriteBtn, responseBtn);
@@ -700,6 +814,7 @@ const closeResponseModal = () => {
     const responseModal = document.querySelector(
         '#response-modal-container-id'
     );
+    SendResponsebtn.setAttribute('data-post-id', '');
     responseModal.style.display = 'none';
 };
 const DisplayAllPost = (post) => {
@@ -743,39 +858,44 @@ const closeProfileModal = () => {
     const profileModal = document.querySelector('#profile-moadal-container-id');
     profileModal.style.display = 'none';
 };
-const openAllPost = (e) => {
+const selectFilter = (e) => {
+    const allPost = document.querySelector('#all-post-id');
+    allPost.classList.remove('all-post-active');
     const golangPost = document.querySelector('#golang-post-id');
-    const javaScriptPost = document.querySelector('#javascript-post-id');
-    const rustPost = document.querySelector('#rust-post-id');
     golangPost.classList.remove('golang-active');
+    const javaScriptPost = document.querySelector('#javascript-post-id');
     javaScriptPost.classList.remove('javascript-active');
+    const rustPost = document.querySelector('#rust-post-id');
     rustPost.classList.remove('rust-active');
-    e.classList.add('all-post-active');
+    const yourPost = document.querySelector('#your-post-id');
+    yourPost.classList.remove('all-post-active');
+    const favoritePost = document.querySelector('#favorite-post-id');
+    favoritePost.classList.remove('all-post-active');
+    if (e.id === 'golang-post-id') {
+        e.classList.add('golang-active');
+    } else if (e.id === 'javascript-post-id') {
+        e.classList.add('javascript-active');
+    } else if (e.id === 'rust-post-id') {
+        e.classList.add('rust-active');
+    } else {
+        e.classList.add('all-post-active');
+    }
+};
+const openAllPost = (e) => {
+    selectFilter(e);
 };
 const openGoLangPost = (e) => {
-    const allPost = document.querySelector('#all-post-id');
-    const javaScriptPost = document.querySelector('#javascript-post-id');
-    const rustPost = document.querySelector('#rust-post-id');
-    allPost.classList.remove('all-post-active');
-    javaScriptPost.classList.remove('javascript-active');
-    rustPost.classList.remove('rust-active');
-    e.classList.add('golang-active');
+    selectFilter(e);
 };
 const openJavaScriptPost = (e) => {
-    const allPost = document.querySelector('#all-post-id');
-    const golangPost = document.querySelector('#golang-post-id');
-    const rustPost = document.querySelector('#rust-post-id');
-    allPost.classList.remove('all-post-active');
-    golangPost.classList.remove('golang-active');
-    rustPost.classList.remove('rust-active');
-    e.classList.add('javascript-active');
+    selectFilter(e);
 };
 const openRustPost = (e) => {
-    const allPost = document.querySelector('#all-post-id');
-    const golangPost = document.querySelector('#golang-post-id');
-    const javaScriptPost = document.querySelector('#javascript-post-id');
-    allPost.classList.remove('all-post-active');
-    golangPost.classList.remove('golang-active');
-    javaScriptPost.classList.remove('javascript-active');
-    e.classList.add('rust-active');
+    selectFilter(e);
+};
+const openFavoritePost = (e) => {
+    selectFilter(e);
+};
+const openYourPost = (e) => {
+    selectFilter(e);
 };
