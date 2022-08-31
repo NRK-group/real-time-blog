@@ -53,11 +53,9 @@ function getCookie(name) {
 }
 
 const CheckScrollTop = (e) => {
-    if (e.scrollTop === 0) {
-        console.log("At the top")
-    } else {
-        console.log("Not top")
-    }
+    if (e.scrollTop !== 0) return
+    console.log('At the top', e.childElementCount);
+    
 }
 
 
