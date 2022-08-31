@@ -432,16 +432,16 @@ func (forum *DB) CreateChatID(userID, recieverID string) string {
 
 func (forum *DB) InsertMessage(details NewMessage) {
 	insertMessage, err1 := forum.DB.Prepare(`
-	INSERT INTO Message VALUES (?,?,?,?,?)
+	INSERT INTO Message (chatID, content, date, userID) VALUES (?,?,?,?)
 	`)
 	if err1 != nil {
 		fmt.Println("Error Preparing message: ", err1)
 		return
 	}
 
-	messageID := uuid.NewV4().String()
+	// messageID := uuid.NewV4().String()
 
-	_, err := insertMessage.Exec(messageID, details.ChatID, details.Mesg, details.Date, details.UserID)
+	_, err := insertMessage.Exec(details.ChatID, details.Mesg, details.Date, details.UserID)
 	if err != nil {
 		fmt.Println("Error inserting message: ", err)
 	}
@@ -461,4 +461,30 @@ func (forum *DB) CreateComment(userID, postID, content string) (string, error) {
 		return "", err
 	}
 	return commentID.String(), nil
+}
+
+func (forum *DB) TenMessages(chatID string, x int) []SendMessage{
+	//select the bottom 10 messages from the db
+	getTen, err := forum.DB.Query(`SELECT content, date, userID FROM Message  WHERE chatID = ? ORDER BY messageID DESC LIMIT ?,?`, chatID, x, x+10)
+
+	if err != nil {
+		fmt.Println("Error selecting messages: ", err)
+		return nil
+	}
+	result := make([]SendMessage, 0)
+	// count := 1
+	// start, _ := strconv.Atoi(x)
+	for getTen.Next() {
+		// if count > x {
+			var current SendMessage
+			getTen.Scan(&current.Message, &current.Date, &current.Sender)
+			result = append(result, current)
+		// }
+		// count++
+		// if count > x + 10{
+		// 	break;
+		// }
+	}
+	fmt.Println(result)
+	return result
 }

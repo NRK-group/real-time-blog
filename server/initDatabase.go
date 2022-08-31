@@ -2,6 +2,7 @@ package server
 
 import (
 	"database/sql"
+	"fmt"
 )
 
 func initUser(db *sql.DB) {
@@ -101,20 +102,23 @@ func initFavorite(db *sql.DB) {
 }
 
 func initMessage(db *sql.DB) {
-	stmt, _ := db.Prepare(`
+	stmt, err := db.Prepare(`
 	CREATE TABLE IF NOT EXISTS "Message" (
-		"messageID" TEXT UNIQUE NOT NULL,
+		"messageID" INTEGER PRIMARY KEY AUTOINCREMENT,
 		"chatID"	TEXT NOT NULL,
 		"content"	TEXT NOT NULL,
 		"date"      TEXT NOT NULL,
 		"userID"	TEXT NOT NULL,
-		PRIMARY KEY("messageID")
 		FOREIGN KEY ("chatID")
 			REFERENCES "Chat" ("chatID")
 		FOREIGN KEY ("userID")
 			REFERENCES "User" ("userID")
 	);
 	`)
+	if err != nil {
+		fmt.Println("Error initialising the message table: ",err)
+		// return
+	}
 	stmt.Exec()
 }
 
