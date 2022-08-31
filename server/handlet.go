@@ -328,7 +328,7 @@ func (forum *DB) GetMessages(w http.ResponseWriter, r *http.Request) {
 			chatDetails.ChatID = forum.CreateChatID(chatDetails.User, chatDetails.Reciever ) 
 		} else {
 			//Get the first 10 messages
-			chatDetails.Messages = forum.TenMessages(chatDetails.ChatID, 0)
+			chatDetails.Messages = forum.TenMessages(chatDetails.ChatID, chatDetails.X)
 
 		}
 		

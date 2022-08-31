@@ -35,7 +35,7 @@ const checkRegisterData = (userData) => {
 function getCookie(name) {
     // Split cookie string and get all individual name=value pairs in an array
     var cookieArr = document.cookie.split(';');
-    
+
     // Loop through the array elements
     for (var i = 0; i < cookieArr.length; i++) {
         var cookiePair = cookieArr[i].split('=');
@@ -47,34 +47,47 @@ function getCookie(name) {
             return cookiePair[1];
         }
     }
-    
+
     // Return null if not found
     return null;
 }
 
-const CheckScrollTop = (e) => {
-    if (e.scrollTop !== 0) return
-    console.log('At the top', e.childElementCount);
-    
-}
+const CheckScrollTop = (e, event) => {
+    if (e.scrollTop !== 0) return;
+    console.log(e.scrollHeight);
 
+    const SEND_BTN = document.querySelector('.send-chat-btn');
+    users = {
+        userID: getCookie('session_token').split('&')[0],
+        recieverID: SEND_BTN.getAttribute('data-reciever-id'),
+        X: e.childElementCount,
+    };
+    console.log('GETTING MSGS: ', users);
+    FetchMsgs(users, SEND_BTN);
+
+    // const CHAT_CONTENT_CONTAINER = document.querySelector(
+    //     '.chat-content-container'
+    // );
+
+    // CHAT_CONTENT_CONTAINER.scroll({
+    //     top: CHAT_CONTENT_CONTAINER.scrollHeight,
+    //     behavior: "auto"
+    // });
+};
 
 const LoadMessages = (messageText, classType, sentTime) => {
     const MSG = AddMessages(messageText, classType, sentTime);
     const CHAT_CONTENT_CONTAINER = document.querySelector(
         '.chat-content-container'
     );
-    const FIRST_MSG = document.querySelector('.chat');
-    if (FIRST_MSG === null) {
-        CHAT_CONTENT_CONTAINER.append(MSG);
-        
-    } else {
-        FIRST_MSG.before(MSG)
-    }
-     CHAT_CONTENT_CONTAINER.scroll({
-         top: CHAT_CONTENT_CONTAINER.scrollHeight,
-         behavior: 'smooth',
-     });
+    CHAT_CONTENT_CONTAINER.prepend(MSG);
+    console.log('Prepending');
+    // const FIRST_MSG = document.querySelector('.chat');
+    // if (FIRST_MSG === null) {
+    //     CHAT_CONTENT_CONTAINER.append(MSG);
+    // } else {
+    //     FIRST_MSG.prepend(MSG);
+    // }
 };
 
 const AddMessages = (messageText, classType, sentTime) => {
@@ -109,12 +122,11 @@ const DisplayMessage = (messageText, classType, sentTime) => {
         '.chat-content-container'
     );
     CHAT_CONTENT_CONTAINER.append(MSG);
-    CHAT_CONTENT_CONTAINER.scroll({
-        top: CHAT_CONTENT_CONTAINER.scrollHeight,
-        behavior: 'smooth',
-    });
+    // CHAT_CONTENT_CONTAINER.scroll({
+    //     top: CHAT_CONTENT_CONTAINER.scrollHeight,
+    //     behavior: 'smooth',
+    // });
 };
-
 
 // let ;
 let typing, debounce;
@@ -246,7 +258,6 @@ const validateUser = (resp) => {
         loginPageId.classList.add('close');
         registerPageId.classList.add('close');
         mainPageId.style.display = 'grid';
-        console.log(resp);;
         UpdateUserProfile(resp);
     } else {
         showMessages(resp.Msg);
@@ -465,21 +476,40 @@ function revealPasswordBtn(id, className) {
 }
 
 const DisplayTenMessages = (messages) => {
-    // console.log('cookie === ', getCookie('session_token').split('&'));
+    console.log('DISlaying ten messages');
     const CURR_USER_ID = getCookie('session_token').split('&')[0];
+    const CHAT_CONTENT_CONTAINER = document.querySelector(
+        '.chat-content-container'
+    );
+
+    let prev = CHAT_CONTENT_CONTAINER.scrollHeight;
     messages.forEach((msg) => {
         let classNames = 'chat';
-        console.log(
-            'SENDERID === ',
-            msg.senderID === CURR_USER_ID,
-            '   CURR user ID == ',
-            typeof CURR_USER_ID
-        );
         if (msg.senderID === CURR_USER_ID) {
             classNames = 'chat sender';
         }
-            
         LoadMessages(msg.message, classNames, msg.date.split(' '));
+    });
+    CHAT_CONTENT_CONTAINER.scroll({
+        top: CHAT_CONTENT_CONTAINER.scrollHeight - prev,
+    });
+};
+
+const FetchMsgs = (users, SEND_BTN) => {
+    fetch('/MessageInfo', {
+        method: 'POST',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(users),
+    }).then(async (response) => {
+        resp = await response.json();
+        SEND_BTN.setAttribute('data-chat-id', resp.chatID);
+        //Add the first 10 messages
+        console.log('MESSAGES: ', resp.Messages);
+        if (resp.Messages.length != 0) DisplayTenMessages(resp.Messages);
+        return resp;
     });
 };
 
@@ -499,32 +529,22 @@ const openChatModal = (e) => {
     let users = {
         userID: USER_ID,
         recieverID: RECIEVER_ID,
+        X: 0,
     };
 
-    fetch('/MessageInfo', {
-        method: 'POST',
-        headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(users),
-    }).then(async (response) => {
-        resp = await response.json();
-        console.log(resp.Messages);
-        SEND_BTN.setAttribute('data-chat-id', resp.chatID);
-        //Add the first 10 messages
-        console.log('MESSAGES: ', resp.Messages);
-        DisplayTenMessages(resp.Messages);
-        return resp;
-    });
+    FetchMsgs(users, SEND_BTN);
 
     const CHAT_CONTENT_CONTAINER = document.querySelector(
         '.chat-content-container'
     );
-    CHAT_CONTENT_CONTAINER.addEventListener("scroll", () => {
-        CheckScrollTop(CHAT_CONTENT_CONTAINER);
-        })
-    
+
+    // CHAT_CONTENT_CONTAINER.scroll({
+    //     top: CHAT_CONTENT_CONTAINER.scrollHeight,
+    // });
+
+    CHAT_CONTENT_CONTAINER.addEventListener('scroll', (e) => {
+        CheckScrollTop(CHAT_CONTENT_CONTAINER, e);
+    });
 };
 
 const SendMessage = () => {
@@ -558,6 +578,7 @@ function deleteChild() {
     //e.firstElementChild can be used.
     var child = e.lastElementChild;
     while (child) {
+        console.log('Removing Child: ');
         e.removeChild(child);
         child = e.lastElementChild;
     }
@@ -567,7 +588,7 @@ const closeChat = () => {
         '#chat-modal-container-id'
     );
     chatModalContainer.style.display = 'none';
-    deleteChild()
+    deleteChild();
     //clear the text box
     document.querySelector('.chat-input-box').value = '';
 };
