@@ -35,7 +35,7 @@ const checkRegisterData = (userData) => {
 function getCookie(name) {
     // Split cookie string and get all individual name=value pairs in an array
     var cookieArr = document.cookie.split(';');
-
+    
     // Loop through the array elements
     for (var i = 0; i < cookieArr.length; i++) {
         var cookiePair = cookieArr[i].split('=');
@@ -47,12 +47,29 @@ function getCookie(name) {
             return cookiePair[1];
         }
     }
-
+    
     // Return null if not found
     return null;
 }
+const LoadMessages = (messageText, classType, sentTime) => {
+    const MSG = AddMessages(messageText, classType, sentTime);
+    const CHAT_CONTENT_CONTAINER = document.querySelector(
+        '.chat-content-container'
+    );
+    const FIRST_MSG = document.querySelector('.chat');
+    if (FIRST_MSG === null) {
+        CHAT_CONTENT_CONTAINER.append(MSG);
+        
+    } else {
+        FIRST_MSG.before(MSG)
+    }
+     CHAT_CONTENT_CONTAINER.scroll({
+         top: CHAT_CONTENT_CONTAINER.scrollHeight,
+         behavior: 'smooth',
+     });
+};
 
-const DisplayMessage = (messageText, classType, sentTime) => {
+const AddMessages = (messageText, classType, sentTime) => {
     //Make the div that will hold everything
     const MSG_HOLDER = document.createElement('div');
     MSG_HOLDER.className = classType;
@@ -75,15 +92,21 @@ const DisplayMessage = (messageText, classType, sentTime) => {
     MSG_CONTAINER.append(DATE);
 
     MSG_HOLDER.append(PROFILE_IMG, MSG_CONTAINER);
+    return MSG_HOLDER;
+};
+
+const DisplayMessage = (messageText, classType, sentTime) => {
+    const MSG = AddMessages(messageText, classType, sentTime);
     const CHAT_CONTENT_CONTAINER = document.querySelector(
         '.chat-content-container'
     );
-    CHAT_CONTENT_CONTAINER.append(MSG_HOLDER);
+    CHAT_CONTENT_CONTAINER.append(MSG);
     CHAT_CONTENT_CONTAINER.scroll({
         top: CHAT_CONTENT_CONTAINER.scrollHeight,
         behavior: 'smooth',
     });
 };
+
 
 // let ;
 let typing, debounce;
@@ -215,7 +238,7 @@ const validateUser = (resp) => {
         loginPageId.classList.add('close');
         registerPageId.classList.add('close');
         mainPageId.style.display = 'grid';
-        console.log(resp);
+        console.log(resp);;
         UpdateUserProfile(resp);
     } else {
         showMessages(resp.Msg);
@@ -429,6 +452,26 @@ function revealPasswordBtn(id, className) {
 
     unSet(inputFields, revealBtn);
 }
+
+const DisplayTenMessages = (messages) => {
+    // console.log('cookie === ', getCookie('session_token').split('&'));
+    const CURR_USER_ID = getCookie('session_token').split('&')[0];
+    messages.forEach((msg) => {
+        let classNames = 'chat';
+        console.log(
+            'SENDERID === ',
+            msg.senderID === CURR_USER_ID,
+            '   CURR user ID == ',
+            typeof CURR_USER_ID
+        );
+        if (msg.senderID === CURR_USER_ID) {
+            classNames = 'chat sender';
+        }
+            
+        LoadMessages(msg.message, classNames, msg.date.split(' '));
+    });
+};
+
 const openChatModal = (e) => {
     const chatModalContainer = document.querySelector(
         '#chat-modal-container-id'
@@ -456,8 +499,11 @@ const openChatModal = (e) => {
         body: JSON.stringify(users),
     }).then(async (response) => {
         resp = await response.json();
-        console.log(resp.chatID);
+        console.log(resp.Messages);
         SEND_BTN.setAttribute('data-chat-id', resp.chatID);
+        //Add the first 10 messages
+        console.log('MESSAGES: ', resp.Messages);
+        DisplayTenMessages(resp.Messages);
         return resp;
     });
 };
@@ -487,11 +533,22 @@ const SendMessage = () => {
         TEXT_BOX.value = '';
     }
 };
+
+function deleteChild() {
+    var e = document.querySelector('.chat-content-container');
+    //e.firstElementChild can be used.
+    var child = e.lastElementChild;
+    while (child) {
+        e.removeChild(child);
+        child = e.lastElementChild;
+    }
+}
 const closeChat = () => {
     const chatModalContainer = document.querySelector(
         '#chat-modal-container-id'
     );
     chatModalContainer.style.display = 'none';
+    deleteChild()
     //clear the text box
     document.querySelector('.chat-input-box').value = '';
 };
