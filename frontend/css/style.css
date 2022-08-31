@@ -43,6 +43,8 @@ button {
 .left-container {
     height: 100vh;
     border-right: 2px solid #e8e8e8;
+    padding-top: 50px;
+    overflow: scroll;
 }
 
 .middle-container {
@@ -89,6 +91,9 @@ button {
     transition: all 1s;
     text-decoration: underline;
     text-decoration-color: #543de0;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    transition: all 0.3s;
 }
 .logout-container {
     display: flex;
@@ -112,6 +117,9 @@ button {
 }
 .logout-btn:hover > .logout-icon {
     color: #543de0;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    transition: all 0.3s;
 }
 .logout-btn:hover {
     background-color: white;
@@ -491,9 +499,10 @@ input[type='email']:focus {
     align-items: center;
     padding: 0px 30px;
     cursor: pointer;
+    box-shadow: 0 0 20px rgb(220, 220, 220) inset;
 }
 .new-post-top-content div:hover {
-    box-shadow: 0 0 2px rgb(100, 100, 230);
+    box-shadow: 0 0 2px rgb(100, 100, 230) inset;
     -webkit-transition: all 0.3s;
     -moz-transition: all 0.3s;
     transition: all 0.3s;
@@ -651,9 +660,9 @@ input[type='email']:focus {
     padding-bottom: 5px;
     cursor: pointer;
 }
-.favorite-btn:focus > .favorite-icon {
+/* .favorite-btn:focus > .favorite-icon {
     color: #533de0;
-}
+} */
 .favorite-icon {
     color: rgb(220, 220, 220);
     fill: currentColor;
@@ -684,6 +693,9 @@ input[type='email']:focus {
 .response-btn:hover > .response-icon {
     color: #533de0;
     fill: currentColor;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    transition: all 0.3s;
 }
 .users-container {
     padding: 0 10% 0 10%;
@@ -705,6 +717,9 @@ input[type='email']:focus {
 }
 .forum-user:hover {
     border: 1px solid #533de0;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    transition: all 0.3s;
 }
 .chat-modal-container {
     display: none;
@@ -754,6 +769,9 @@ input[type='email']:focus {
 }
 .exit:hover {
     background-color: #533de0;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    transition: all 0.3s;
 }
 .close-icon {
     color: #533de0;
@@ -764,6 +782,9 @@ input[type='email']:focus {
 }
 .exit:hover > .close-icon {
     color: white;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    transition: all 0.3s;
 }
 .chat-header {
     display: flex;
@@ -826,19 +847,27 @@ input[type='email']:focus {
     height: 4vh;
     min-height: 25px;
     cursor: pointer;
-    color: #533de0;
+    color: white;
+    background-color: #533de0;
     padding: 0.5%;
     border-radius: 16px;
     justify-content: center;
+    align-items: center;
+    box-shadow: 0 0 20px rgb(220, 220, 220);
     font-size: 75%;
 }
 .send-chat-btn:hover {
-    background-color: #533de0;
-    color: white;
-}
-.send-chat-btn:focus {
     background-color: white;
     color: #533de0;
+    box-shadow: 0 0 20px rgb(220, 220, 220) inset;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    transition: all 0.3s;
+}
+.send-chat-btn:focus {
+    background-color: #533de0;
+    box-shadow: 0 0 20px rgb(220, 220, 220);
+    color: white;
 }
 .create-post-modal-container {
     display: none;
@@ -887,31 +916,36 @@ input[type='email']:focus {
 }
 .post-btn {
     cursor: pointer;
-    color: #533de0;
+    color: white;
+    background-color: #533de0;
     padding: 10px 20px;
     border-radius: 16px;
     width: 100px;
     display: flex;
     justify-content: space-evenly;
     align-items: center;
+    box-shadow: 0 0 20px rgb(220, 220, 220);
 }
 .post-btn:hover {
-    background-color: #533de0;
-    color: white;
-}
-.post-btn:focus {
     background-color: white;
+    box-shadow: 0 0 20px rgb(220, 220, 220) inset;
     color: #533de0;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    transition: all 0.3s;
 }
 .post-icon {
-    color: #533de0;
+    color: white;
     fill: currentColor;
     display: inline-block;
     width: 20px;
     height: 20px;
 }
 .post-btn:hover > .post-icon {
-    color: white;
+    color: #533de0;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    transition: all 0.3s;
 }
 .new-post-title-container {
     padding-left: 100px;
@@ -1026,13 +1060,18 @@ input[type='email']:focus {
 .send-response-btn {
     margin-left: 50px;
     cursor: pointer;
-    color: #533de0;
+    color: white;
+    background-color: #533de0;
     padding: 10px 20px;
     border-radius: 16px;
 }
 .send-response-btn:hover {
-    background-color: #533de0;
-    color: white;
+    background-color: white;
+    color: #533de0;
+    box-shadow: 0 0 10px rgb(220, 220, 220) inset;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    transition: all 0.3s;
 }
 .send-response-btn:focus {
     background-color: white;
@@ -1164,6 +1203,9 @@ input[type='email']:focus {
 }
 .discard-changes-btn:hover {
     box-shadow: 0 0 10px rgb(220, 220, 220) inset;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    transition: all 0.3s;
 }
 
 .save-changes-btn {
@@ -1189,9 +1231,15 @@ input[type='email']:focus {
     color: #533de0;
     background-color: white;
     box-shadow: 0 0 10px rgb(220, 220, 220) inset;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    transition: all 0.3s;
 }
 .save-changes-btn:hover > .save-icon {
     color: #533de0;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    transition: all 0.3s;
 }
 .profile-picture-container {
     display: flex;
@@ -1221,7 +1269,6 @@ input[type='email']:focus {
     margin: auto;
 }
 .post-filter-container {
-    height: 40vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -1255,6 +1302,9 @@ ul {
 .filter:hover {
     background-color: white;
     box-shadow: 0 0 10px rgb(220, 220, 220) inset;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    transition: all 0.3s;
 }
 .all-post {
     color: #533de0;
@@ -1290,7 +1340,6 @@ ul {
     opacity: 0.5;
 }
 .personal-filter-container {
-    height: 40vh;
     display: flex;
     flex-direction: column;
     padding: 1vw;

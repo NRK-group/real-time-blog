@@ -248,7 +248,6 @@ const validateUser = (resp) => {
         loginPageId.classList.add('close');
         registerPageId.classList.add('close');
         mainPageId.style.display = 'grid';
-        console.log(resp);;
         UpdateUserProfile(resp);
     } else {
         showMessages(resp.Msg);
@@ -751,6 +750,53 @@ const CreateResponses = (allPost, postID) => {
     responseContainer.innerHTML = comments;
 };
 
+const Favorite = (postId, react, node, iconNode) => {
+    if (postId !== '') {
+        if (react !== '0') {
+            react = 0;
+        } else {
+            react = 1;
+        }
+
+        let newReaction = {
+            postID: postId,
+            react: react,
+        };
+
+        fetch('/favorite', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(newReaction),
+        })
+            .then(async (response) => {
+                return await response.json();
+            })
+            .then((resp) => {
+                if (react === 1) {
+                    iconNode.style.color = '#533de0';
+                } else {
+                    iconNode.style.color = '';
+                }
+                node.setAttribute('data-post-reaction', react);
+                allPost = resp.Posts;
+                if (
+                    document
+                        .querySelector('#favorite-post-id')
+                        .classList.contains('all-post-active')
+                ) {
+                    let newAllPost = allPost.filter(
+                        (post) => post.Favorite.react === 1
+                    );
+                    DisplayAllPost(newAllPost);
+                }
+            });
+        return;
+    }
+};
+
 const CreatePost = (
     postId,
     titleValue,
@@ -759,7 +805,8 @@ const CreatePost = (
     postCreatedValue,
     postCategoryValue,
     postContentValue,
-    react
+    react,
+    UserID
 ) => {
     const postContainer = document.createElement('div');
     postContainer.className = 'post-container';
@@ -811,9 +858,27 @@ const CreatePost = (
     postButtons.className = 'post-buttons';
     const favoriteBtn = document.createElement('div');
     favoriteBtn.className = 'favorite-btn';
+    favoriteBtn.setAttribute('data-post-id', postId);
     favoriteBtn.tabIndex = '1';
+    favoriteBtn.setAttribute('data-post-reaction', react);
     const favoriteIcon = document.createElement('span');
     favoriteIcon.className = 'favorite-icon';
+    //--------
+    favoriteBtn.onclick = () => {
+        let nreact = favoriteBtn.getAttribute('data-post-reaction');
+        Favorite(
+            postId,
+            nreact,
+            (node = favoriteBtn),
+            (iconNode = favoriteIcon)
+        );
+    };
+
+    if (getCookie('session_token').split('&')[0] === UserID && react === 1) {
+        favoriteIcon.style.color = '#533de0';
+        favoriteBtn.setAttribute('data-post-reaction', react);
+    }
+    //-----
     favoriteIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"> <path d="M48 0H336C362.5 0 384 21.49 384 48V487.7C384 501.1 373.1 512 359.7 512C354.7 512 349.8 510.5 345.7 507.6L192 400L38.28 507.6C34.19 510.5 29.32 512 24.33 512C10.89 512 0 501.1 0 487.7V48C0 21.49 21.49 0 48 0z"/></svg>`;
     favoriteBtn.append(favoriteIcon);
     const responseBtn = document.createElement('div');
@@ -864,7 +929,8 @@ const DisplayAllPost = (post) => {
                         Date,
                         Category,
                         Content,
-                        Favorite.React
+                        Favorite.react,
+                        Favorite.UserID
                     )
                 );
             }
@@ -904,19 +970,34 @@ const selectFilter = (e) => {
 };
 const openAllPost = (e) => {
     selectFilter(e);
+    DisplayAllPost(allPost);
 };
 const openGoLangPost = (e) => {
     selectFilter(e);
+    filterPost('golang');
 };
 const openJavaScriptPost = (e) => {
     selectFilter(e);
+    filterPost('javascript');
 };
 const openRustPost = (e) => {
     selectFilter(e);
+    filterPost('rust');
 };
 const openFavoritePost = (e) => {
     selectFilter(e);
+    let newAllPost = allPost.filter((post) => post.Favorite.react === 1);
+    DisplayAllPost(newAllPost);
 };
 const openYourPost = (e) => {
     selectFilter(e);
+    let newAllPost = allPost.filter(
+        (post) => post.UserID === getCookie('session_token').split('&')[1]
+    );
+    DisplayAllPost(newAllPost);
+};
+
+const filterPost = (tag) => {
+    let newAllPost = allPost.filter((post) => post.Category === tag);
+    DisplayAllPost(newAllPost);
 };
