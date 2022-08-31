@@ -51,6 +51,16 @@ function getCookie(name) {
     // Return null if not found
     return null;
 }
+
+const CheckScrollTop = (e) => {
+    if (e.scrollTop === 0) {
+        console.log("At the top")
+    } else {
+        console.log("Not top")
+    }
+}
+
+
 const LoadMessages = (messageText, classType, sentTime) => {
     const MSG = AddMessages(messageText, classType, sentTime);
     const CHAT_CONTENT_CONTAINER = document.querySelector(
@@ -509,6 +519,14 @@ const openChatModal = (e) => {
         DisplayTenMessages(resp.Messages);
         return resp;
     });
+
+    const CHAT_CONTENT_CONTAINER = document.querySelector(
+        '.chat-content-container'
+    );
+    CHAT_CONTENT_CONTAINER.addEventListener("scroll", () => {
+        CheckScrollTop(CHAT_CONTENT_CONTAINER);
+        })
+    
 };
 
 const SendMessage = () => {
