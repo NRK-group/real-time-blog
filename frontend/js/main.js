@@ -54,16 +54,16 @@ function getCookie(name) {
 
 const CheckScrollTop = (e, event) => {
     if (e.scrollTop !== 0) return;
-    console.log(e.scrollHeight);
+    // console.log(e.scrollHeight);
 
     const SEND_BTN = document.querySelector('.send-chat-btn');
-    users = {
+    let chats = {
         userID: getCookie('session_token').split('&')[0],
         recieverID: SEND_BTN.getAttribute('data-reciever-id'),
         X: e.childElementCount,
     };
-    console.log('GETTING MSGS: ', users);
-    FetchMsgs(users, SEND_BTN);
+    // console.log('GETTING MSGS: ', chats);
+    FetchMsgs(chats, SEND_BTN);
 
     // const CHAT_CONTENT_CONTAINER = document.querySelector(
     //     '.chat-content-container'
@@ -81,7 +81,7 @@ const LoadMessages = (messageText, classType, sentTime) => {
         '.chat-content-container'
     );
     CHAT_CONTENT_CONTAINER.prepend(MSG);
-    console.log('Prepending');
+    // console.log('Prepending');
     // const FIRST_MSG = document.querySelector('.chat');
     // if (FIRST_MSG === null) {
     //     CHAT_CONTENT_CONTAINER.append(MSG);
@@ -476,7 +476,7 @@ function revealPasswordBtn(id, className) {
 }
 
 const DisplayTenMessages = (messages) => {
-    console.log('DISlaying ten messages');
+    // console.log('DISlaying ten messages');
     const CURR_USER_ID = getCookie('session_token').split('&')[0];
     const CHAT_CONTENT_CONTAINER = document.querySelector(
         '.chat-content-container'
@@ -488,7 +488,7 @@ const DisplayTenMessages = (messages) => {
         if (msg.senderID === CURR_USER_ID) {
             classNames = 'chat sender';
         }
-            
+
         LoadMessages(msg.message, classNames, msg.date.split(' '));
     });
     CHAT_CONTENT_CONTAINER.scroll({
@@ -496,14 +496,15 @@ const DisplayTenMessages = (messages) => {
     });
 };
 
-const FetchMsgs = (users, SEND_BTN) => {
+const FetchMsgs = (chat, SEND_BTN) => {
+    console.log('Getting Messages');
     fetch('/MessageInfo', {
         method: 'POST',
         headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(users),
+        body: JSON.stringify(chat),
     }).then(async (response) => {
         resp = await response.json();
         SEND_BTN.setAttribute('data-chat-id', resp.chatID);
@@ -513,12 +514,22 @@ const FetchMsgs = (users, SEND_BTN) => {
         return resp;
     });
 };
+// let listening = false
 
+const CHAT_CONTENT_CONTAINER = document.querySelector(
+    '.chat-content-container'
+);
 const openChatModal = (e) => {
+    // console.log(document.querySelector('.chat-content-container'));
+    const RECIEVER_ID = e.getAttribute('data-user-id'); //data-user-id is the id of the user where we click on. This will be use to access the data on the database
+    
+    const CHAT_CONTAINER = document.querySelector('.chat-content-container');
+    CHAT_CONTAINER.id = RECIEVER_ID
+
+    removeAllChildNodes(CHAT_CONTAINER);
     const chatModalContainer = document.querySelector(
         '#chat-modal-container-id'
     );
-    const RECIEVER_ID = e.getAttribute('data-user-id'); //data-user-id is the id of the user where we click on. This will be use to access the data on the database
     //when open a specific chat, we're going to get the chat data between the current user and the user tat they click
     chatModalContainer.style.display = 'flex';
     //Add the data to the send btn
@@ -535,17 +546,13 @@ const openChatModal = (e) => {
 
     FetchMsgs(users, SEND_BTN);
 
-    const CHAT_CONTENT_CONTAINER = document.querySelector(
-        '.chat-content-container'
-    );
-
-    // CHAT_CONTENT_CONTAINER.scroll({
-    //     top: CHAT_CONTENT_CONTAINER.scrollHeight,
-    // });
-
-    CHAT_CONTENT_CONTAINER.addEventListener('scroll', (e) => {
-        CheckScrollTop(CHAT_CONTENT_CONTAINER, e);
-    });
+    // if (!listening) {
+    //     listening = true
+    
+        CHAT_CONTENT_CONTAINER.addEventListener('scroll', (e) => {
+            CheckScrollTop(CHAT_CONTENT_CONTAINER, e);
+        });
+    // }
 };
 
 const SendMessage = () => {
@@ -574,24 +581,19 @@ const SendMessage = () => {
     }
 };
 
-function deleteChild() {
-    var e = document.querySelector('.chat-content-container');
-    //e.firstElementChild can be used.
-    var child = e.lastElementChild;
-    while (child) {
-        console.log('Removing Child: ');
-        e.removeChild(child);
-        child = e.lastElementChild;
-    }
-}
+
 const closeChat = () => {
+    removeAllChildNodes(document.querySelector('.chat-content-container'));
     const chatModalContainer = document.querySelector(
         '#chat-modal-container-id'
     );
     chatModalContainer.style.display = 'none';
-    deleteChild();
     //clear the text box
     document.querySelector('.chat-input-box').value = '';
+    console.log("REmoving event listner");
+    CHAT_CONTENT_CONTAINER.removeEventListener('scroll', (e) => {
+        CheckScrollTop(CHAT_CONTENT_CONTAINER, e);
+    });
 };
 
 const openPostModal = (e) => {
@@ -1017,7 +1019,6 @@ const openYourPost = (e) => {
     );
     DisplayAllPost(newAllPost);
 };
-
 
 const filterPost = (tag) => {
     let newAllPost = allPost.filter((post) => post.Category === tag);
