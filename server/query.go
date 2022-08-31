@@ -2,6 +2,7 @@ package server
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 	"time"
 
@@ -229,7 +230,7 @@ func (forum *DB) AllPost(filter, uID string) []Post {
 			ImgUrl:       imgurl,
 			Comments:     forum.GetComments(postID),
 			NumOfComment: len(forum.GetComments(postID)),
-			Favorite:     forum.GetFavoritesInPost(postID),
+			Favorite:     forum.GetFavoritesInPost(postID, uID),
 		}
 		var username string
 		rows2, err := forum.DB.Query("SELECT nickName FROM User WHERE userID = '" + userID + "'")
@@ -299,8 +300,8 @@ func (forum *DB) GetComments(pID string) []Comment {
 	return comments
 }
 
-func (forum *DB) GetFavoritesInPost(pID string) Favorite {
-	rows, err := forum.DB.Query("SELECT favoriteID, postID, userID, react FROM Favorite WHERE postID = '" + pID + "'")
+func (forum *DB) GetFavoritesInPost(pID, uID string) Favorite {
+	rows, err := forum.DB.Query("SELECT favoriteID, postID, userID, react FROM Favorite WHERE postID = '" + pID + "' AND userID = '" + uID + "'")
 	var favorite Favorite
 
 	if err != nil {
@@ -317,13 +318,6 @@ func (forum *DB) GetFavoritesInPost(pID string) Favorite {
 			UserID:     userID,
 			React:      react,
 		}
-		if react != 1 {
-			react = 1
-		} else {
-			react = 0
-		}
-
-		favorite.React = react
 	}
 	return favorite
 }
@@ -342,6 +336,37 @@ func (forum *DB) ReactInPost(postID, userID string, react int) (string, error) {
 	}
 	return favoriteID.String(), nil
 }
+
+//CheckReactInPost
+func (forum *DB) CheckReactInPost(pID, uID string, value int) (string, int) {
+	rows, err := forum.DB.Query("SELECT favoriteID, postID, userID, react FROM Favorite WHERE postID = '" + pID + "' AND userID = '" + uID + "'")
+	var reaction Favorite
+	if err != nil {
+		fmt.Println(err)
+		return "", 0
+	}
+	var favoriteID, postID, userID string
+	var react int
+	for rows.Next() {
+		rows.Scan(&favoriteID, &postID, &userID, &react)
+		reaction = Favorite{
+			FavoriteID: favoriteID,
+			PostID:     postID,
+			UserID:     userID,
+			React:      react,
+		}
+	}
+	if reaction.FavoriteID == ""{
+		favoriteID, err :=forum.ReactInPost(pID, uID, 1)
+		fmt.Println(err)
+		return favoriteID, 1
+	}
+	forum.Update("Favorite", "react", strconv.Itoa(value), "favoriteID", reaction.FavoriteID)
+	return reaction.FavoriteID, value
+}
+
+
+
 
 // CreatePost
 // is a method of database that add post in it.

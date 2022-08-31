@@ -649,9 +649,9 @@ input[type='email']:focus {
     padding-bottom: 5px;
     cursor: pointer;
 }
-.favorite-btn:focus > .favorite-icon {
+/* .favorite-btn:focus > .favorite-icon {
     color: #533de0;
-}
+} */
 .favorite-icon {
     color: rgb(220, 220, 220);
     fill: currentColor;

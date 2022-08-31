@@ -45,7 +45,7 @@ func (forum *DB) CheckCookie(w http.ResponseWriter, r *http.Request) {
 
 			}
 
-			page = ReturnData{User: forum.GetUser(co[0]), Posts: forum.AllPost("", ""), Msg: "Login successful", Users: forum.GetAllUser(co[0])}
+			page = ReturnData{User: forum.GetUser(co[0]), Posts: forum.AllPost("", co[0]), Msg: "Login successful", Users: forum.GetAllUser(co[0])}
 			marshallPage, err := json.Marshal(page)
 			if err != nil {
 				fmt.Println("Error marshalling the data: ", err)
@@ -199,7 +199,7 @@ func (forum *DB) Login(w http.ResponseWriter, r *http.Request) {
 
 		userid := strings.Split(loginResp, "&")[0]
 
-		page = ReturnData{User: forum.GetUser(userid), Posts: forum.AllPost("", ""), Msg: "Login successful", Users: forum.GetAllUser(userid)}
+		page = ReturnData{User: forum.GetUser(userid), Posts: forum.AllPost("", userid), Msg: "Login successful", Users: forum.GetAllUser(userid)}
 		marshallPage, err := json.Marshal(page)
 		if err != nil {
 			fmt.Println("Error marshalling the data: ", err)
@@ -294,7 +294,7 @@ func (forum *DB) Post(w http.ResponseWriter, r *http.Request) {
 			postID, err := forum.CreatePost(res[0], postData.Title, postData.Category, "imgurl", postData.Content)
 			fmt.Println(postID)
 			fmt.Println(err)
-			page = ReturnData{Posts: forum.AllPost("", ""), Msg: "successful Post"}
+			page = ReturnData{Posts: forum.AllPost("", res[0]), Msg: "successful Post"}
 			marshallPage, err := json.Marshal(page)
 			if err != nil {
 				fmt.Println("Error marshalling the data: ", err)
@@ -376,7 +376,7 @@ func (forum *DB) Response(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 
-			page = ReturnData{Posts: forum.AllPost("", ""), Msg: "successful response--" + responseID}
+			page = ReturnData{Posts: forum.AllPost("", res[0]), Msg: "successful response--" + responseID}
 			marshallPage, err := json.Marshal(page)
 			if err != nil {
 				fmt.Println("Error marshalling the data: ", err.Error())
@@ -419,7 +419,7 @@ func (forum *DB) Favorite(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 
-			responseID, err := forum.ReactInPost(responseData.PostID, res[0], responseData.React ) 
+			forum.CheckReactInPost(responseData.PostID, res[0], responseData.React ) 
 			if err != nil {
 				fmt.Print(err)
 				http.Error(w, "500 Internal Server Error."+err.Error(), http.StatusInternalServerError)
@@ -427,7 +427,7 @@ func (forum *DB) Favorite(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 
-			page = ReturnData{Msg: "successful react to post--" + responseID}
+			page = ReturnData{Msg: "successful react to post--" }
 			marshallPage, err := json.Marshal(page)
 			if err != nil {
 				fmt.Println("Error marshalling the data: ", err.Error())
