@@ -43,6 +43,8 @@ button {
 .left-container {
     height: 100vh;
     border-right: 2px solid #e8e8e8;
+    padding-top: 50px;
+    overflow: scroll;
 }
 
 .middle-container {
@@ -1221,7 +1223,6 @@ input[type='email']:focus {
     margin: auto;
 }
 .post-filter-container {
-    height: 40vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -1290,7 +1291,6 @@ ul {
     opacity: 0.5;
 }
 .personal-filter-container {
-    height: 40vh;
     display: flex;
     flex-direction: column;
     padding: 1vw;
