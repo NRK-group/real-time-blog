@@ -52,28 +52,7 @@ function getCookie(name) {
     return null;
 }
 
-const CheckScrollTop = (e, event) => {
-    if (e.scrollTop !== 0) return;
-    // console.log(e.scrollHeight);
 
-    const SEND_BTN = document.querySelector('.send-chat-btn');
-    let chats = {
-        userID: getCookie('session_token').split('&')[0],
-        recieverID: SEND_BTN.getAttribute('data-reciever-id'),
-        X: e.childElementCount,
-    };
-    // console.log('GETTING MSGS: ', chats);
-    FetchMsgs(chats, SEND_BTN);
-
-    // const CHAT_CONTENT_CONTAINER = document.querySelector(
-    //     '.chat-content-container'
-    // );
-
-    // CHAT_CONTENT_CONTAINER.scroll({
-    //     top: CHAT_CONTENT_CONTAINER.scrollHeight,
-    //     behavior: "auto"
-    // });
-};
 
 const LoadMessages = (messageText, classType, sentTime) => {
     const MSG = AddMessages(messageText, classType, sentTime);
@@ -122,10 +101,9 @@ const DisplayMessage = (messageText, classType, sentTime) => {
         '.chat-content-container'
     );
     CHAT_CONTENT_CONTAINER.append(MSG);
-    // CHAT_CONTENT_CONTAINER.scroll({
-    //     top: CHAT_CONTENT_CONTAINER.scrollHeight,
-    //     behavior: 'smooth',
-    // });
+    CHAT_CONTENT_CONTAINER.scroll({
+        top: CHAT_CONTENT_CONTAINER.scrollHeight,
+    });
 };
 
 // let ;
@@ -294,6 +272,7 @@ const ShowUsers = (Users) => {
                     key=${index}
                     class="forum-user"
                     data-user-id=${item.UserID}
+                    data-username=${item.Nickname}
                     onclick="openChatModal(this)"
                 >
                 <div class="user-image"></div>
@@ -491,11 +470,14 @@ const DisplayTenMessages = (messages) => {
 
         LoadMessages(msg.message, classNames, msg.date.split(' '));
     });
+
+    //Causing eventlistner to target
     CHAT_CONTENT_CONTAINER.scroll({
         top: CHAT_CONTENT_CONTAINER.scrollHeight - prev,
     });
 };
 
+//FetchMsgs loads the next 10 messages of the conversation onto the screen
 const FetchMsgs = (chat, SEND_BTN) => {
     console.log('Getting Messages');
     fetch('/MessageInfo', {
@@ -509,32 +491,46 @@ const FetchMsgs = (chat, SEND_BTN) => {
         resp = await response.json();
         SEND_BTN.setAttribute('data-chat-id', resp.chatID);
         //Add the first 10 messages
-        console.log('MESSAGES: ', resp.Messages);
         if (resp.Messages.length != 0) DisplayTenMessages(resp.Messages);
         return resp;
     });
 };
-// let listening = false
 
+function AllowMSG () {
+    canRun = true;
+    clearTimeout(timer);
+};
+let timer;
+let canRun = true;
+function GetMsg(users, SEND_BTN) {
+    if (canRun) {
+        FetchMsgs(users, SEND_BTN);
+        canRun = false;
+        timer = setTimeout(AllowMSG, 1000);
+    }
+};
 const CHAT_CONTENT_CONTAINER = document.querySelector(
     '.chat-content-container'
 );
+let valid = false
+
 const openChatModal = (e) => {
-    // console.log(document.querySelector('.chat-content-container'));
+    console.log("Valid", valid)
     const RECIEVER_ID = e.getAttribute('data-user-id'); //data-user-id is the id of the user where we click on. This will be use to access the data on the database
-    
+    const RECIEVER_USERNAME = e.getAttribute("data-username")
     const CHAT_CONTAINER = document.querySelector('.chat-content-container');
-    CHAT_CONTAINER.id = RECIEVER_ID
+    CHAT_CONTAINER.id = RECIEVER_ID;
 
     removeAllChildNodes(CHAT_CONTAINER);
     const chatModalContainer = document.querySelector(
         '#chat-modal-container-id'
     );
+    const CHAT_USERNAME = document.querySelector('#chat-username-id')
+    CHAT_USERNAME.innerHTML = RECIEVER_USERNAME
     //when open a specific chat, we're going to get the chat data between the current user and the user tat they click
     chatModalContainer.style.display = 'flex';
     //Add the data to the send btn
     const SEND_BTN = document.querySelector('.send-chat-btn');
-    // const INFO_DIV = document.querySelector('.')
     SEND_BTN.setAttribute('data-reciever-id', RECIEVER_ID);
     //Now check golang for the chatID
     const USER_ID = getCookie('session_token').split('&')[0];
@@ -544,15 +540,10 @@ const openChatModal = (e) => {
         X: 0,
     };
 
-    FetchMsgs(users, SEND_BTN);
+    GetMsg(users, SEND_BTN);
 
-    // if (!listening) {
-    //     listening = true
-    
-        CHAT_CONTENT_CONTAINER.addEventListener('scroll', (e) => {
-            CheckScrollTop(CHAT_CONTENT_CONTAINER, e);
-        });
-    // }
+    CHAT_CONTENT_CONTAINER.addEventListener('scroll', CheckScrollTop);
+    valid = true
 };
 
 const SendMessage = () => {
@@ -581,8 +572,8 @@ const SendMessage = () => {
     }
 };
 
-
 const closeChat = () => {
+    valid = false
     removeAllChildNodes(document.querySelector('.chat-content-container'));
     const chatModalContainer = document.querySelector(
         '#chat-modal-container-id'
@@ -590,10 +581,22 @@ const closeChat = () => {
     chatModalContainer.style.display = 'none';
     //clear the text box
     document.querySelector('.chat-input-box').value = '';
-    console.log("REmoving event listner");
-    CHAT_CONTENT_CONTAINER.removeEventListener('scroll', (e) => {
-        CheckScrollTop(CHAT_CONTENT_CONTAINER, e);
-    });
+    console.log('REmoving event listner');
+    CHAT_CONTENT_CONTAINER.removeEventListener('scroll', CheckScrollTop);
+};
+
+const CheckScrollTop = () => {
+    const CHAT_CONTENT_CONTAINER = document.querySelector(
+        '.chat-content-container'
+    );
+    if (CHAT_CONTENT_CONTAINER.scrollTop !== 0 || !valid) return;
+    const SEND_BTN = document.querySelector('.send-chat-btn');
+    let chats = {
+        userID: getCookie('session_token').split('&')[0],
+        recieverID: SEND_BTN.getAttribute('data-reciever-id'),
+        X: CHAT_CONTENT_CONTAINER.childElementCount,
+    };
+    GetMsg(chats, SEND_BTN);
 };
 
 const openPostModal = (e) => {
