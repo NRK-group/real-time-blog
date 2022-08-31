@@ -427,7 +427,7 @@ func (forum *DB) Favorite(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 
-			page = ReturnData{Msg: "successful react to post--" }
+			page = ReturnData{Posts: forum.AllPost("", res[0]), Msg: "successful react to post--" }
 			marshallPage, err := json.Marshal(page)
 			if err != nil {
 				fmt.Println("Error marshalling the data: ", err.Error())

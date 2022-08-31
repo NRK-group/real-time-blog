@@ -215,7 +215,6 @@ const validateUser = (resp) => {
         loginPageId.classList.add('close');
         registerPageId.classList.add('close');
         mainPageId.style.display = 'grid';
-        console.log(resp);
         UpdateUserProfile(resp);
     } else {
         showMessages(resp.Msg);
@@ -638,39 +637,48 @@ const CreateResponses = (allPost, postID) => {
 
 const Favorite = (postId, react, node, iconNode) => {
     if (postId !== '') {
-        console.log("react---",react)
-            if (react !== "0") {
-                react = 0;
-            } else {
-                react = 1;
-            }
+        if (react !== '0') {
+            react = 0;
+        } else {
+            react = 1;
+        }
 
-            let newReaction = {
-                postID: postId,
-                react: react,
-            };
+        let newReaction = {
+            postID: postId,
+            react: react,
+        };
 
-            fetch('/favorite', {
-                method: 'POST',
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(newReaction),
+        fetch('/favorite', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(newReaction),
+        })
+            .then(async (response) => {
+                return await response.json();
             })
-                .then((response) => {
-                    return response.json();
-                })
-                .then((resp) => {
-                    if (react === 1) {
-                        iconNode.style.color = "#533de0"
-                    }else {
-                        iconNode.style.color = ""
-                    }
-                    node.setAttribute('data-post-reaction', react);
-                });
-            return;
-        
+            .then((resp) => {
+                if (react === 1) {
+                    iconNode.style.color = '#533de0';
+                } else {
+                    iconNode.style.color = '';
+                }
+                node.setAttribute('data-post-reaction', react);
+                allPost = resp.Posts;
+                if (
+                    document
+                        .querySelector('#favorite-post-id')
+                        .classList.contains('all-post-active')
+                ) {
+                    let newAllPost = allPost.filter(
+                        (post) => post.Favorite.react === 1
+                    );
+                    DisplayAllPost(newAllPost);
+                }
+            });
+        return;
     }
 };
 
@@ -736,18 +744,23 @@ const CreatePost = (
     const favoriteBtn = document.createElement('div');
     favoriteBtn.className = 'favorite-btn';
     favoriteBtn.setAttribute('data-post-id', postId);
-    favoriteBtn.tabIndex = '1';    
+    favoriteBtn.tabIndex = '1';
     favoriteBtn.setAttribute('data-post-reaction', react);
     const favoriteIcon = document.createElement('span');
     favoriteIcon.className = 'favorite-icon';
-     //--------
-     favoriteBtn.onclick = () => {
+    //--------
+    favoriteBtn.onclick = () => {
         let nreact = favoriteBtn.getAttribute('data-post-reaction');
-        Favorite(postId, nreact, node = favoriteBtn, iconNode = favoriteIcon);
+        Favorite(
+            postId,
+            nreact,
+            (node = favoriteBtn),
+            (iconNode = favoriteIcon)
+        );
     };
-    
+
     if (getCookie('session_token').split('&')[0] === UserID && react === 1) {
-        favoriteIcon.style.color = "#533de0"
+        favoriteIcon.style.color = '#533de0';
         favoriteBtn.setAttribute('data-post-reaction', react);
     }
     //-----
@@ -776,7 +789,6 @@ const closeResponseModal = () => {
     responseModal.style.display = 'none';
 };
 const DisplayAllPost = (post) => {
-    
     if (post) {
         const allPostContainer = document.querySelector(
             '#all-post-container-id'
@@ -859,6 +871,8 @@ const openRustPost = (e) => {
 };
 const openFavoritePost = (e) => {
     selectFilter(e);
+    let newAllPost = allPost.filter((post) => post.Favorite.react === 1);
+    DisplayAllPost(newAllPost);
 };
 const openYourPost = (e) => {
     selectFilter(e);
