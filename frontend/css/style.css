@@ -355,7 +355,10 @@ input[type='email']:focus {
     font-weight: 700;
 }
 .profile-username {
-    margin-bottom: 50px;
+    opacity: 0.8;
+}
+.account-date-created {
+    margin: 2vh;
     opacity: 0.5;
 }
 .message-container {

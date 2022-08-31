@@ -224,12 +224,15 @@ const validateUser = (resp) => {
 
 const UpdateUserProfile = (resp) => {
     document.getElementById(
-        'profile-name'
+        'profile-name-id'
     ).innerText = `${resp.User.Firstname}  ${resp.User.Lastname}`;
     document.getElementById(
-        'profile-username'
-    ).innerText = `@${resp.User.Nickname}`;
-
+        'profile-username-id'
+    ).innerText = ` @${resp.User.Nickname}`;
+    let yearCreated = resp.User.DateCreated.split(',')[1];
+    document.querySelector(
+        '#account-date-created-id'
+    ).innerText = `since ${yearCreated}`;
     //User model
     document.getElementById('edit-first-name-id').value = resp.User.Firstname;
     document.getElementById('edit-last-name-id').value = resp.User.Lastname;
