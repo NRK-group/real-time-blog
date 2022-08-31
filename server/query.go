@@ -465,7 +465,7 @@ func (forum *DB) CreateComment(userID, postID, content string) (string, error) {
 
 func (forum *DB) TenMessages(chatID string, x int) []SendMessage{
 	//select the bottom 10 messages from the db
-	getTen, err := forum.DB.Query(`SELECT content, date, userID FROM Message  WHERE chatID = ? ORDER BY messageID DESC LIMIT ?,?`, chatID, x, x+10)
+	getTen, err := forum.DB.Query(`SELECT content, date, userID FROM Message  WHERE chatID = ? ORDER BY messageID DESC LIMIT ?,10`, chatID, x)
 
 	if err != nil {
 		fmt.Println("Error selecting messages: ", err)

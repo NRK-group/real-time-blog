@@ -114,6 +114,7 @@ type ReturnMessages struct {
 	User string `json:"userID"`
 	Reciever string `json:"recieverID"`
 	ChatID string `json:"chatID"`
+	X int `json:"X"`
 	Messages []SendMessage
 }
 
