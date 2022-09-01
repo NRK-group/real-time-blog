@@ -477,7 +477,7 @@ func (forum *DB) WsEndpoint(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Store the new user in the Users map
-
+	fmt.Println(users)
 	userIdVal := strings.Split(c.Value, "&")[0]
 	users[userIdVal] = ws
 	fmt.Println(userIdVal, " is connected.")

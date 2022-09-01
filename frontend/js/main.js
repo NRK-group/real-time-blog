@@ -122,12 +122,18 @@ let allUsers;
 
 // ProccessMessage is a function that will display the message in the chat if the user has it open.
 const ProcessMessage = (message) => {
+    if (message.message === 'e702c728-67f2-4ecd-9e79-4795010501ea') {
+        const notificationContainer = document.querySelector(
+            '#notification-container-id'
+        );
+        notificationContainer.classList.add('visible');
+        return;
+    }
     const CHAT_MODAL_CONTAINER = document.querySelector(
             '#chat-modal-container-id'
         ),
         SEND_BTN = document.querySelector('.send-chat-btn');
     // Check if the chat modal is open and that the reciever id is the ID of the user who sent the message
-
     if (
         CHAT_MODAL_CONTAINER.style.display === 'flex' &&
         SEND_BTN.getAttribute('data-reciever-id') == message.senderID
@@ -166,6 +172,7 @@ const CreateWebSocket = () => {
     };
     socket.onmessage = (text) => {
         const MESSAGE_INFO = JSON.parse(text.data);
+        console.log(MESSAGE_INFO);
         ProcessMessage(MESSAGE_INFO);
     };
 };
@@ -211,7 +218,17 @@ const TypingMessage = (val) => {
         recieverID: RECIEVER,
     });
 };
+const NewPostCreated = (val) => {
+    const USER_ID = getCookie('session_token').split('&')[0];
+    return JSON.stringify({
+        message: val,
+        userID: USER_ID,
+    });
+};
 
+const NewPostNotif = () => {
+    socket.send(NewPostCreated('e702c728-67f2-4ecd-9e79-4795010501ea'));
+};
 const IsTyping = () => {
     //Send typing message when they start
     socket.send(TypingMessage(' '));
@@ -644,6 +661,10 @@ const sendNewPost = () => {
                 showMessages(resp.Msg);
                 allPost = resp.Posts;
                 DisplayAllPost(resp.Posts);
+            })
+            .then(() => {
+                console.log('hello');
+                NewPostNotif();
             });
         closeNewPost();
         return;
@@ -1038,6 +1059,10 @@ const refreshThePost = () => {
         .then(() => {
             const middleContainer = document.querySelector('.middle-container');
             middleContainer.scrollTo({ top: 0, behavior: 'smooth' });
+            const notificationContainer = document.querySelector(
+                '#notification-container-id'
+            );
+            notificationContainer.classList.remove('visible');
             return;
         })
         .catch((err) => {
@@ -1046,36 +1071,13 @@ const refreshThePost = () => {
     return;
 };
 let lastScrollTop = 0;
-let isScrolling;
 const scrollOnPost = (e) => {
-    const notificationContainer = document.querySelector(
-        '#notification-container-id'
-    );
     let scrollTop = e.scrollTop;
-    console.log(scrollTop);
-    if (scrollTop >= lastScrollTop) {
-        console.log('scroll down');
-        // if (scrollTop >= 100) {
-        //     notificationContainer.classList.add('hide');
-        // }
-        // notificationContainer.classList.remove('visible');
-    } else {
+    if (scrollTop <= lastScrollTop) {
+        //if scrolling up
         if (scrollTop <= 30) {
             refreshThePost();
         }
-        if (scrollTop <= 50) {
-            notificationContainer.classList.remove('visible');
-        }
     }
-
-    // Clear our timeout throughout the scroll
-    clearTimeout(isScrolling);
-    // Set a timeout to run after scrolling ends
-    isScrolling = setTimeout(function () {
-        // Run the callback
-        if (scrollTop > 100) {
-            notificationContainer.classList.add('visible');
-        }
-    }, 100);
     lastScrollTop = scrollTop;
 };

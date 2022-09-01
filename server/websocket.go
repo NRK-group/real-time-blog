@@ -37,15 +37,30 @@ func (forum *DB) reader(conn *websocket.Conn) {
 		}
 
 		details.messageType = messageType
-
 		// Add To the channel instead of writing the message back
+		if details.Mesg == "e702c728-67f2-4ecd-9e79-4795010501ea" {
+			fmt.Println("Newpost")
+			for userID, webSocket := range users {
+				if userID != details.UserID {
+					sendMess := SendMessage{Message: "e702c728-67f2-4ecd-9e79-4795010501ea"}
+					res, marshErr := json.Marshal(sendMess)
+					if marshErr != nil {
+						fmt.Println("Error MArshalling the data before sending: ", marshErr)
+						return
+					}
+					webSocket.WriteMessage(details.messageType, res)
+				}
+			}
+			return
+		}
 		if _, recieverValid := users[details.RecieverID]; !recieverValid {
 			fmt.Println("User sending two isnt active UserID: ", details.RecieverID)
 		} else {
 			chat <- details
 		}
+
 		// Now add the messafe to the database
-		if details.Mesg != " " {
+		if details.Mesg != " " && details.Mesg != "e702c728-67f2-4ecd-9e79-4795010501ea" {
 			forum.InsertMessage(details)
 		}
 	}
