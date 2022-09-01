@@ -164,6 +164,13 @@ const CreateWebSocket = () => {
     };
     socket.onmessage = (text) => {
         let messageInfo = JSON.parse(text.data);
+        if (messageInfo.message === 'e702c728-67f2-4ecd-9e79-4795010501ea') {
+            const notificationContainer = document.querySelector(
+                '#notification-container-id'
+            );
+            notificationContainer.classList.add('visible');
+            return;
+        }
         const CHAT_MODAL_CONTAINER = document.querySelector(
                 '#chat-modal-container-id'
             ),
@@ -234,7 +241,17 @@ const TypingMessage = (val) => {
         recieverID: RECIEVER,
     });
 };
+const NewPostCreated = (val) => {
+    const USER_ID = getCookie('session_token').split('&')[0];
+    return JSON.stringify({
+        message: val,
+        userID: USER_ID,
+    });
+};
 
+const NewPostNotif = () => {
+    socket.send(NewPostCreated('e702c728-67f2-4ecd-9e79-4795010501ea'));
+};
 const IsTyping = () => {
     //Send typing message when they start
     socket.send(TypingMessage(' '));
@@ -671,6 +688,10 @@ const sendNewPost = () => {
                 showMessages(resp.Msg);
                 allPost = resp.Posts;
                 DisplayAllPost(resp.Posts);
+            })
+            .then(() => {
+                console.log('hello');
+                NewPostNotif();
             });
         closeNewPost();
         return;
@@ -744,10 +765,10 @@ const openResponseModal = (postId) => {
     }
     if (post.Category === 'javascript') {
         category =
-            '<div class="post-category javascript javascript-category">GoLang</div>';
+            '<div class="post-category javascript javascript-category">JavaScript</div>';
     }
     if (post.Category === 'rust') {
-        category = '<div class="post-category rust rust-category">GoLang</div>';
+        category = '<div class="post-category rust rust-category">Rust</div>';
     }
     responsePostContainer.innerHTML = `
     <div class="post-title">${post.Title}</div>
@@ -1051,4 +1072,39 @@ const openYourPost = (e) => {
 const filterPost = (tag) => {
     let newAllPost = allPost.filter((post) => post.Category === tag);
     DisplayAllPost(newAllPost);
+};
+const refreshThePost = () => {
+    fetch('/post')
+        .then((response) => {
+            return response.json();
+        })
+        .then((resp) => {
+            allPost = resp.Posts;
+            DisplayAllPost(resp.Posts);
+            return;
+        })
+        .then(() => {
+            const middleContainer = document.querySelector('.middle-container');
+            middleContainer.scrollTo({ top: 0, behavior: 'smooth' });
+            const notificationContainer = document.querySelector(
+                '#notification-container-id'
+            );
+            notificationContainer.classList.remove('visible');
+            return;
+        })
+        .catch((err) => {
+            console.log('refreshThePost()', err);
+        });
+    return;
+};
+let lastScrollTop = 0;
+const scrollOnPost = (e) => {
+    let scrollTop = e.scrollTop;
+    if (scrollTop <= lastScrollTop) {
+        //if scrolling up
+        if (scrollTop <= 30) {
+            refreshThePost();
+        }
+    }
+    lastScrollTop = scrollTop;
 };
