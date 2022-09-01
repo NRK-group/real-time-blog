@@ -600,7 +600,7 @@ const openChatModal = (e) => {
 
     DeleteChatNotifications(
         RECIEVER_ID,
-        getCookie('session_token').split('&')[0],
+        getCookie('session_token').split('&')[0]
     );
     GetMsg(users, SEND_BTN);
 
@@ -1128,3 +1128,27 @@ const scrollOnPost = (e) => {
     }
     lastScrollTop = scrollTop;
 };
+
+const toggleSwitch = document.querySelector(
+    '.theme-switch input[type="checkbox"]'
+);
+function switchTheme(e) {
+    if (e.target.checked) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        localStorage.setItem('theme', 'dark');
+    } else {
+        document.documentElement.setAttribute('data-theme', 'light');
+        localStorage.setItem('theme', 'light');
+    }
+}
+toggleSwitch.addEventListener('change', switchTheme, false);
+const currentTheme = localStorage.getItem('theme')
+    ? localStorage.getItem('theme')
+    : null;
+
+if (currentTheme) {
+    document.documentElement.setAttribute('data-theme', currentTheme);
+    if (currentTheme === 'dark') {
+        toggleSwitch.checked = true;
+    }
+}
