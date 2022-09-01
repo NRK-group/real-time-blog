@@ -174,6 +174,7 @@ const validateCoookie = () => {
     fetch('/vadidate').then(async (response) => {
         resp = await response.json();
         if (resp.Msg === 'Login successful') {
+            console.log(resp);
             validateUser(resp);
         }
     });
@@ -218,13 +219,22 @@ const IsTyping = () => {
 };
 
 const validateUser = (resp) => {
+    console.log(resp);
     if (resp.Msg === 'Login successful') {
         //Create the cookie when logged in#
         CreateWebSocket();
-        gUsers = resp.Users;
-        gChatUsers = resp.ChatUsers;
+        console.log(resp);
+        gUsers = [];
+        gChatUsers = [];
+        if (resp.Users) {
+            gUsers = resp.Users;
+        }
+        if (resp.ChatUsers) {
+            gChatUsers = resp.ChatUsers;
+        }
+        console.log(gUsers);
         ShowUsers();
-        allUsers = [...resp.Users, ...resp.ChatUsers];
+        allUsers = [...(gUsers || []), ...(gChatUsers || [])];
         allPost = resp.Posts;
         DisplayAllPost(resp.Posts);
         const loginPageId = document.querySelector('#login-page-id');
@@ -267,7 +277,7 @@ const ShowUsers = () => {
         let lastChat = document.createElement('div');
         lastChat.classList.add('forum-users-container');
         let lastChatUsers = '';
-        gChatUsers.forEach((item, index) => {
+        (gChatUsers || []).forEach((item, index) => {
             lastChatUsers =
                 `<div
                     key=${index}
@@ -304,8 +314,8 @@ const ShowUsers = () => {
         );
         lastChat.innerHTML = users;
         usersDiv.innerHTML = lastChatUsers;
-        usersDivTitle.innerText = `${gChatUsers.length} Active User`;
-        allUsersDivTitle.innerText = `${gUsers.length} User`;
+        usersDivTitle.innerText = `${(gChatUsers || []).length} Active User`;
+        allUsersDivTitle.innerText = `${(gUsers || []).length} User`;
     }
 };
 
@@ -571,28 +581,24 @@ const openChatModal = (e) => {
     valid = true;
 };
 
-
-
 const ArrangeUsers = (userId) => {
-    let user, pos;
-    console.log(gUsers)
-   gUsers.every((item, index) => {
+    let user;
+    gUsers.forEach((item, index) => {
         if (userId === item.UserID) {
             user = item;
-            pos = index;
-            return false;
+            gUsers.splice(index, 1);
         }
     });
-    gUsers.splice(pos, 1);
-    gChatUsers.every((item) => {
+
+    gChatUsers.forEach((item, inx) => {
         if (userId === item.UserID) {
             user = item;
-            return false;
+            gChatUsers.splice(inx, 1);
         }
     });
     gChatUsers = [...gChatUsers, user];
 
-    console.log(gUsers)
+    console.log(gChatUsers);
 
     ShowUsers();
 };
@@ -620,8 +626,8 @@ const SendMessage = () => {
         socket.send(JSON.stringify(INFORMATION));
         DisplayMessage(MSG, 'chat sender', SORTED.split(' '));
         TEXT_BOX.value = '';
-        ArrangeUsers(SEND_TO)
     }
+    ArrangeUsers(SEND_TO);
 };
 
 const closeChat = () => {
