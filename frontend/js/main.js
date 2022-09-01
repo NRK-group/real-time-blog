@@ -122,13 +122,6 @@ let allUsers;
 
 // ProccessMessage is a function that will display the message in the chat if the user has it open.
 const ProcessMessage = (message) => {
-    if (message.message === 'e702c728-67f2-4ecd-9e79-4795010501ea') {
-        const notificationContainer = document.querySelector(
-            '#notification-container-id'
-        );
-        notificationContainer.classList.add('visible');
-        return;
-    }
     const TYPING_MSG = document.querySelector('.fa-message');
     if (message.message === ' ') {
         {
@@ -162,6 +155,13 @@ const CreateWebSocket = () => {
     };
     socket.onmessage = (text) => {
         let messageInfo = JSON.parse(text.data);
+        if (messageInfo.message === 'e702c728-67f2-4ecd-9e79-4795010501ea') {
+            const notificationContainer = document.querySelector(
+                '#notification-container-id'
+            );
+            notificationContainer.classList.add('visible');
+            return;
+        }
         const CHAT_MODAL_CONTAINER = document.querySelector(
                 '#chat-modal-container-id'
             ),
