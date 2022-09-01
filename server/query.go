@@ -2,6 +2,7 @@ package server
 
 import (
 	"fmt"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -186,7 +187,7 @@ func (forum *DB) GetAllUser(uID string) []User {
 		rows.Scan(&userID, &imgUrl, &firstName, &lastName, &nickName, &gender, &age, &status, &email, &dateCreated, &pass, &sessionID)
 		user = User{
 			UserID:      userID,
-			SessionID:   sessionID,
+			SessionID:   "sessionID",
 			Firstname:   firstName,
 			Lastname:    lastName,
 			Age:         age,
@@ -337,7 +338,7 @@ func (forum *DB) ReactInPost(postID, userID string, react int) (string, error) {
 	return favoriteID.String(), nil
 }
 
-//CheckReactInPost
+// CheckReactInPost
 func (forum *DB) CheckReactInPost(pID, uID string, value int) (string, int) {
 	rows, err := forum.DB.Query("SELECT favoriteID, postID, userID, react FROM Favorite WHERE postID = '" + pID + "' AND userID = '" + uID + "'")
 	var reaction Favorite
@@ -356,17 +357,14 @@ func (forum *DB) CheckReactInPost(pID, uID string, value int) (string, int) {
 			React:      react,
 		}
 	}
-	if reaction.FavoriteID == ""{
-		favoriteID, err :=forum.ReactInPost(pID, uID, 1)
+	if reaction.FavoriteID == "" {
+		favoriteID, err := forum.ReactInPost(pID, uID, 1)
 		fmt.Println(err)
 		return favoriteID, 1
 	}
 	forum.Update("Favorite", "react", strconv.Itoa(value), "favoriteID", reaction.FavoriteID)
 	return reaction.FavoriteID, value
 }
-
-
-
 
 // CreatePost
 // is a method of database that add post in it.
@@ -419,14 +417,15 @@ func (forum *DB) CreateChatID(userID, recieverID string) string {
 	chatID := uuid.NewV4().String()
 
 	insertChat, _ := forum.DB.Prepare(`
-		INSERT INTO Chat (chatID, user1ID, user2ID) values (?, ?, ?)
+		INSERT INTO Chat (chatID, user1ID, user2ID, date) values (?, ?, ?, ?)
 	`)
-	_, err := insertChat.Exec(chatID, userID, recieverID)
+	_, err := insertChat.Exec(chatID, userID, recieverID, time.Now().Format("2006 January 02 15:04:05"))
 	if err != nil {
 		fmt.Println("Error inserting the chat id: ", err)
 		return ""
 	}
 	fmt.Println("chatID added between user: ", userID, " AND user: ", recieverID)
+
 	return chatID
 }
 
@@ -442,6 +441,9 @@ func (forum *DB) InsertMessage(details NewMessage) {
 	// messageID := uuid.NewV4().String()
 
 	_, err := insertMessage.Exec(details.ChatID, details.Mesg, details.Date, details.UserID)
+
+	forum.Update("Chat", "date", time.Now().Format("2006 January 02 15:04:05"), "chatID", details.ChatID)
+
 	if err != nil {
 		fmt.Println("Error inserting message: ", err)
 	}
@@ -463,10 +465,9 @@ func (forum *DB) CreateComment(userID, postID, content string) (string, error) {
 	return commentID.String(), nil
 }
 
-func (forum *DB) TenMessages(chatID string, x int) []SendMessage{
-	//select the bottom 10 messages from the db
+func (forum *DB) TenMessages(chatID string, x int) []SendMessage {
+	// select the bottom 10 messages from the db
 	getTen, err := forum.DB.Query(`SELECT content, date, userID FROM Message  WHERE chatID = ? ORDER BY messageID DESC LIMIT ?,10`, chatID, x)
-
 	if err != nil {
 		fmt.Println("Error selecting messages: ", err)
 		return nil
@@ -476,9 +477,9 @@ func (forum *DB) TenMessages(chatID string, x int) []SendMessage{
 	// start, _ := strconv.Atoi(x)
 	for getTen.Next() {
 		// if count > x {
-			var current SendMessage
-			getTen.Scan(&current.Message, &current.Date, &current.Sender)
-			result = append(result, current)
+		var current SendMessage
+		getTen.Scan(&current.Message, &current.Date, &current.Sender)
+		result = append(result, current)
 		// }
 		// count++
 		// if count > x + 10{
@@ -487,4 +488,45 @@ func (forum *DB) TenMessages(chatID string, x int) []SendMessage{
 	}
 	fmt.Println(result)
 	return result
+}
+
+func (forum *DB) FindUserChatTime(user User) string {
+	search := ""
+	chatID, err := forum.DB.Query(`SELECT date from Chat WHERE user1ID = ? OR user2ID = ?`, user.UserID, user.UserID)
+	if err != nil {
+		fmt.Println("Error executing chatID search 1: ", err)
+		return search
+	}
+	for chatID.Next() {
+		chatID.Scan(&search)
+	}
+	return search
+}
+
+// ArrangeUsers
+// is a method that will organized users by the last message sent, and return the all other users by alphabetic order.
+func (forum *DB) ArrangeUsers(userID string) ([]User, []User, error) {
+	var userLastMessage []User
+	var userAlphabeticOrder []User
+	allUsers := forum.GetAllUser(userID)
+
+	for x := 0; x < len(allUsers); x++ {
+		if forum.CheckChatID(userID, allUsers[x].UserID) != "" {
+			userLastMessage = append([]User{allUsers[x]}, userLastMessage...)
+		} else {
+			userAlphabeticOrder = append([]User{allUsers[x]}, userAlphabeticOrder...)
+		}
+	}
+
+	sort.Slice(userLastMessage, func(i, j int) bool {
+		one, _ := time.Parse("2006 January 02 15:04:05", forum.FindUserChatTime(userLastMessage[i]))
+		two, _ := time.Parse("2006 January 02 15:04:05", forum.FindUserChatTime(userLastMessage[j]))
+		return two.Before(one)
+	})
+
+	sort.Slice(userAlphabeticOrder, func(i, j int) bool {
+		return userAlphabeticOrder[i].Nickname < userAlphabeticOrder[j].Nickname
+	})
+
+	return userLastMessage, userAlphabeticOrder, nil
 }

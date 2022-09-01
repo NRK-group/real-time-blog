@@ -91,6 +91,7 @@ type UserLoginData struct {
 type ReturnData struct {
 	User  User
 	Users []User
+	ChatUsers []User
 	Posts []Post
 	Msg   string
 }

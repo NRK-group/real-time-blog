@@ -128,6 +128,7 @@ func initChat(db *sql.DB) {
 		"chatID" TEXT UNIQUE NOT NULL,
 		"user1ID"	TEXT NOT NULL,
 		"user2ID"	TEXT NOT NULL,
+		"date"      TEXT NOT NULL,
 		PRIMARY KEY("chatID")
 		FOREIGN KEY ("user1ID")
 			REFERENCES "User" ("userID")

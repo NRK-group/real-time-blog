@@ -1,6 +1,6 @@
 const SendResponsebtn = document.getElementById('send-response-btn');
 
-let allPost;
+let allPost, gUsers, gChatUsers;
 
 const openRegristerModal = () => {
     const loginPageId = document.querySelector('#login-page-id');
@@ -51,8 +51,6 @@ function getCookie(name) {
     // Return null if not found
     return null;
 }
-
-
 
 const LoadMessages = (messageText, classType, sentTime) => {
     const MSG = AddMessages(messageText, classType, sentTime);
@@ -223,8 +221,10 @@ const validateUser = (resp) => {
     if (resp.Msg === 'Login successful') {
         //Create the cookie when logged in#
         CreateWebSocket();
-        ShowUsers(resp.Users);
-        allUsers = resp.Users;
+        gUsers = resp.Users;
+        gChatUsers = resp.ChatUsers;
+        ShowUsers();
+        allUsers = [...resp.Users, ...resp.ChatUsers];
         allPost = resp.Posts;
         DisplayAllPost(resp.Posts);
         const loginPageId = document.querySelector('#login-page-id');
@@ -261,12 +261,31 @@ const UpdateUserProfile = (resp) => {
     document.getElementById('edit-emial-id').value = resp.User.Email;
 };
 
-const ShowUsers = (Users) => {
-    if (Users) {
+const ShowUsers = () => {
+    if (gUsers) {
         let usersDiv = document.getElementById('forum-users-container');
+        let lastChat = document.createElement('div');
+        lastChat.classList.add('forum-users-container');
+        let lastChatUsers = '';
+        gChatUsers.forEach((item, index) => {
+            lastChatUsers =
+                `<div
+                    key=${index}
+                    class="forum-user"
+                    data-user-id=${item.UserID}
+                    data-username=${item.Nickname}
+                    onclick="openChatModal(this)"
+                >
+                <div class="user-image"></div>
+                <div class="username">@${item.Nickname}</div>
+                </div>` + lastChatUsers;
+        });
+
         let usersDivTitle = document.getElementById('forum-users-title');
+        let allUsersDivTitle = document.getElementById('forum-all-users-title');
+
         let users = '';
-        Users.forEach((item, index) => {
+        gUsers.forEach((item, index) => {
             users =
                 `<div
                     key=${index}
@@ -279,8 +298,14 @@ const ShowUsers = (Users) => {
                 <div class="username">@${item.Nickname}</div>
                 </div>` + users;
         });
-        usersDiv.innerHTML = users;
-        usersDivTitle.innerText = `${Users.length} Active User`;
+        usersDiv.parentNode.insertBefore(
+            lastChat,
+            allUsersDivTitle.nextSibling
+        );
+        lastChat.innerHTML = users;
+        usersDiv.innerHTML = lastChatUsers;
+        usersDivTitle.innerText = `${gChatUsers.length} Active User`;
+        allUsersDivTitle.innerText = `${gUsers.length} User`;
     }
 };
 
@@ -496,10 +521,10 @@ const FetchMsgs = (chat, SEND_BTN) => {
     });
 };
 
-function AllowMSG () {
+function AllowMSG() {
     canRun = true;
     clearTimeout(timer);
-};
+}
 let timer;
 let canRun = true;
 function GetMsg(users, SEND_BTN) {
@@ -508,16 +533,16 @@ function GetMsg(users, SEND_BTN) {
         canRun = false;
         timer = setTimeout(AllowMSG, 1000);
     }
-};
+}
 const CHAT_CONTENT_CONTAINER = document.querySelector(
     '.chat-content-container'
 );
-let valid = false
+let valid = false;
 
 const openChatModal = (e) => {
-    console.log("Valid", valid)
+    console.log('Valid', valid);
     const RECIEVER_ID = e.getAttribute('data-user-id'); //data-user-id is the id of the user where we click on. This will be use to access the data on the database
-    const RECIEVER_USERNAME = e.getAttribute("data-username")
+    const RECIEVER_USERNAME = e.getAttribute('data-username');
     const CHAT_CONTAINER = document.querySelector('.chat-content-container');
     CHAT_CONTAINER.id = RECIEVER_ID;
 
@@ -525,8 +550,8 @@ const openChatModal = (e) => {
     const chatModalContainer = document.querySelector(
         '#chat-modal-container-id'
     );
-    const CHAT_USERNAME = document.querySelector('#chat-username-id')
-    CHAT_USERNAME.innerHTML = RECIEVER_USERNAME
+    const CHAT_USERNAME = document.querySelector('#chat-username-id');
+    CHAT_USERNAME.innerHTML = RECIEVER_USERNAME;
     //when open a specific chat, we're going to get the chat data between the current user and the user tat they click
     chatModalContainer.style.display = 'flex';
     //Add the data to the send btn
@@ -543,7 +568,33 @@ const openChatModal = (e) => {
     GetMsg(users, SEND_BTN);
 
     CHAT_CONTENT_CONTAINER.addEventListener('scroll', CheckScrollTop);
-    valid = true
+    valid = true;
+};
+
+
+
+const ArrangeUsers = (userId) => {
+    let user, pos;
+    console.log(gUsers)
+   gUsers.every((item, index) => {
+        if (userId === item.UserID) {
+            user = item;
+            pos = index;
+            return false;
+        }
+    });
+    gUsers.splice(pos, 1);
+    gChatUsers.every((item) => {
+        if (userId === item.UserID) {
+            user = item;
+            return false;
+        }
+    });
+    gChatUsers = [...gChatUsers, user];
+
+    console.log(gUsers)
+
+    ShowUsers();
 };
 
 const SendMessage = () => {
@@ -569,11 +620,12 @@ const SendMessage = () => {
         socket.send(JSON.stringify(INFORMATION));
         DisplayMessage(MSG, 'chat sender', SORTED.split(' '));
         TEXT_BOX.value = '';
+        ArrangeUsers(SEND_TO)
     }
 };
 
 const closeChat = () => {
-    valid = false
+    valid = false;
     removeAllChildNodes(document.querySelector('.chat-content-container'));
     const chatModalContainer = document.querySelector(
         '#chat-modal-container-id'
