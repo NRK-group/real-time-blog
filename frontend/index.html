@@ -297,7 +297,10 @@
                         </nav>
                     </div>
                 </div>
-                <div class="middle-container scrollbar-hidden">
+                <div
+                    class="middle-container scrollbar-hidden"
+                    onscroll="scrollOnPost(this)"
+                >
                     <div class="new-post-container">
                         <div class="new-post-btn">
                             <div class="new-post-top-btn">
@@ -432,8 +435,7 @@
                     <div class="user-image"></div>
                     <div class="username" id="chat-username-id">@username</div>
                 </div>
-                <div class="chat-content-container scrollbar-hidden">
-                </div>
+                <div class="chat-content-container scrollbar-hidden"></div>
                 <div class="chat-input-container">
                     <!-- <div class="user-typing hide"></div> -->
                     <i class="fa-solid fa-message"></i>
@@ -550,46 +552,10 @@
                         Send
                     </div>
                 </div>
-                <div id="all-reponse-container" class="all-reponse-container">
-                    <div class="response-container">
-                        <div class="response-user-profile">
-                            <div class="user-image"></div>
-                            <span>
-                                <div class="response-username">
-                                    @username
-                                    <span class="response-created"
-                                        >January 20, 2020</span
-                                    >
-                                </div>
-                                <div class="response-content">
-                                    Hello Hello Hello Hello Hello Hello Hello
-                                    Hello HelloHello Hello HelloHello Hello
-                                    Hello Hello HelloHello Hello Hello Hello
-                                    HelloHello Hello Hello Hello
-                                </div>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="response-container">
-                        <div class="response-user-profile">
-                            <div class="user-image"></div>
-                            <span>
-                                <div class="response-username">
-                                    @username
-                                    <span class="response-created"
-                                        >January 20, 2020</span
-                                    >
-                                </div>
-                                <div class="response-content">
-                                    Hello Hello Hello Hello Hello Hello Hello
-                                    Hello HelloHello Hello HelloHello Hello
-                                    Hello Hello HelloHello Hello Hello Hello
-                                    HelloHello Hello Hello Hello
-                                </div>
-                            </span>
-                        </div>
-                    </div>
-                </div>
+                <div
+                    id="all-reponse-container"
+                    class="all-reponse-container"
+                ></div>
             </div>
         </div>
         <!-- * end of the response modal -->
@@ -718,6 +684,22 @@
             </div>
         </div>
         <!-- * end of profile modal -->
+        <!-- *start of the push notification-->
+        <div
+            class="notification-container"
+            id="notification-container-id"
+            onclick="refreshThePost()"
+        >
+            <span class="icon white">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+                    <path
+                        d="M374.6 246.6C368.4 252.9 360.2 256 352 256s-16.38-3.125-22.62-9.375L224 141.3V448c0 17.69-14.33 31.1-31.1 31.1S160 465.7 160 448V141.3L54.63 246.6c-12.5 12.5-32.75 12.5-45.25 0s-12.5-32.75 0-45.25l160-160c12.5-12.5 32.75-12.5 45.25 0l160 160C387.1 213.9 387.1 234.1 374.6 246.6z"
+                    />
+                </svg>
+            </span>
+            New Post
+        </div>
+        <!-- *end of the push notificattion -->
         <script src="../frontend/js/main.js"></script>
     </body>
 </html>
