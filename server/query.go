@@ -539,3 +539,11 @@ func (forum *DB) CreateNotification(userID, recieverID string) {
 	
 }
 
+func (forum *DB) DeleteNotification(sender, target string)  {
+	//Delete the row in the db
+	_, deleteErr := forum.DB.Exec("DELETE FROM MessageNotifications WHERE userID = ? AND recieverID = ?",sender ,target)
+	if deleteErr != nil {
+		fmt.Println("Error deleting from the Message Notification database")
+	}
+	fmt.Println("Successfully deleted notifications")
+}

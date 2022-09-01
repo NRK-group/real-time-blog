@@ -350,6 +350,18 @@ func (forum *DB) GetMessages(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-type", "application/json")
 		w.Write(marshallChat)
 	}
+	if r.Method == "PUT" {
+		fmt.Println("Delete Info from notification table between:----------------------------------------- ")
+		var chatUsers NewMessage
+
+		err := json.NewDecoder(r.Body).Decode(&chatUsers)
+		if err != nil {
+			fmt.Println("Error unmarshalling the data to delete it from the database: ", err)
+		}
+
+		forum.DeleteNotification(chatUsers.UserID, chatUsers.RecieverID) 
+		
+	}
 }
 
 func (forum *DB) Response(w http.ResponseWriter, r *http.Request) {
