@@ -277,7 +277,17 @@ func (forum *DB) Post(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	res := strings.Split(c.Value, "&")
-
+	if r.Method == "GET" {
+		page = ReturnData{Posts: forum.AllPost("", res[0]), Msg: "successful Post"}
+		marshallPage, err := json.Marshal(page)
+		if err != nil {
+			fmt.Println("Error marshalling the data: ", err)
+		}
+		w.WriteHeader(http.StatusOK)
+		w.Header().Set("Content-type", "application/json")
+		w.Write(marshallPage)
+		return
+	}
 	if r.Method == "POST" {
 
 		var postData PostData
@@ -324,14 +334,13 @@ func (forum *DB) GetMessages(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// Check if there is a chat between the two users
-		if chatDetails.ChatID = forum.CheckChatID(chatDetails.User, chatDetails.Reciever); chatDetails.ChatID == ""{
-			chatDetails.ChatID = forum.CreateChatID(chatDetails.User, chatDetails.Reciever ) 
+		if chatDetails.ChatID = forum.CheckChatID(chatDetails.User, chatDetails.Reciever); chatDetails.ChatID == "" {
+			chatDetails.ChatID = forum.CreateChatID(chatDetails.User, chatDetails.Reciever)
 		} else {
-			//Get the first 10 messages
+			// Get the first 10 messages
 			chatDetails.Messages = forum.TenMessages(chatDetails.ChatID, chatDetails.X)
-
 		}
-		
+
 		marshallChat, marshErr := json.Marshal(chatDetails)
 		if marshErr != nil {
 			fmt.Println("Error marshalling getMessages: ", marshErr)
@@ -423,7 +432,7 @@ func (forum *DB) Favorite(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 
-			forum.CheckReactInPost(responseData.PostID, res[0], responseData.React ) 
+			forum.CheckReactInPost(responseData.PostID, res[0], responseData.React)
 			if err != nil {
 				fmt.Print(err)
 				http.Error(w, "500 Internal Server Error."+err.Error(), http.StatusInternalServerError)
@@ -431,7 +440,7 @@ func (forum *DB) Favorite(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 
-			page = ReturnData{Posts: forum.AllPost("", res[0]), Msg: "successful react to post--" }
+			page = ReturnData{Posts: forum.AllPost("", res[0]), Msg: "successful react to post--"}
 			marshallPage, err := json.Marshal(page)
 			if err != nil {
 				fmt.Println("Error marshalling the data: ", err.Error())

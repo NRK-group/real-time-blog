@@ -52,8 +52,6 @@ function getCookie(name) {
     return null;
 }
 
-
-
 const LoadMessages = (messageText, classType, sentTime) => {
     const MSG = AddMessages(messageText, classType, sentTime);
     const CHAT_CONTENT_CONTAINER = document.querySelector(
@@ -496,10 +494,10 @@ const FetchMsgs = (chat, SEND_BTN) => {
     });
 };
 
-function AllowMSG () {
+function AllowMSG() {
     canRun = true;
     clearTimeout(timer);
-};
+}
 let timer;
 let canRun = true;
 function GetMsg(users, SEND_BTN) {
@@ -508,16 +506,16 @@ function GetMsg(users, SEND_BTN) {
         canRun = false;
         timer = setTimeout(AllowMSG, 1000);
     }
-};
+}
 const CHAT_CONTENT_CONTAINER = document.querySelector(
     '.chat-content-container'
 );
-let valid = false
+let valid = false;
 
 const openChatModal = (e) => {
-    console.log("Valid", valid)
+    console.log('Valid', valid);
     const RECIEVER_ID = e.getAttribute('data-user-id'); //data-user-id is the id of the user where we click on. This will be use to access the data on the database
-    const RECIEVER_USERNAME = e.getAttribute("data-username")
+    const RECIEVER_USERNAME = e.getAttribute('data-username');
     const CHAT_CONTAINER = document.querySelector('.chat-content-container');
     CHAT_CONTAINER.id = RECIEVER_ID;
 
@@ -525,8 +523,8 @@ const openChatModal = (e) => {
     const chatModalContainer = document.querySelector(
         '#chat-modal-container-id'
     );
-    const CHAT_USERNAME = document.querySelector('#chat-username-id')
-    CHAT_USERNAME.innerHTML = RECIEVER_USERNAME
+    const CHAT_USERNAME = document.querySelector('#chat-username-id');
+    CHAT_USERNAME.innerHTML = RECIEVER_USERNAME;
     //when open a specific chat, we're going to get the chat data between the current user and the user tat they click
     chatModalContainer.style.display = 'flex';
     //Add the data to the send btn
@@ -543,7 +541,7 @@ const openChatModal = (e) => {
     GetMsg(users, SEND_BTN);
 
     CHAT_CONTENT_CONTAINER.addEventListener('scroll', CheckScrollTop);
-    valid = true
+    valid = true;
 };
 
 const SendMessage = () => {
@@ -573,7 +571,7 @@ const SendMessage = () => {
 };
 
 const closeChat = () => {
-    valid = false
+    valid = false;
     removeAllChildNodes(document.querySelector('.chat-content-container'));
     const chatModalContainer = document.querySelector(
         '#chat-modal-container-id'
@@ -1026,4 +1024,58 @@ const openYourPost = (e) => {
 const filterPost = (tag) => {
     let newAllPost = allPost.filter((post) => post.Category === tag);
     DisplayAllPost(newAllPost);
+};
+const refreshThePost = () => {
+    fetch('/post')
+        .then((response) => {
+            return response.json();
+        })
+        .then((resp) => {
+            allPost = resp.Posts;
+            DisplayAllPost(resp.Posts);
+            return;
+        })
+        .then(() => {
+            const middleContainer = document.querySelector('.middle-container');
+            middleContainer.scrollTo({ top: 0, behavior: 'smooth' });
+            return;
+        })
+        .catch((err) => {
+            console.log('refreshThePost()', err);
+        });
+    return;
+};
+let lastScrollTop = 0;
+let isScrolling;
+const scrollOnPost = (e) => {
+    const notificationContainer = document.querySelector(
+        '#notification-container-id'
+    );
+    let scrollTop = e.scrollTop;
+    console.log(scrollTop);
+    if (scrollTop >= lastScrollTop) {
+        console.log('scroll down');
+        // if (scrollTop >= 100) {
+        //     notificationContainer.classList.add('hide');
+        // }
+        // notificationContainer.classList.remove('visible');
+    } else {
+        if (scrollTop <= 30) {
+            refreshThePost();
+        }
+        if (scrollTop <= 50) {
+            notificationContainer.classList.remove('visible');
+        }
+    }
+
+    // Clear our timeout throughout the scroll
+    clearTimeout(isScrolling);
+    // Set a timeout to run after scrolling ends
+    isScrolling = setTimeout(function () {
+        // Run the callback
+        if (scrollTop > 100) {
+            notificationContainer.classList.add('visible');
+        }
+    }, 100);
+    lastScrollTop = scrollTop;
 };
