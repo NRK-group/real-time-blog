@@ -37,7 +37,7 @@ func (forum *DB) reader(conn *websocket.Conn) {
 		}
 
 		details.messageType = messageType
-		// Add To the channel instead of writing the message back
+
 		if details.Mesg == "e702c728-67f2-4ecd-9e79-4795010501ea" {
 			fmt.Println("Newpost")
 			for userID, webSocket := range users {
@@ -53,9 +53,15 @@ func (forum *DB) reader(conn *websocket.Conn) {
 			}
 			return
 		}
-		if _, recieverValid := users[details.RecieverID]; !recieverValid {
+		// Add To the channel instead of writing the message back
+		if _, recieverValid := users[details.RecieverID]; !recieverValid || details.Notification {
 			fmt.Println("User sending two isnt active UserID: ", details.RecieverID)
+			// store the notification
+			if details.Mesg != " " {
+				forum.Notification(details.UserID, details.RecieverID)
+			}
 		} else {
+			// Reciever is active so send msg
 			chat <- details
 		}
 

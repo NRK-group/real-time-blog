@@ -129,32 +129,22 @@ const ProcessMessage = (message) => {
         notificationContainer.classList.add('visible');
         return;
     }
-    const CHAT_MODAL_CONTAINER = document.querySelector(
-            '#chat-modal-container-id'
-        ),
-        SEND_BTN = document.querySelector('.send-chat-btn');
-    // Check if the chat modal is open and that the reciever id is the ID of the user who sent the message
-    if (
-        CHAT_MODAL_CONTAINER.style.display === 'flex' &&
-        SEND_BTN.getAttribute('data-reciever-id') == message.senderID
-    ) {
-        const TYPING_MSG = document.querySelector('.fa-message');
-        if (message.message === ' ') {
-            {
-                let username;
-                for (let i = 0; i < allUsers.length; i++) {
-                    if (allUsers[i].UserID === message.senderID) {
-                        username = allUsers[i].Nickname;
-                    }
+    const TYPING_MSG = document.querySelector('.fa-message');
+    if (message.message === ' ') {
+        {
+            let username;
+            for (let i = 0; i < allUsers.length; i++) {
+                if (allUsers[i].UserID === message.senderID) {
+                    username = allUsers[i].Nickname;
                 }
-                //User has started typing
-                TYPING_MSG.innerHTML = `${username} Is Typing ...`;
-                TYPING_MSG.classList.add('animate-typing');
-                Debounce(StoppedTyping, 1750);
             }
-        } else {
-            DisplayMessage(message.message, 'chat', message.date.split(' '));
+            //User has started typing
+            TYPING_MSG.innerHTML = `${username} Is Typing ...`;
+            TYPING_MSG.classList.add('animate-typing');
+            Debounce(StoppedTyping, 1750);
         }
+    } else {
+        DisplayMessage(message.message, 'chat', message.date.split(' '));
     }
 };
 
@@ -171,9 +161,32 @@ const CreateWebSocket = () => {
         // socket.send(cookie);
     };
     socket.onmessage = (text) => {
-        const MESSAGE_INFO = JSON.parse(text.data);
-        console.log(MESSAGE_INFO);
-        ProcessMessage(MESSAGE_INFO);
+        let messageInfo = JSON.parse(text.data);
+        const CHAT_MODAL_CONTAINER = document.querySelector(
+                '#chat-modal-container-id'
+            ),
+            SEND_BTN = document.querySelector('.send-chat-btn');
+        // Check if the chat modal is open and that the reciever id is the ID of the user who sent the message
+        messageInfo.recieverID = getCookie('session_token').split('&')[0];
+
+        if (
+            CHAT_MODAL_CONTAINER.style.display === 'flex' &&
+            SEND_BTN.getAttribute('data-reciever-id') == messageInfo.senderID
+        ) {
+            console.log('Proccessing', messageInfo);
+            ProcessMessage(messageInfo);
+            return;
+        }
+        console.log('You have a message from: ', messageInfo.senderID);
+        //Show the notification animation
+
+        //Return the notification to the db
+        if (messageInfo.message != ' ') {
+            messageInfo.notification = true;
+            messageInfo.userID = messageInfo.senderID;
+            console.log('Sending back to the golang: ', messageInfo);
+            socket.send(JSON.stringify(messageInfo));
+        }
     };
 };
 
@@ -291,7 +304,7 @@ const ShowUsers = (Users) => {
                     onclick="openChatModal(this)"
                 >
                 <div class="user-image"></div>
-                <div class="username">@${item.Nickname}</div>
+                <div class="username">@${item.Nickname} <div class="notification">3</div></div>
                 </div>` + users;
         });
         usersDiv.innerHTML = users;
