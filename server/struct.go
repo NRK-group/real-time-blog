@@ -140,3 +140,8 @@ type MessageRequest struct {
 	ChatID string `json:"chatID"`
 	Rows string `json:"rows"`
 }
+
+type Notify struct {
+	SenderID string `json:"senderID"`
+	Count int `json:"count"`
+}
