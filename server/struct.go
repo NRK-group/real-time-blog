@@ -101,6 +101,7 @@ type NewMessage struct {
 	RecieverID  string `json:"recieverID"`
 	ChatID      string `json:"chatID"`
 	Date        string `json:"date"`
+	Notification bool `json:"notification"`
 	messageType int
 }
 

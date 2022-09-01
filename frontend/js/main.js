@@ -52,8 +52,6 @@ function getCookie(name) {
     return null;
 }
 
-
-
 const LoadMessages = (messageText, classType, sentTime) => {
     const MSG = AddMessages(messageText, classType, sentTime);
     const CHAT_CONTENT_CONTAINER = document.querySelector(
@@ -124,33 +122,22 @@ let allUsers;
 
 // ProccessMessage is a function that will display the message in the chat if the user has it open.
 const ProcessMessage = (message) => {
-    const CHAT_MODAL_CONTAINER = document.querySelector(
-            '#chat-modal-container-id'
-        ),
-        SEND_BTN = document.querySelector('.send-chat-btn');
-    // Check if the chat modal is open and that the reciever id is the ID of the user who sent the message
-
-    if (
-        CHAT_MODAL_CONTAINER.style.display === 'flex' &&
-        SEND_BTN.getAttribute('data-reciever-id') == message.senderID
-    ) {
-        const TYPING_MSG = document.querySelector('.fa-message');
-        if (message.message === ' ') {
-            {
-                let username;
-                for (let i = 0; i < allUsers.length; i++) {
-                    if (allUsers[i].UserID === message.senderID) {
-                        username = allUsers[i].Nickname;
-                    }
+    const TYPING_MSG = document.querySelector('.fa-message');
+    if (message.message === ' ') {
+        {
+            let username;
+            for (let i = 0; i < allUsers.length; i++) {
+                if (allUsers[i].UserID === message.senderID) {
+                    username = allUsers[i].Nickname;
                 }
-                //User has started typing
-                TYPING_MSG.innerHTML = `${username} Is Typing ...`;
-                TYPING_MSG.classList.add('animate-typing');
-                Debounce(StoppedTyping, 1750);
             }
-        } else {
-            DisplayMessage(message.message, 'chat', message.date.split(' '));
+            //User has started typing
+            TYPING_MSG.innerHTML = `${username} Is Typing ...`;
+            TYPING_MSG.classList.add('animate-typing');
+            Debounce(StoppedTyping, 1750);
         }
+    } else {
+        DisplayMessage(message.message, 'chat', message.date.split(' '));
     }
 };
 
@@ -167,8 +154,32 @@ const CreateWebSocket = () => {
         // socket.send(cookie);
     };
     socket.onmessage = (text) => {
-        const MESSAGE_INFO = JSON.parse(text.data);
-        ProcessMessage(MESSAGE_INFO);
+        let messageInfo = JSON.parse(text.data);
+        const CHAT_MODAL_CONTAINER = document.querySelector(
+                '#chat-modal-container-id'
+            ),
+            SEND_BTN = document.querySelector('.send-chat-btn');
+        // Check if the chat modal is open and that the reciever id is the ID of the user who sent the message
+        messageInfo.recieverID = getCookie('session_token').split('&')[0];
+
+        if (
+            CHAT_MODAL_CONTAINER.style.display === 'flex' &&
+            SEND_BTN.getAttribute('data-reciever-id') == messageInfo.senderID
+        ) {
+            console.log('Proccessing', messageInfo);
+            ProcessMessage(messageInfo);
+            return;
+        }
+        console.log('You have a message from: ', messageInfo.senderID);
+        //Show the notification animation
+
+        //Return the notification to the db
+        if (messageInfo.message != ' ') {
+            messageInfo.notification = true;
+            messageInfo.userID = messageInfo.senderID;
+            console.log('Sending back to the golang: ', messageInfo);
+            socket.send(JSON.stringify(messageInfo));
+        }
     };
 };
 
@@ -276,7 +287,7 @@ const ShowUsers = (Users) => {
                     onclick="openChatModal(this)"
                 >
                 <div class="user-image"></div>
-                <div class="username">@${item.Nickname}</div>
+                <div class="username">@${item.Nickname} <div class="notification">3</div></div>
                 </div>` + users;
         });
         usersDiv.innerHTML = users;
@@ -496,10 +507,10 @@ const FetchMsgs = (chat, SEND_BTN) => {
     });
 };
 
-function AllowMSG () {
+function AllowMSG() {
     canRun = true;
     clearTimeout(timer);
-};
+}
 let timer;
 let canRun = true;
 function GetMsg(users, SEND_BTN) {
@@ -508,16 +519,16 @@ function GetMsg(users, SEND_BTN) {
         canRun = false;
         timer = setTimeout(AllowMSG, 1000);
     }
-};
+}
 const CHAT_CONTENT_CONTAINER = document.querySelector(
     '.chat-content-container'
 );
-let valid = false
+let valid = false;
 
 const openChatModal = (e) => {
-    console.log("Valid", valid)
+    console.log('Valid', valid);
     const RECIEVER_ID = e.getAttribute('data-user-id'); //data-user-id is the id of the user where we click on. This will be use to access the data on the database
-    const RECIEVER_USERNAME = e.getAttribute("data-username")
+    const RECIEVER_USERNAME = e.getAttribute('data-username');
     const CHAT_CONTAINER = document.querySelector('.chat-content-container');
     CHAT_CONTAINER.id = RECIEVER_ID;
 
@@ -525,8 +536,8 @@ const openChatModal = (e) => {
     const chatModalContainer = document.querySelector(
         '#chat-modal-container-id'
     );
-    const CHAT_USERNAME = document.querySelector('#chat-username-id')
-    CHAT_USERNAME.innerHTML = RECIEVER_USERNAME
+    const CHAT_USERNAME = document.querySelector('#chat-username-id');
+    CHAT_USERNAME.innerHTML = RECIEVER_USERNAME;
     //when open a specific chat, we're going to get the chat data between the current user and the user tat they click
     chatModalContainer.style.display = 'flex';
     //Add the data to the send btn
@@ -543,7 +554,7 @@ const openChatModal = (e) => {
     GetMsg(users, SEND_BTN);
 
     CHAT_CONTENT_CONTAINER.addEventListener('scroll', CheckScrollTop);
-    valid = true
+    valid = true;
 };
 
 const SendMessage = () => {
@@ -573,7 +584,7 @@ const SendMessage = () => {
 };
 
 const closeChat = () => {
-    valid = false
+    valid = false;
     removeAllChildNodes(document.querySelector('.chat-content-container'));
     const chatModalContainer = document.querySelector(
         '#chat-modal-container-id'
