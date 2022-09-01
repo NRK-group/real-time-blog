@@ -717,10 +717,10 @@ const openResponseModal = (postId) => {
     }
     if (post.Category === 'javascript') {
         category =
-            '<div class="post-category javascript javascript-category">GoLang</div>';
+            '<div class="post-category javascript javascript-category">JavaScript</div>';
     }
     if (post.Category === 'rust') {
-        category = '<div class="post-category rust rust-category">GoLang</div>';
+        category = '<div class="post-category rust rust-category">Rust</div>';
     }
     responsePostContainer.innerHTML = `
     <div class="post-title">${post.Title}</div>
