@@ -122,6 +122,21 @@ func initMessage(db *sql.DB) {
 	stmt.Exec()
 }
 
+func initMessageNotifications(db *sql.DB) {
+	stmt, err := db.Prepare(`
+	CREATE TABLE IF NOT EXISTS "MessageNotifications" (
+		"userID"	TEXT NOT NULL,
+		"recieverID"	TEXT NOT NULL,
+		"number"      INT DEFAULT 0
+	);
+	`)
+	if err != nil {
+		fmt.Println("Error initialising the message-notification table: ",err)
+		return
+	}
+	stmt.Exec()
+}
+
 func initChat(db *sql.DB) {
 	stmt, _ := db.Prepare(`
 	CREATE TABLE IF NOT EXISTS "Chat" (
@@ -145,6 +160,7 @@ func CreateDatabase(db *sql.DB) *sql.DB {
 	initComment(db)
 	initFavorite(db)
 	initMessage(db)
+	initMessageNotifications(db)
 	initChat(db)
 	return db
 }

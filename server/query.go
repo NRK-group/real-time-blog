@@ -488,3 +488,54 @@ func (forum *DB) TenMessages(chatID string, x int) []SendMessage{
 	fmt.Println(result)
 	return result
 }
+
+func (forum *DB) Notification(userID, recieverID string) {
+	fmt.Println("Update the notifation msg", userID, recieverID)
+
+	checkNotification, err := forum.DB.Query("SELECT 1 FROM MessageNotifications WHERE userID = ? AND recieverID = ?", userID, recieverID)
+	if err != nil {
+		fmt.Println("Error checking for notification row")
+		return
+	}
+	count := 0
+	for checkNotification.Next() {
+		count++
+	}
+	if count == 0 {
+		forum.CreateNotification(userID, recieverID)
+	} else if count == 1 {
+		forum.UpdateNotification(userID, recieverID)
+	}
+	
+}
+
+func (forum *DB) UpdateNotification(userID, recieverID string) {
+
+	updateMsgs, err := forum.DB.Prepare(`UPDATE MessageNotifications SET number = number + 1 WHERE userID = ? AND recieverID = ?`)
+	if err != nil {
+		fmt.Println("Error Preparing update notification: ", err)
+		return
+	}
+
+	_, errExec := updateMsgs.Exec(userID, recieverID)
+	if errExec != nil {
+		fmt.Println("Error executing update notifications: ", errExec)
+		return
+	}
+}
+
+func (forum *DB) CreateNotification(userID, recieverID string) {
+	addNotification, err := forum.DB.Prepare(`INSERT INTO MessageNotifications VALUES (?,?,?)`)
+	if err != nil {
+		fmt.Println("Error preparing the insert statement: ", err)
+		return
+	}
+
+	_, errExec := addNotification.Exec(userID, recieverID, 1)
+	if errExec != nil {
+		fmt.Println("Error inserting the notification")
+		return
+	}
+	
+}
+
