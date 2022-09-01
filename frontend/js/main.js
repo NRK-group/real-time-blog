@@ -141,6 +141,15 @@ const ProcessMessage = (message) => {
     }
 };
 
+const AddNotification = (i, senderID) => {
+    // console.log();
+    const MESSAGE_BOX = document.getElementById(senderID)
+    let notValue = parseInt(MESSAGE_BOX.innerHTML)
+    notValue += parseInt(i)
+    MESSAGE_BOX.innerHTML = notValue
+    MESSAGE_BOX.style.display='flex'
+};
+
 let socket;
 const CreateWebSocket = () => {
     socket = new WebSocket('ws://localhost:8800/ws');
@@ -170,11 +179,12 @@ const CreateWebSocket = () => {
             ProcessMessage(messageInfo);
             return;
         }
-        console.log('You have a message from: ', messageInfo.senderID);
-        //Show the notification animation
-
-        //Return the notification to the db
         if (messageInfo.message != ' ') {
+            //Show the notification animation
+            console.log('You have a message from: ', messageInfo.senderID);
+
+            AddNotification(1, messageInfo.senderID);
+            //Return the notification to the db
             messageInfo.notification = true;
             messageInfo.userID = messageInfo.senderID;
             console.log('Sending back to the golang: ', messageInfo);
@@ -287,11 +297,12 @@ const ShowUsers = (Users) => {
                     onclick="openChatModal(this)"
                 >
                 <div class="user-image"></div>
-                <div class="username">@${item.Nickname} <div class="notification">3</div></div>
+                <div class="username">@${item.Nickname} <div class="notification" id="${item.UserID}">0</div></div>
                 </div>` + users;
         });
         usersDiv.innerHTML = users;
         usersDivTitle.innerText = `${Users.length} Active User`;
+       
     }
 };
 
@@ -555,6 +566,9 @@ const openChatModal = (e) => {
 
     CHAT_CONTENT_CONTAINER.addEventListener('scroll', CheckScrollTop);
     valid = true;
+    const MESSAGE_BOX = document.getElementById(RECIEVER_ID);
+    MESSAGE_BOX.innerHTML= "0"
+     MESSAGE_BOX.style.display = 'none';
 };
 
 const SendMessage = () => {

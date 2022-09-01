@@ -1368,13 +1368,14 @@ ul {
 
 
 .notification {
-    width: 10%;
-    font-size: 70%;
+    width: 20%;
+    font-size: 75%;
     font-weight: bold;
     color: white;
     margin-top: auto;
     margin-left:1vw;
     border-radius: 10px;
-    text-align: center;
+    display: none;
+    justify-content: center;
     background-color: #533de0;
 }
