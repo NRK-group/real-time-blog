@@ -143,11 +143,11 @@ const ProcessMessage = (message) => {
 
 const AddNotification = (i, senderID) => {
     // console.log();
-    const MESSAGE_BOX = document.getElementById(senderID)
-    let notValue = parseInt(MESSAGE_BOX.innerHTML)
-    notValue += parseInt(i)
-    MESSAGE_BOX.innerHTML = notValue
-    MESSAGE_BOX.style.display='flex'
+    const MESSAGE_BOX = document.getElementById(senderID);
+    let notValue = parseInt(MESSAGE_BOX.innerHTML);
+    notValue += parseInt(i);
+    MESSAGE_BOX.innerHTML = notValue;
+    MESSAGE_BOX.style.display = 'flex';
 };
 
 let socket;
@@ -319,7 +319,6 @@ const ShowUsers = (Users) => {
         });
         usersDiv.innerHTML = users;
         usersDivTitle.innerText = `${Users.length} Active User`;
-       
     }
 };
 
@@ -553,6 +552,26 @@ const CHAT_CONTENT_CONTAINER = document.querySelector(
 );
 let valid = false;
 
+const DeleteChatNotifications = (usersID, recieversID) => {
+    const DELETE = {
+        userID: usersID,
+        recieverID: recieversID,
+    };
+    fetch('/MessageInfo', {
+        method: 'PUT',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(DELETE),
+    });
+
+    //Remove the notifications from the clients page
+    const MESSAGE_BOX = document.getElementById(usersID);
+    MESSAGE_BOX.innerHTML = '0';
+    MESSAGE_BOX.style.display = 'none';
+};
+
 const openChatModal = (e) => {
     console.log('Valid', valid);
     const RECIEVER_ID = e.getAttribute('data-user-id'); //data-user-id is the id of the user where we click on. This will be use to access the data on the database
@@ -579,13 +598,14 @@ const openChatModal = (e) => {
         X: 0,
     };
 
+    DeleteChatNotifications(
+        RECIEVER_ID,
+        getCookie('session_token').split('&')[0],
+    );
     GetMsg(users, SEND_BTN);
 
     CHAT_CONTENT_CONTAINER.addEventListener('scroll', CheckScrollTop);
     valid = true;
-    const MESSAGE_BOX = document.getElementById(RECIEVER_ID);
-    MESSAGE_BOX.innerHTML= "0"
-     MESSAGE_BOX.style.display = 'none';
 };
 
 const SendMessage = () => {

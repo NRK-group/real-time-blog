@@ -1385,6 +1385,7 @@ ul {
     font-size: 15px;
     font-weight: 800;
     cursor: pointer;
+    z-index: 10;
 }
 .white {
     color: white;
