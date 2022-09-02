@@ -1,6 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap');
+
 * {
     box-sizing: border-box;
     letter-spacing: 1px;
+    font-family: 'Outfit', sans-serif;
 }
 
 body {
@@ -17,6 +20,7 @@ button {
     grid-template-rows: 7% 93%;
     overflow: hidden;
     width: 100vw;
+    /* min-height: ; */
     height: 100vh;
     background: rgb(202, 240, 248);
     background: linear-gradient(
@@ -45,13 +49,17 @@ button {
     border-right: 2px solid #e8e8e8;
     padding-top: 50px;
     overflow: scroll;
+    min-width: 200px
 }
 
 .middle-container {
     height: 100vh;
+    /* min-width: 750px; */
+    width: 90%;
     overflow-y: scroll;
     scroll-behavior: smooth;
     padding-top: 30px;
+    margin: 0 auto;
 }
 /* Hide scrollbar for Chrome, Safari and Opera */
 ::-webkit-scrollbar {
@@ -563,6 +571,10 @@ input[type='email']:focus {
     /* justify-content: center; */
     flex-direction: column;
     padding-bottom: 100px;
+    width: 90%;
+    margin: 0 auto;
+    /* min-width: 600px; */
+    /* margin: 0 12vw; */
 }
 .post-container {
     width: 700px;
@@ -594,7 +606,7 @@ input[type='email']:focus {
     display: flex;
     font-weight: 600;
     width: 100%;
-    padding: 2%
+    padding: 2%;
 }
 .post-content {
     line-height: 1.5;
@@ -1182,15 +1194,19 @@ input[type='email']:focus {
 }
 .profile-modal {
     display: grid;
-    grid-template-rows: 2.7vh 22vh 60.3vh 9vh;
+    margin: auto;
+    grid-template-rows: 2.7% 30% 50% 9%;
     background-color: white;
-    min-width: 60vw;
+    width: 60vw;
+    min-width: 600px;
     height: 95vh;
+    min-height: 525px;
     z-index: 1;
     border-radius: 16px;
     padding: 2px;
 }
 .edit-profile-buttons {
+    margin-top: 5vh;
     display: flex;
     justify-content: space-evenly;
     align-items: center;
@@ -1247,26 +1263,44 @@ input[type='email']:focus {
     transition: all 0.3s;
 }
 .profile-picture-container {
+    width: 100%;
+    height: 20vh;
     display: flex;
     justify-content: center;
 }
 .profile-info-container {
     display: flex;
+    padding: 0.5%;
     justify-content: center;
+    overflow: scroll;
 }
 .profile-info {
+    /* padding:1%; */
+    display: block;
     min-width: 50vw;
     border-top: 1px solid rgb(220, 220, 220);
-    padding-left: 5vw;
 }
 .edit-profile-input {
-    margin: 15px auto;
+    margin: 0 auto;
+    text-align: center;
+    border-bottom: 1px solid #e8e8e8;
+    padding: 1%;
+    width: 75%;
+    height:35%;
+    max-height: 125px;
+
+}
+.edit-title{
+    margin: 2.5% ;
 }
 .edit-profile-fields {
+    margin: 1% auto;
     width: 20vw;
     height: inherit;
+    max-height: 35px;
     background-color: inherit;
     color: inherit;
+    border: 1px solid #533de0;
     border-radius: 10px;
     color: black;
     padding: 7px;
@@ -1278,6 +1312,8 @@ input[type='email']:focus {
     flex-direction: column;
     justify-content: center;
     padding: 1vw;
+    width: 90%;
+    min-width: 200px;
 }
 ul {
     list-style-type: none;
@@ -1288,6 +1324,8 @@ ul {
     margin-top: 10px;
     height: 5vh;
     display: flex;
+    width:90%;
+    min-width: 200px;
     /* justify-content: center; */
     padding: 20px;
     align-items: center;
@@ -1395,16 +1433,19 @@ ul {
     visibility: visible;
 }
 
-
 .notification {
     width: 20%;
     font-size: 75%;
     font-weight: bold;
     color: white;
     margin-top: auto;
-    margin-left:1vw;
+    margin-left: 1vw;
     border-radius: 10px;
     display: none;
     justify-content: center;
     background-color: #533de0;
+}
+
+.filter-btn{
+    width: 50%;
 }

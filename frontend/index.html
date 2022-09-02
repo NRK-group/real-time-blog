@@ -183,7 +183,7 @@
                             <ul>
                                 <li>
                                     <div
-                                        class="filter all-post all-post-active"
+                                        class="filter all-post all-post-active filter-btn"
                                         onclick="openAllPost(this)"
                                         id="all-post-id"
                                     >
@@ -202,7 +202,7 @@
                                 </li>
                                 <li>
                                     <div
-                                        class="filter golang"
+                                        class="filter golang filter-btn"
                                         onclick="openGoLangPost(this)"
                                         id="golang-post-id"
                                     >
@@ -217,7 +217,7 @@
                                 </li>
                                 <li>
                                     <div
-                                        class="filter javascript"
+                                        class="filter javascript filter-btn"
                                         onclick="openJavaScriptPost(this)"
                                         id="javascript-post-id"
                                     >
@@ -234,7 +234,7 @@
                                 </li>
                                 <li>
                                     <div
-                                        class="filter rust"
+                                        class="filter rust filter-btn"
                                         onclick="openRustPost(this)"
                                         id="rust-post-id"
                                     >
@@ -257,7 +257,7 @@
                             <ul>
                                 <li>
                                     <div
-                                        class="filter all-post"
+                                        class="filter all-post filter-btn"
                                         id="your-post-id"
                                         onclick="openYourPost(this)"
                                     >
@@ -276,7 +276,7 @@
                                 </li>
                                 <li>
                                     <div
-                                        class="filter all-post"
+                                        class="filter all-post filter-btn"
                                         id="favorite-post-id"
                                         onclick="openFavoritePost(this)"
                                     >
@@ -581,7 +581,7 @@
                 <div class="profile-info-container">
                     <div class="profile-info">
                         <div class="edit-profile-input">
-                            <label for="edit-first-name-id">First name:</label>
+                            <p class="edit-title">First Name</p>
                             <input
                                 type="text"
                                 name=""
@@ -591,7 +591,7 @@
                             />
                         </div>
                         <div class="edit-profile-input">
-                            <label for="edit-last-name-id">Last name:</label>
+                            <p class="edit-title">Last Name</p>
                             <input
                                 type="text"
                                 name=""
@@ -601,7 +601,7 @@
                             />
                         </div>
                         <div class="edit-profile-input">
-                            <label for="edit-nickname-id">Nickname:</label>
+                            <p class="edit-title">Nickname</p>
                             <input
                                 type="text"
                                 name=""
@@ -611,9 +611,9 @@
                             />
                         </div>
                         <div class="edit-profile-input">
-                            <label for="edit-age-id">Age:</label>
+                            <p class="edit-title">Age</p>
                             <input
-                                type="text"
+                                type="number"
                                 name=""
                                 id="edit-age-id"
                                 class="edit-profile-fields"
@@ -621,7 +621,7 @@
                             />
                         </div>
                         <div class="edit-profile-input">
-                            <label for="edit-email-id">Email:</label>
+                            <p class="edit-title">Email</p>
                             <input
                                 type="text"
                                 name=""
@@ -631,7 +631,7 @@
                             />
                         </div>
                         <div class="edit-profile-input">
-                            <label for="old-password-id">Old password:</label>
+                            <p class="edit-title">Old Password</p>
                             <input
                                 type="text"
                                 name=""
@@ -641,7 +641,7 @@
                             />
                         </div>
                         <div class="edit-profile-input">
-                            <label for="new-password-id">New password:</label>
+                            <p class="edit-title">New Password</p>
                             <input
                                 type="text"
                                 name=""
@@ -651,9 +651,7 @@
                             />
                         </div>
                         <div class="edit-profile-input">
-                            <label for="edit-email-id"
-                                >Confirm new password:</label
-                            >
+                           <p class="edit-title">Confirm New Password</p>
                             <input
                                 type="text"
                                 name=""

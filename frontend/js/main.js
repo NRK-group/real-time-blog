@@ -288,7 +288,7 @@ const UpdateUserProfile = (resp) => {
     ).innerText = `${resp.User.Firstname}  ${resp.User.Lastname}`;
     document.getElementById(
         'profile-username-id'
-    ).innerText = ` @${resp.User.Nickname}`;
+    ).innerText = `${resp.User.Nickname}`;
     let yearCreated = resp.User.DateCreated.split(',')[1];
     document.querySelector(
         '#account-date-created-id'
@@ -347,7 +347,7 @@ const ShowUsers = (Users) => {
                     onclick="openChatModal(this)"
                 >
                 <div class="user-image"></div>
-                <div class="username">@${item.Nickname} <div class="notification" id="${item.UserID}">0</div></div>
+                <div class="username">${item.Nickname} <div class="notification" id="${item.UserID}">0</div></div>
                 </div>` + users;
 
             // AddNotification(notifs, item.UserID)
@@ -863,7 +863,7 @@ const CreateResponses = (allPost, postID) => {
                         </div>
                         <span>
                             <div class="response-username">
-                                @${item.UserID}
+                                ${item.UserID}
                                 <span class="response-created">
                                 ${item.Date}
                                 </span>
