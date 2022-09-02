@@ -457,8 +457,8 @@ func (forum *DB) Favorite(w http.ResponseWriter, r *http.Request) {
 }
 
 /*
-func (forum *DB) Users(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/users" {
+func (forum *DB) UpdateUser(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/updateuser" {
 		http.Error(w, "404 not found.", http.StatusNotFound)
 		return
 	}
@@ -476,7 +476,7 @@ func (forum *DB) Users(w http.ResponseWriter, r *http.Request) {
 	res := strings.Split(c.Value, "&")
 	if forum.CheckSession(res[2]) {
 
-	if r.Method == "GET" {
+	if r.Method == "POST" {
 
 
 
@@ -495,7 +495,6 @@ func (forum *DB) Users(w http.ResponseWriter, r *http.Request) {
 	}
 	http.Error(w, "400 Bad Request.", http.StatusBadRequest)
 }
-
 */
 
 func SetupCorsResponse(w http.ResponseWriter, req *http.Request) {

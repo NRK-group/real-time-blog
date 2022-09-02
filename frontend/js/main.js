@@ -10,11 +10,13 @@ const openRegristerModal = () => {
     loginPageId.classList.add('close');
     registerPageId.classList.add('open');
 };
+
 const openRegisterBtn = document.querySelector('#open-register-btn-id');
 openRegisterBtn.addEventListener('click', (e) => {
     e.preventDefault();
     openRegristerModal();
 });
+
 const showMessages = (msg = '') => {
     const messageContainer = document.querySelector('#message-container-id');
     messageContainer.textContent = msg;
@@ -259,11 +261,9 @@ const IsTyping = () => {
 };
 
 const validateUser = (resp) => {
-    console.log(resp);
     if (resp.Msg === 'Login successful') {
         //Create the cookie when logged in#
         CreateWebSocket();
-        console.log(resp);
         gUsers = [];
         gChatUsers = [];
         if (resp.Users) {
@@ -272,7 +272,6 @@ const validateUser = (resp) => {
         if (resp.ChatUsers) {
             gChatUsers = resp.ChatUsers;
         }
-        console.log(gUsers);
         GetNotificationAmount();
         ShowUsers();
         allUsers = [...(gUsers || []), ...(gChatUsers || [])];
@@ -309,7 +308,42 @@ const UpdateUserProfile = (resp) => {
     document.getElementById('edit-last-name-id').value = resp.User.Lastname;
     document.getElementById('edit-nickname-id').value = resp.User.Nickname;
     document.getElementById('edit-age-id').value = resp.User.Age;
-    document.getElementById('edit-emial-id').value = resp.User.Email;
+    document.getElementById('edit-email-id').value = resp.User.Email;
+};
+
+const editBtn = document.getElementById('save-changes-btn');
+
+editBtn.onclick = () => {
+    console.log('dthdgh');
+    EditUserProfile();
+};
+
+const EditUserProfile = () => {
+    let lastName = document.getElementById('edit-last-name-id').value;
+    let firstName = document.getElementById('edit-first-name-id').value;
+    let nickname = document.getElementById('edit-nickname-id').value;
+    let age = document.getElementById('edit-age-id').value;
+    let email = document.getElementById('edit-email-id').value;
+    let password = document.getElementById('new-password-id').value;
+    let confirmPassword = document.getElementById(
+        'confirm-new-passwor-id'
+    ).value;
+
+    let UserInfo = {
+        nickname: nickname,
+        age: age,
+        password: password,
+        confirmPassword: confirmPassword,
+        email:email,
+        firstName:firstName,
+        lastName:lastName
+    };
+
+    if (CheckRequirements(UserInfo) === '') {
+
+    } else {
+        showMessages(CheckRequirements(UserInfo));
+    }
 };
 
 const GetNotificationAmount = () => {
@@ -347,8 +381,7 @@ const CheckNotificationDisplay = (arr) => {
 const ShowUsers = (firstRun = true) => {
     if (gUsers) {
         let usersDiv = document.getElementById('forum-users-container');
-        let lastChat = document.createElement('div');
-        lastChat.classList.add('forum-users-container');
+        let lastChat = document.getElementById('all-forum-users-container');
         let lastChatUsers = '';
         (gChatUsers || []).forEach((item, index) => {
             lastChatUsers =
@@ -368,7 +401,7 @@ const ShowUsers = (firstRun = true) => {
         let allUsersDivTitle = document.getElementById('forum-all-users-title');
 
         let users = '';
-        gUsers.forEach((item, index) => {
+        (gUsers || []).forEach((item, index) => {
             users =
                 `<div
             key=${index}
@@ -383,12 +416,7 @@ const ShowUsers = (firstRun = true) => {
 
             // AddNotification(notifs, item.UserID)
         });
-        if (firstRun) {
-            usersDiv.parentNode.insertBefore(
-                lastChat,
-                allUsersDivTitle.nextSibling
-            );
-        }
+
         lastChat.innerHTML = users;
         usersDiv.innerHTML = lastChatUsers;
         usersDivTitle.innerText = `${(gChatUsers || []).length} Active User`;
@@ -685,13 +713,17 @@ const openChatModal = (e) => {
 };
 
 const ArrangeUsers = (userId) => {
-    let user;
+    let user = '';
     gUsers.forEach((item, index) => {
         if (userId === item.UserID) {
             user = item;
             gUsers.splice(index, 1);
         }
     });
+
+    if (user !== '') {
+        document.getElementById(user.UserID).remove();
+    }
 
     gChatUsers.forEach((item, inx) => {
         if (userId === item.UserID) {
@@ -700,7 +732,6 @@ const ArrangeUsers = (userId) => {
         }
     });
     gChatUsers = [...gChatUsers, user];
-
     ShowUsers(false);
 };
 
@@ -807,7 +838,6 @@ const sendNewPost = () => {
                 DisplayAllPost(resp.Posts);
             })
             .then(() => {
-                console.log('hello');
                 NewPostNotif();
             });
         closeNewPost();
