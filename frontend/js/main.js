@@ -309,7 +309,10 @@ const UpdateUserProfile = (resp) => {
     document.getElementById('edit-last-name-id').value = resp.User.Lastname;
     document.getElementById('edit-nickname-id').value = resp.User.Nickname;
     document.getElementById('edit-age-id').value = resp.User.Age;
-    document.getElementById('edit-emial-id').value = resp.User.Email;
+    document.getElementById('edit-email-id').value = resp.User.Email;
+    document.getElementById('edit-gender-id').value = resp.User.Gender;
+
+    console.log("RESP+++ ", resp.User)
 };
 
 const GetNotificationAmount = () => {
