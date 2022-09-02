@@ -1,9 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;500;700&display=swap');
 
 * {
     box-sizing: border-box;
     letter-spacing: 1px;
     font-family: 'Outfit', sans-serif;
+    /* font-family: 'Space Grotesk', sans-serif; */
+    /* font-family: 'Jost', sans-serif; */
+    /* font-family: 'Josefin Sans', sans-serif; */
 }
 
 body {
@@ -35,12 +41,13 @@ button {
     background-color: white;
     border-bottom: 1px solid #e8e8e8;
     min-height: 60px;
-    z-index: 1;
+    z-index: 10;
 }
 
 .bottom-container {
     display: grid;
-    grid-template-columns: 15% 60% 25%;
+    grid-template-columns: 18% 60% 20%;
+    /* min-width: 900px; */
 }
 
 .left-container {
@@ -48,13 +55,18 @@ button {
     border-right: 2px solid #e8e8e8;
     padding-top: 50px;
     overflow: scroll;
+    min-width: 200px;
+    z-index: 1;
 }
 
 .middle-container {
     height: 100vh;
+    width: 90%;
+    min-width: 650px;
     overflow-y: scroll;
     scroll-behavior: smooth;
     padding-top: 30px;
+    margin: 0 auto;
 }
 /* Hide scrollbar for Chrome, Safari and Opera */
 ::-webkit-scrollbar {
@@ -67,13 +79,13 @@ button {
     scrollbar-width: none; /* Firefox */
 }
 .right-container {
-    /* display: grid;
-    grid-template-rows: 50vh 50vh; */
     display: flex;
     flex-direction: column;
     height: 100vh;
     border-left: 2px solid #e8e8e8;
     overflow: scroll;
+    /* margin-left: 50px; */
+    padding: 1%;
 }
 .title-container {
     display: flex;
@@ -294,8 +306,9 @@ input[type='email']:focus {
     padding: 10%;
 }
 .profile-card {
-    height: 350px;
+    height: 45vh;
     width: 100%;
+    min-width: 200px;
     background-color: white;
     border-radius: 20px;
     display: flex;
@@ -303,10 +316,11 @@ input[type='email']:focus {
     align-items: center;
     padding: 25px 0px 0px 0px;
     box-shadow: 0 0 50px rgb(240, 240, 240);
+    margin-bottom: min(8vh, 50px);
 }
 .profile-picture {
-    height: 20vmin;
-    width: 20vmin;
+    height: 15vmin;
+    width: 15vmin;
     min-height: 100px;
     min-width: 100px;
     background-color: rgb(206, 232, 240);
@@ -435,7 +449,9 @@ input[type='email']:focus {
     background-color: white;
     height: 120px;
     padding: 10px;
-    width: 700px;
+    /* width: 700px; */
+    width: 90%;
+    min-width: 550px;
     border-radius: 16px;
     box-shadow: 0 0 50px rgb(240, 240, 240);
 }
@@ -543,19 +559,24 @@ input[type='email']:focus {
 .all-post-container {
     display: flex;
     align-items: center;
-    /* justify-content: center; */
+    justify-content: center;
     flex-direction: column;
-    padding-bottom: 100px;
+    min-width: 600px;
+    margin-right: 30px;
+    margin-left: 30px;
+    padding-bottom: 15vh ;
+
 }
 .post-container {
-    width: 700px;
-    min-height: 250px;
-    margin: 20px 0px;
+    width: 100%;
+    /* min-height: 250px; */
+    /* min-width: 590px; */
     background-color: white;
     box-shadow: 0 0 50px rgb(240, 240, 240);
     border-radius: 16px;
     padding: 50px;
     grid-template-columns: 20% 20% 40% 20%;
+    margin: 2vh 30px;
 }
 .post-title {
     font-size: 30px;
@@ -1076,7 +1097,7 @@ input[type='email']:focus {
     /* background: #000000; */
     width: 45vw;
     min-height: 50px;
-    margin: 10px auto;
+    margin: 15px auto;
     display: flex;
     flex-direction: column;
 }
@@ -1155,7 +1176,7 @@ input[type='email']:focus {
     height: 100vh; /* Full height */
     z-index: 1;
     justify-content: center;
-    /* align-items: center; */
+    align-items: center;
 }
 .profile-modal-container::before {
     content: '';
@@ -1169,16 +1190,16 @@ input[type='email']:focus {
 }
 .profile-modal {
     display: grid;
-    grid-template-rows: 2.7% 22% 57% 9%;
+    grid-template-rows: 2.7% 25% 60% 9%;
     background-color: white;
-    width: 60vw;
+    width: 55vw;
     min-width: 650px;
-    height: 95vh;
-    min-height: 500px;
+    height: 75vh;
+    min-height: 400px;
     z-index: 1;
     border-radius: 16px;
     padding: 2px;
-    margin: auto;
+    /* margin-top: 11vh; */
 }
 .edit-profile-buttons {
     display: flex;
@@ -1250,7 +1271,7 @@ input[type='email']:focus {
     display: block;
     border-top: 1px solid rgb(220, 220, 220);
     /* padding-left: 5vw; */
-    padding-top: 25px ;
+    padding-top: 25px;
     overflow: scroll;
     margin-bottom: 5vh;
 }
@@ -1260,7 +1281,6 @@ input[type='email']:focus {
     width: 70%;
     min-width: 450px;
     height: 25%;
-    
 }
 .edit-profile-fields {
     width: 20vw;
@@ -1294,7 +1314,7 @@ ul {
     align-items: center;
     border-radius: 16px;
     cursor: pointer;
-    font-size: 1vw;
+    font-size: 14px;
     border: 1px solid #00000000;
 }
 .home-icon {
