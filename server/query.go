@@ -2,6 +2,7 @@ package server
 
 import (
 	"fmt"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -186,7 +187,7 @@ func (forum *DB) GetAllUser(uID string) []User {
 		rows.Scan(&userID, &imgUrl, &firstName, &lastName, &nickName, &gender, &age, &status, &email, &dateCreated, &pass, &sessionID)
 		user = User{
 			UserID:      userID,
-			SessionID:   sessionID,
+			SessionID:   "sessionID",
 			Firstname:   firstName,
 			Lastname:    lastName,
 			Age:         age,
@@ -416,14 +417,15 @@ func (forum *DB) CreateChatID(userID, recieverID string) string {
 	chatID := uuid.NewV4().String()
 
 	insertChat, _ := forum.DB.Prepare(`
-		INSERT INTO Chat (chatID, user1ID, user2ID) values (?, ?, ?)
+		INSERT INTO Chat (chatID, user1ID, user2ID, date) values (?, ?, ?, ?)
 	`)
-	_, err := insertChat.Exec(chatID, userID, recieverID)
+	_, err := insertChat.Exec(chatID, userID, recieverID, time.Now().Format("2006 January 02 15:04:05"))
 	if err != nil {
 		fmt.Println("Error inserting the chat id: ", err)
 		return ""
 	}
 	fmt.Println("chatID added between user: ", userID, " AND user: ", recieverID)
+
 	return chatID
 }
 
@@ -439,6 +441,9 @@ func (forum *DB) InsertMessage(details NewMessage) {
 	// messageID := uuid.NewV4().String()
 
 	_, err := insertMessage.Exec(details.ChatID, details.Mesg, details.Date, details.UserID)
+
+	forum.Update("Chat", "date", time.Now().Format("2006 January 02 15:04:05"), "chatID", details.ChatID)
+
 	if err != nil {
 		fmt.Println("Error inserting message: ", err)
 	}
@@ -483,6 +488,47 @@ func (forum *DB) TenMessages(chatID string, x int) []SendMessage {
 	}
 	fmt.Println(result)
 	return result
+}
+
+func (forum *DB) FindUserChatTime(user User) string {
+	search := ""
+	chatID, err := forum.DB.Query(`SELECT date from Chat WHERE user1ID = ? OR user2ID = ?`, user.UserID, user.UserID)
+	if err != nil {
+		fmt.Println("Error executing chatID search 1: ", err)
+		return search
+	}
+	for chatID.Next() {
+		chatID.Scan(&search)
+	}
+	return search
+}
+
+// ArrangeUsers
+// is a method that will organized users by the last message sent, and return the all other users by alphabetic order.
+func (forum *DB) ArrangeUsers(userID string) ([]User, []User, error) {
+	var userLastMessage []User
+	var userAlphabeticOrder []User
+	allUsers := forum.GetAllUser(userID)
+
+	for x := 0; x < len(allUsers); x++ {
+		if forum.CheckChatID(userID, allUsers[x].UserID) != "" {
+			userLastMessage = append([]User{allUsers[x]}, userLastMessage...)
+		} else {
+			userAlphabeticOrder = append([]User{allUsers[x]}, userAlphabeticOrder...)
+		}
+	}
+
+	sort.Slice(userLastMessage, func(i, j int) bool {
+		one, _ := time.Parse("2006 January 02 15:04:05", forum.FindUserChatTime(userLastMessage[i]))
+		two, _ := time.Parse("2006 January 02 15:04:05", forum.FindUserChatTime(userLastMessage[j]))
+		return two.Before(one)
+	})
+
+	sort.Slice(userAlphabeticOrder, func(i, j int) bool {
+		return userAlphabeticOrder[i].Nickname > userAlphabeticOrder[j].Nickname
+	})
+
+	return userLastMessage, userAlphabeticOrder, nil
 }
 
 func (forum *DB) Notification(userID, recieverID string) {
@@ -547,7 +593,7 @@ func (forum *DB) GetNotifications(target string) []Notify {
 		fmt.Println("Error querying for notification number: ", err)
 	}
 
-	 result := make([]Notify, 0)
+	result := make([]Notify, 0)
 	for getNotQry.Next() {
 		fmt.Println()
 		fmt.Println("Searching for notifications!!!!!---!!!")

@@ -22,6 +22,8 @@ func main() {
 
 	defer db.Close()
 
+
+
 	go server.SendMsgs()
 	http.HandleFunc("/", database.Home)
 	http.HandleFunc("/register", database.Register)

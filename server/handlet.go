@@ -33,7 +33,7 @@ func (forum *DB) CheckCookie(w http.ResponseWriter, r *http.Request) {
 				co = strings.Split(c.Value, "&")
 			}
 			if !(forum.CheckSession(co[2])) {
-				page = ReturnData{User: forum.GetUser(""), Posts: forum.AllPost("", ""), Msg: "", Users: forum.GetAllUser("")}
+				page = ReturnData{}
 				marshallPage, err := json.Marshal(page)
 				if err != nil {
 					fmt.Println("Error marshalling the data: ", err)
@@ -44,8 +44,8 @@ func (forum *DB) CheckCookie(w http.ResponseWriter, r *http.Request) {
 				return
 
 			}
-
-			page = ReturnData{User: forum.GetUser(co[0]), Posts: forum.AllPost("", co[0]), Msg: "Login successful", Users: forum.GetAllUser(co[0])}
+			chatusers, alluser, _ := forum.ArrangeUsers(co[0])
+			page = ReturnData{User: forum.GetUser(co[0]), Posts: forum.AllPost("", co[0]), Msg: "Login successful", Users: alluser, ChatUsers: chatusers}
 			marshallPage, err := json.Marshal(page)
 			if err != nil {
 				fmt.Println("Error marshalling the data: ", err)
@@ -180,7 +180,7 @@ func (forum *DB) Login(w http.ResponseWriter, r *http.Request) {
 		loginResp := forum.LoginUsers(userLoginData.EmailOrNickname, userLoginData.Password)
 		if loginResp[0] == 'E' {
 
-			page = ReturnData{User: forum.GetUser(""), Posts: forum.AllPost("", ""), Msg: loginResp, Users: forum.GetAllUser("")}
+			page = ReturnData{}
 			marshallPage, err := json.Marshal(page)
 			if err != nil {
 				fmt.Println("Error marshalling the data: ", err)
@@ -199,7 +199,9 @@ func (forum *DB) Login(w http.ResponseWriter, r *http.Request) {
 
 		userid := strings.Split(loginResp, "&")[0]
 
-		page = ReturnData{User: forum.GetUser(userid), Posts: forum.AllPost("", userid), Msg: "Login successful", Users: forum.GetAllUser(userid)}
+		chatusers, alluser, _ := forum.ArrangeUsers(userid)
+
+		page = ReturnData{User: forum.GetUser(userid), Posts: forum.AllPost("", userid), Msg: "Login successful", Users: alluser, ChatUsers: chatusers}
 		marshallPage, err := json.Marshal(page)
 		if err != nil {
 			fmt.Println("Error marshalling the data: ", err)
@@ -350,7 +352,6 @@ func (forum *DB) GetMessages(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-type", "application/json")
 		w.Write(marshallChat)
 	}
-	
 }
 
 func (forum *DB) Response(w http.ResponseWriter, r *http.Request) {
@@ -455,6 +456,48 @@ func (forum *DB) Favorite(w http.ResponseWriter, r *http.Request) {
 	http.Error(w, "400 Bad Request.", http.StatusBadRequest)
 }
 
+/*
+func (forum *DB) Users(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/users" {
+		http.Error(w, "404 not found.", http.StatusNotFound)
+		return
+	}
+	c, err := r.Cookie("session_token")
+	if err != nil {
+		if err == http.ErrNoCookie {
+			// If the cookie is not set, return an unauthorized status
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+		// For any other type of error, return a bad request status
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	res := strings.Split(c.Value, "&")
+	if forum.CheckSession(res[2]) {
+
+	if r.Method == "GET" {
+
+
+
+
+
+			page = ReturnData{Posts: forum.AllPost("", res[0]), Users: forum.ArrangeUsers() Msg: "successful react to post--" }
+			marshallPage, err := json.Marshal(page)
+			if err != nil {
+				fmt.Println("Error marshalling the data: ", err.Error())
+			}
+			w.WriteHeader(http.StatusOK)
+			w.Header().Set("Content-type", "application/json")
+			w.Write(marshallPage)
+			return
+		}
+	}
+	http.Error(w, "400 Bad Request.", http.StatusBadRequest)
+}
+
+*/
+
 func SetupCorsResponse(w http.ResponseWriter, req *http.Request) {
 	(w).Header().Set("Access-Control-Allow-Origin", "*")
 	(w).Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
@@ -500,11 +543,11 @@ func (forum *DB) Notifications(w http.ResponseWriter, r *http.Request) {
 			fmt.Println("Error unmarshalling the data to delete it from the database: ", err)
 		}
 
-		forum.DeleteNotification(chatUsers.UserID, chatUsers.RecieverID) 
-		
+		forum.DeleteNotification(chatUsers.UserID, chatUsers.RecieverID)
+
 	}
 	if r.Method == "GET" {
-		//Get the number of notifications for the two users
+		// Get the number of notifications for the two users
 		var getNotifs []Notify
 
 		c, err := r.Cookie("session_token")
@@ -513,10 +556,7 @@ func (forum *DB) Notifications(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		username := strings.Split(c.Value ,"&")[0]
-		
-
-		
+		username := strings.Split(c.Value, "&")[0]
 
 		getNotifs = forum.GetNotifications(username)
 		fmt.Println("getNotifs", getNotifs)
@@ -527,8 +567,6 @@ func (forum *DB) Notifications(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Header().Set("Content-type", "application/json")
 		w.Write(values)
-
-
 
 	}
 }
