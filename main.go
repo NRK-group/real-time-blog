@@ -31,6 +31,7 @@ func main() {
 	http.HandleFunc("/logout", database.Logout)
 	http.HandleFunc("/post", database.Post)
 	http.HandleFunc("/MessageInfo", database.GetMessages)
+	http.HandleFunc("/Notify", database.Notifications)
 	http.HandleFunc("/response", database.Response)
 	http.HandleFunc("/favorite", database.Favorite)
 	frontend := http.FileServer(http.Dir("./frontend"))

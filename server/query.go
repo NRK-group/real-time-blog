@@ -337,7 +337,7 @@ func (forum *DB) ReactInPost(postID, userID string, react int) (string, error) {
 	return favoriteID.String(), nil
 }
 
-//CheckReactInPost
+// CheckReactInPost
 func (forum *DB) CheckReactInPost(pID, uID string, value int) (string, int) {
 	rows, err := forum.DB.Query("SELECT favoriteID, postID, userID, react FROM Favorite WHERE postID = '" + pID + "' AND userID = '" + uID + "'")
 	var reaction Favorite
@@ -356,17 +356,14 @@ func (forum *DB) CheckReactInPost(pID, uID string, value int) (string, int) {
 			React:      react,
 		}
 	}
-	if reaction.FavoriteID == ""{
-		favoriteID, err :=forum.ReactInPost(pID, uID, 1)
+	if reaction.FavoriteID == "" {
+		favoriteID, err := forum.ReactInPost(pID, uID, 1)
 		fmt.Println(err)
 		return favoriteID, 1
 	}
 	forum.Update("Favorite", "react", strconv.Itoa(value), "favoriteID", reaction.FavoriteID)
 	return reaction.FavoriteID, value
 }
-
-
-
 
 // CreatePost
 // is a method of database that add post in it.
@@ -463,10 +460,9 @@ func (forum *DB) CreateComment(userID, postID, content string) (string, error) {
 	return commentID.String(), nil
 }
 
-func (forum *DB) TenMessages(chatID string, x int) []SendMessage{
-	//select the bottom 10 messages from the db
+func (forum *DB) TenMessages(chatID string, x int) []SendMessage {
+	// select the bottom 10 messages from the db
 	getTen, err := forum.DB.Query(`SELECT content, date, userID FROM Message  WHERE chatID = ? ORDER BY messageID DESC LIMIT ?,10`, chatID, x)
-
 	if err != nil {
 		fmt.Println("Error selecting messages: ", err)
 		return nil
@@ -476,9 +472,9 @@ func (forum *DB) TenMessages(chatID string, x int) []SendMessage{
 	// start, _ := strconv.Atoi(x)
 	for getTen.Next() {
 		// if count > x {
-			var current SendMessage
-			getTen.Scan(&current.Message, &current.Date, &current.Sender)
-			result = append(result, current)
+		var current SendMessage
+		getTen.Scan(&current.Message, &current.Date, &current.Sender)
+		result = append(result, current)
 		// }
 		// count++
 		// if count > x + 10{
@@ -506,11 +502,9 @@ func (forum *DB) Notification(userID, recieverID string) {
 	} else if count == 1 {
 		forum.UpdateNotification(userID, recieverID)
 	}
-	
 }
 
 func (forum *DB) UpdateNotification(userID, recieverID string) {
-
 	updateMsgs, err := forum.DB.Prepare(`UPDATE MessageNotifications SET number = number + 1 WHERE userID = ? AND recieverID = ?`)
 	if err != nil {
 		fmt.Println("Error Preparing update notification: ", err)
@@ -536,14 +530,30 @@ func (forum *DB) CreateNotification(userID, recieverID string) {
 		fmt.Println("Error inserting the notification")
 		return
 	}
-	
 }
 
-func (forum *DB) DeleteNotification(sender, target string)  {
-	//Delete the row in the db
-	_, deleteErr := forum.DB.Exec("DELETE FROM MessageNotifications WHERE userID = ? AND recieverID = ?",sender ,target)
+func (forum *DB) DeleteNotification(sender, target string) {
+	// Delete the row in the db
+	_, deleteErr := forum.DB.Exec("DELETE FROM MessageNotifications WHERE userID = ? AND recieverID = ?", sender, target)
 	if deleteErr != nil {
 		fmt.Println("Error deleting from the Message Notification database")
 	}
 	fmt.Println("Successfully deleted notifications")
+}
+
+func (forum *DB) GetNotifications(target string) []Notify {
+	getNotQry, err := forum.DB.Query("SELECT userID, number FROM MessageNotifications WHERE recieverID = ?", target)
+	if err != nil {
+		fmt.Println("Error querying for notification number: ", err)
+	}
+
+	 result := make([]Notify, 0)
+	for getNotQry.Next() {
+		fmt.Println()
+		fmt.Println("Searching for notifications!!!!!---!!!")
+		var temp Notify
+		getNotQry.Scan(&temp.SenderID, &temp.Count)
+		result = append(result, temp)
+	}
+	return result
 }

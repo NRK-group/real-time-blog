@@ -142,7 +142,7 @@ const ProcessMessage = (message) => {
 };
 
 const AddNotification = (i, senderID) => {
-    // console.log();
+    console.log('Adding notification with:', senderID);
     const MESSAGE_BOX = document.getElementById(senderID);
     let notValue = parseInt(MESSAGE_BOX.innerHTML);
     notValue += parseInt(i);
@@ -204,6 +204,7 @@ const validateCoookie = () => {
     fetch('/vadidate').then(async (response) => {
         resp = await response.json();
         if (resp.Msg === 'Login successful') {
+            console.log('Valid cookie');
             validateUser(resp);
         }
     });
@@ -262,6 +263,7 @@ const validateUser = (resp) => {
         //Create the cookie when logged in#
         CreateWebSocket();
         ShowUsers(resp.Users);
+        GetNotificationAmount();
         allUsers = resp.Users;
         allPost = resp.Posts;
         DisplayAllPost(resp.Posts);
@@ -299,6 +301,37 @@ const UpdateUserProfile = (resp) => {
     document.getElementById('edit-emial-id').value = resp.User.Email;
 };
 
+const GetNotificationAmount = () => {
+    fetch('/Notify', {
+        method: 'GET',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+    }).then(async (response) => {
+        resp = await response.json();
+        return resp
+    }).then(resp => {
+        resp.forEach((thisUser) => {
+            console.log("This user: ", typeof thisUser.count);
+            if (thisUser.count == 0 || thisUser.count == undefined) return;
+            AddNotification(thisUser.count, thisUser.senderID);
+        })
+    });
+
+    
+};
+
+//CheckNotificationDisplay will hide notification divs when their innerHTML is 0
+const CheckNotificationDisplay = (arr) => {
+    arr.forEach((user) => {
+        const NOTIF_BOX = document.getElementById(user.UserID);
+        if (parseInt(NOTIF_BOX.innerHTML) < 1) {
+            NOTIF_BOX.display = 'none';
+        }
+    });
+};
+
 const ShowUsers = (Users) => {
     if (Users) {
         let usersDiv = document.getElementById('forum-users-container');
@@ -316,9 +349,12 @@ const ShowUsers = (Users) => {
                 <div class="user-image"></div>
                 <div class="username">@${item.Nickname} <div class="notification" id="${item.UserID}">0</div></div>
                 </div>` + users;
+
+            // AddNotification(notifs, item.UserID)
         });
         usersDiv.innerHTML = users;
         usersDivTitle.innerText = `${Users.length} Active User`;
+        CheckNotificationDisplay(Users);
     }
 };
 
@@ -463,6 +499,7 @@ loginBtn.addEventListener('click', (e) => {
             return response.json();
         })
         .then((resp) => {
+            console.log('CALLED');
             validateUser(resp);
             showMessages(resp.Msg);
         });
@@ -557,7 +594,7 @@ const DeleteChatNotifications = (usersID, recieversID) => {
         userID: usersID,
         recieverID: recieversID,
     };
-    fetch('/MessageInfo', {
+    fetch('/Notify', {
         method: 'PUT',
         headers: {
             Accept: 'application/json',
@@ -600,7 +637,7 @@ const openChatModal = (e) => {
 
     DeleteChatNotifications(
         RECIEVER_ID,
-        getCookie('session_token').split('&')[0],
+        getCookie('session_token').split('&')[0]
     );
     GetMsg(users, SEND_BTN);
 

@@ -801,6 +801,7 @@ input[type='email']:focus {
     height: 100%;
     padding: 0 20px;
     overflow: scroll;
+    word-wrap: break-word;
 }
 .chat {
     width: 100%;
