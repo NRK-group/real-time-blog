@@ -309,6 +309,9 @@ const UpdateUserProfile = (resp) => {
     document.getElementById('edit-nickname-id').value = resp.User.Nickname;
     document.getElementById('edit-age-id').value = resp.User.Age;
     document.getElementById('edit-email-id').value = resp.User.Email;
+    document.getElementById('edit-gender-id').value = resp.User.Gender;
+
+    console.log("RESP+++ ", resp.User)
 };
 
 const editBtn = document.getElementById('save-changes-btn');
