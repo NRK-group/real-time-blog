@@ -319,32 +319,32 @@ const GetNotificationAmount = () => {
             Accept: 'application/json',
             'Content-Type': 'application/json',
         },
-    }).then(async (response) => {
-        resp = await response.json();
-        return resp
-    }).then(resp => {
-        resp.forEach((thisUser) => {
-            console.log("This user: ", typeof thisUser.count);
-            if (thisUser.count == 0 || thisUser.count == undefined) return;
-            AddNotification(thisUser.count, thisUser.senderID);
+    })
+        .then(async (response) => {
+            resp = await response.json();
+            return resp;
         })
-    });
-
-    
+        .then((resp) => {
+            resp.forEach((thisUser) => {
+                console.log('This user: ', typeof thisUser.count);
+                if (thisUser.count == 0 || thisUser.count == undefined) return;
+                AddNotification(thisUser.count, thisUser.senderID);
+            });
+        });
 };
 
 //CheckNotificationDisplay will hide notification divs when their innerHTML is 0
 const CheckNotificationDisplay = (arr) => {
-    console.log(arr)
+    console.log(arr);
     arr.forEach((user) => {
         const NOTIF_BOX = document.getElementById(user.UserID);
         if (parseInt(NOTIF_BOX.innerHTML) < 1) {
             NOTIF_BOX.display = 'none';
-    }
+        }
     });
 };
 
-const ShowUsers = (firstRun=true) => {
+const ShowUsers = (firstRun = true) => {
     if (gUsers) {
         let usersDiv = document.getElementById('forum-users-container');
         let lastChat = document.createElement('div');
@@ -352,7 +352,7 @@ const ShowUsers = (firstRun=true) => {
         let lastChatUsers = '';
         (gChatUsers || []).forEach((item, index) => {
             lastChatUsers =
-            `<div
+                `<div
             key=${index}
             class="forum-user"
             data-user-id=${item.UserID}
@@ -370,7 +370,7 @@ const ShowUsers = (firstRun=true) => {
         let users = '';
         gUsers.forEach((item, index) => {
             users =
-            `<div
+                `<div
             key=${index}
             class="forum-user"
             data-user-id=${item.UserID}
@@ -383,11 +383,11 @@ const ShowUsers = (firstRun=true) => {
 
             // AddNotification(notifs, item.UserID)
         });
-        if(firstRun){
-        usersDiv.parentNode.insertBefore(
-            lastChat,
-            allUsersDivTitle.nextSibling
-        );
+        if (firstRun) {
+            usersDiv.parentNode.insertBefore(
+                lastChat,
+                allUsersDivTitle.nextSibling
+            );
         }
         lastChat.innerHTML = users;
         usersDiv.innerHTML = lastChatUsers;

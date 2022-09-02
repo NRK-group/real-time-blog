@@ -116,7 +116,7 @@ func initMessage(db *sql.DB) {
 	);
 	`)
 	if err != nil {
-		fmt.Println("Error initialising the message table: ",err)
+		fmt.Println("Error initialising the message table: ", err)
 		// return
 	}
 	stmt.Exec()
@@ -131,7 +131,7 @@ func initMessageNotifications(db *sql.DB) {
 	);
 	`)
 	if err != nil {
-		fmt.Println("Error initialising the message-notification table: ",err)
+		fmt.Println("Error initialising the message-notification table: ", err)
 		return
 	}
 	stmt.Exec()

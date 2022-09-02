@@ -593,7 +593,7 @@ func (forum *DB) GetNotifications(target string) []Notify {
 		fmt.Println("Error querying for notification number: ", err)
 	}
 
-	 result := make([]Notify, 0)
+	result := make([]Notify, 0)
 	for getNotQry.Next() {
 		fmt.Println()
 		fmt.Println("Searching for notifications!!!!!---!!!")

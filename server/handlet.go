@@ -352,7 +352,6 @@ func (forum *DB) GetMessages(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-type", "application/json")
 		w.Write(marshallChat)
 	}
-	
 }
 
 func (forum *DB) Response(w http.ResponseWriter, r *http.Request) {
@@ -544,11 +543,11 @@ func (forum *DB) Notifications(w http.ResponseWriter, r *http.Request) {
 			fmt.Println("Error unmarshalling the data to delete it from the database: ", err)
 		}
 
-		forum.DeleteNotification(chatUsers.UserID, chatUsers.RecieverID) 
-		
+		forum.DeleteNotification(chatUsers.UserID, chatUsers.RecieverID)
+
 	}
 	if r.Method == "GET" {
-		//Get the number of notifications for the two users
+		// Get the number of notifications for the two users
 		var getNotifs []Notify
 
 		c, err := r.Cookie("session_token")
@@ -557,10 +556,7 @@ func (forum *DB) Notifications(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		username := strings.Split(c.Value ,"&")[0]
-		
-
-		
+		username := strings.Split(c.Value, "&")[0]
 
 		getNotifs = forum.GetNotifications(username)
 		fmt.Println("getNotifs", getNotifs)
@@ -571,8 +567,6 @@ func (forum *DB) Notifications(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Header().Set("Content-type", "application/json")
 		w.Write(values)
-
-
 
 	}
 }
