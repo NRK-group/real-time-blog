@@ -525,8 +525,81 @@ func (forum *DB) ArrangeUsers(userID string) ([]User, []User, error) {
 	})
 
 	sort.Slice(userAlphabeticOrder, func(i, j int) bool {
-		return userAlphabeticOrder[i].Nickname < userAlphabeticOrder[j].Nickname
+		return userAlphabeticOrder[i].Nickname > userAlphabeticOrder[j].Nickname
 	})
 
 	return userLastMessage, userAlphabeticOrder, nil
+}
+
+func (forum *DB) Notification(userID, recieverID string) {
+	fmt.Println("Update the notifation msg", userID, recieverID)
+
+	checkNotification, err := forum.DB.Query("SELECT 1 FROM MessageNotifications WHERE userID = ? AND recieverID = ?", userID, recieverID)
+	if err != nil {
+		fmt.Println("Error checking for notification row")
+		return
+	}
+	count := 0
+	for checkNotification.Next() {
+		count++
+	}
+	if count == 0 {
+		forum.CreateNotification(userID, recieverID)
+	} else if count == 1 {
+		forum.UpdateNotification(userID, recieverID)
+	}
+}
+
+func (forum *DB) UpdateNotification(userID, recieverID string) {
+	updateMsgs, err := forum.DB.Prepare(`UPDATE MessageNotifications SET number = number + 1 WHERE userID = ? AND recieverID = ?`)
+	if err != nil {
+		fmt.Println("Error Preparing update notification: ", err)
+		return
+	}
+
+	_, errExec := updateMsgs.Exec(userID, recieverID)
+	if errExec != nil {
+		fmt.Println("Error executing update notifications: ", errExec)
+		return
+	}
+}
+
+func (forum *DB) CreateNotification(userID, recieverID string) {
+	addNotification, err := forum.DB.Prepare(`INSERT INTO MessageNotifications VALUES (?,?,?)`)
+	if err != nil {
+		fmt.Println("Error preparing the insert statement: ", err)
+		return
+	}
+
+	_, errExec := addNotification.Exec(userID, recieverID, 1)
+	if errExec != nil {
+		fmt.Println("Error inserting the notification")
+		return
+	}
+}
+
+func (forum *DB) DeleteNotification(sender, target string) {
+	// Delete the row in the db
+	_, deleteErr := forum.DB.Exec("DELETE FROM MessageNotifications WHERE userID = ? AND recieverID = ?", sender, target)
+	if deleteErr != nil {
+		fmt.Println("Error deleting from the Message Notification database")
+	}
+	fmt.Println("Successfully deleted notifications")
+}
+
+func (forum *DB) GetNotifications(target string) []Notify {
+	getNotQry, err := forum.DB.Query("SELECT userID, number FROM MessageNotifications WHERE recieverID = ?", target)
+	if err != nil {
+		fmt.Println("Error querying for notification number: ", err)
+	}
+
+	 result := make([]Notify, 0)
+	for getNotQry.Next() {
+		fmt.Println()
+		fmt.Println("Searching for notifications!!!!!---!!!")
+		var temp Notify
+		getNotQry.Scan(&temp.SenderID, &temp.Count)
+		result = append(result, temp)
+	}
+	return result
 }

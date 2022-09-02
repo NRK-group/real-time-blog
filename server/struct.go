@@ -102,6 +102,7 @@ type NewMessage struct {
 	RecieverID  string `json:"recieverID"`
 	ChatID      string `json:"chatID"`
 	Date        string `json:"date"`
+	Notification bool `json:"notification"`
 	messageType int
 }
 
@@ -139,4 +140,9 @@ type CheckTyping struct {
 type MessageRequest struct {
 	ChatID string `json:"chatID"`
 	Rows string `json:"rows"`
+}
+
+type Notify struct {
+	SenderID string `json:"senderID"`
+	Count int `json:"count"`
 }

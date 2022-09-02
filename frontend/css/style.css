@@ -591,7 +591,10 @@ input[type='email']:focus {
     margin-bottom: 20px;
 }
 .username {
+    display: flex;
     font-weight: 600;
+    width: 100%;
+    padding: 2%
 }
 .post-content {
     line-height: 1.5;
@@ -710,12 +713,13 @@ input[type='email']:focus {
 }
 .forum-user {
     /* background-color: #000000; */
-    width: 250px;
-    height: 50px;
+    width: 100%;
+    height: 25%;
     margin: 10px;
     border-radius: 16px;
     display: flex;
     align-items: center;
+    text-align: center;
     cursor: pointer;
     padding: 5px;
 }
@@ -801,6 +805,7 @@ input[type='email']:focus {
     height: 100%;
     padding: 0 20px;
     overflow: scroll;
+    word-wrap: break-word;
 }
 .chat {
     width: 100%;
@@ -1364,4 +1369,46 @@ ul {
 .overflow {
     overflow: scroll;
     height: 150px;
+}
+.notification-container {
+    visibility: hidden;
+    min-width: 100px;
+    margin-left: -140px;
+    background-color: #543de0;
+    color: white;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    padding: 5px;
+    position: fixed;
+    /* z-index: 1; */
+    left: 50%;
+    top: 8vh;
+    /* height: 15px; */
+    font-size: 15px;
+    font-weight: 800;
+    cursor: pointer;
+    z-index: 10;
+}
+.white {
+    color: white;
+}
+.visible {
+    visibility: visible;
+}
+
+
+.notification {
+    width: 20%;
+    font-size: 75%;
+    font-weight: bold;
+    color: white;
+    margin-top: auto;
+    margin-left:1vw;
+    border-radius: 10px;
+    display: none;
+    justify-content: center;
+    background-color: #533de0;
 }

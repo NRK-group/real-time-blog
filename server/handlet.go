@@ -279,7 +279,17 @@ func (forum *DB) Post(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	res := strings.Split(c.Value, "&")
-
+	if r.Method == "GET" {
+		page = ReturnData{Posts: forum.AllPost("", res[0]), Msg: "successful Post"}
+		marshallPage, err := json.Marshal(page)
+		if err != nil {
+			fmt.Println("Error marshalling the data: ", err)
+		}
+		w.WriteHeader(http.StatusOK)
+		w.Header().Set("Content-type", "application/json")
+		w.Write(marshallPage)
+		return
+	}
 	if r.Method == "POST" {
 
 		var postData PostData
@@ -342,6 +352,7 @@ func (forum *DB) GetMessages(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-type", "application/json")
 		w.Write(marshallChat)
 	}
+	
 }
 
 func (forum *DB) Response(w http.ResponseWriter, r *http.Request) {
@@ -511,9 +522,57 @@ func (forum *DB) WsEndpoint(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Store the new user in the Users map
-
+	fmt.Println(users)
 	userIdVal := strings.Split(c.Value, "&")[0]
 	users[userIdVal] = ws
 	fmt.Println(userIdVal, " is connected.")
 	go forum.reader(ws)
+}
+
+func (forum *DB) Notifications(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/Notify" {
+		http.Error(w, "404 not found.", http.StatusNotFound)
+		return
+	}
+
+	if r.Method == "PUT" {
+		fmt.Println("Delete Info from notification table between:----------------------------------------- ")
+		var chatUsers NewMessage
+
+		err := json.NewDecoder(r.Body).Decode(&chatUsers)
+		if err != nil {
+			fmt.Println("Error unmarshalling the data to delete it from the database: ", err)
+		}
+
+		forum.DeleteNotification(chatUsers.UserID, chatUsers.RecieverID) 
+		
+	}
+	if r.Method == "GET" {
+		//Get the number of notifications for the two users
+		var getNotifs []Notify
+
+		c, err := r.Cookie("session_token")
+		if err != nil {
+			http.Error(w, "500 Internal error", http.StatusInternalServerError)
+			return
+		}
+
+		username := strings.Split(c.Value ,"&")[0]
+		
+
+		
+
+		getNotifs = forum.GetNotifications(username)
+		fmt.Println("getNotifs", getNotifs)
+		values, marshErr := json.Marshal(getNotifs)
+		if marshErr != nil {
+			fmt.Println("Error marshalling notification results")
+		}
+		w.WriteHeader(http.StatusOK)
+		w.Header().Set("Content-type", "application/json")
+		w.Write(values)
+
+
+
+	}
 }

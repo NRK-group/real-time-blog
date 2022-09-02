@@ -122,34 +122,32 @@ let allUsers;
 
 // ProccessMessage is a function that will display the message in the chat if the user has it open.
 const ProcessMessage = (message) => {
-    const CHAT_MODAL_CONTAINER = document.querySelector(
-            '#chat-modal-container-id'
-        ),
-        SEND_BTN = document.querySelector('.send-chat-btn');
-    // Check if the chat modal is open and that the reciever id is the ID of the user who sent the message
-
-    if (
-        CHAT_MODAL_CONTAINER.style.display === 'flex' &&
-        SEND_BTN.getAttribute('data-reciever-id') == message.senderID
-    ) {
-        const TYPING_MSG = document.querySelector('.fa-message');
-        if (message.message === ' ') {
-            {
-                let username;
-                for (let i = 0; i < allUsers.length; i++) {
-                    if (allUsers[i].UserID === message.senderID) {
-                        username = allUsers[i].Nickname;
-                    }
+    const TYPING_MSG = document.querySelector('.fa-message');
+    if (message.message === ' ') {
+        {
+            let username;
+            for (let i = 0; i < allUsers.length; i++) {
+                if (allUsers[i].UserID === message.senderID) {
+                    username = allUsers[i].Nickname;
                 }
-                //User has started typing
-                TYPING_MSG.innerHTML = `${username} Is Typing ...`;
-                TYPING_MSG.classList.add('animate-typing');
-                Debounce(StoppedTyping, 1750);
             }
-        } else {
-            DisplayMessage(message.message, 'chat', message.date.split(' '));
+            //User has started typing
+            TYPING_MSG.innerHTML = `${username} Is Typing ...`;
+            TYPING_MSG.classList.add('animate-typing');
+            Debounce(StoppedTyping, 1750);
         }
+    } else {
+        DisplayMessage(message.message, 'chat', message.date.split(' '));
     }
+};
+
+const AddNotification = (i, senderID) => {
+    console.log('Adding notification with:', senderID);
+    const MESSAGE_BOX = document.getElementById(senderID);
+    let notValue = parseInt(MESSAGE_BOX.innerHTML);
+    notValue += parseInt(i);
+    MESSAGE_BOX.innerHTML = notValue;
+    MESSAGE_BOX.style.display = 'flex';
 };
 
 let socket;
@@ -165,8 +163,40 @@ const CreateWebSocket = () => {
         // socket.send(cookie);
     };
     socket.onmessage = (text) => {
-        const MESSAGE_INFO = JSON.parse(text.data);
-        ProcessMessage(MESSAGE_INFO);
+        let messageInfo = JSON.parse(text.data);
+        if (messageInfo.message === 'e702c728-67f2-4ecd-9e79-4795010501ea') {
+            const notificationContainer = document.querySelector(
+                '#notification-container-id'
+            );
+            notificationContainer.classList.add('visible');
+            return;
+        }
+        const CHAT_MODAL_CONTAINER = document.querySelector(
+                '#chat-modal-container-id'
+            ),
+            SEND_BTN = document.querySelector('.send-chat-btn');
+        // Check if the chat modal is open and that the reciever id is the ID of the user who sent the message
+        messageInfo.recieverID = getCookie('session_token').split('&')[0];
+
+        if (
+            CHAT_MODAL_CONTAINER.style.display === 'flex' &&
+            SEND_BTN.getAttribute('data-reciever-id') == messageInfo.senderID
+        ) {
+            console.log('Proccessing', messageInfo);
+            ProcessMessage(messageInfo);
+            return;
+        }
+        if (messageInfo.message != ' ') {
+            //Show the notification animation
+            console.log('You have a message from: ', messageInfo.senderID);
+
+            AddNotification(1, messageInfo.senderID);
+            //Return the notification to the db
+            messageInfo.notification = true;
+            messageInfo.userID = messageInfo.senderID;
+            console.log('Sending back to the golang: ', messageInfo);
+            socket.send(JSON.stringify(messageInfo));
+        }
     };
 };
 
@@ -174,7 +204,7 @@ const validateCoookie = () => {
     fetch('/vadidate').then(async (response) => {
         resp = await response.json();
         if (resp.Msg === 'Login successful') {
-            console.log(resp);
+            console.log('Valid cookie');
             validateUser(resp);
         }
     });
@@ -212,7 +242,17 @@ const TypingMessage = (val) => {
         recieverID: RECIEVER,
     });
 };
+const NewPostCreated = (val) => {
+    const USER_ID = getCookie('session_token').split('&')[0];
+    return JSON.stringify({
+        message: val,
+        userID: USER_ID,
+    });
+};
 
+const NewPostNotif = () => {
+    socket.send(NewPostCreated('e702c728-67f2-4ecd-9e79-4795010501ea'));
+};
 const IsTyping = () => {
     //Send typing message when they start
     socket.send(TypingMessage(' '));
@@ -233,6 +273,7 @@ const validateUser = (resp) => {
             gChatUsers = resp.ChatUsers;
         }
         console.log(gUsers);
+        GetNotificationAmount();
         ShowUsers();
         allUsers = [...(gUsers || []), ...(gChatUsers || [])];
         allPost = resp.Posts;
@@ -271,7 +312,39 @@ const UpdateUserProfile = (resp) => {
     document.getElementById('edit-emial-id').value = resp.User.Email;
 };
 
-const ShowUsers = () => {
+const GetNotificationAmount = () => {
+    fetch('/Notify', {
+        method: 'GET',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+    }).then(async (response) => {
+        resp = await response.json();
+        return resp
+    }).then(resp => {
+        resp.forEach((thisUser) => {
+            console.log("This user: ", typeof thisUser.count);
+            if (thisUser.count == 0 || thisUser.count == undefined) return;
+            AddNotification(thisUser.count, thisUser.senderID);
+        })
+    });
+
+    
+};
+
+//CheckNotificationDisplay will hide notification divs when their innerHTML is 0
+const CheckNotificationDisplay = (arr) => {
+    console.log(arr)
+    arr.forEach((user) => {
+        const NOTIF_BOX = document.getElementById(user.UserID);
+        if (parseInt(NOTIF_BOX.innerHTML) < 1) {
+            NOTIF_BOX.display = 'none';
+    }
+    });
+};
+
+const ShowUsers = (firstRun=true) => {
     if (gUsers) {
         let usersDiv = document.getElementById('forum-users-container');
         let lastChat = document.createElement('div');
@@ -279,16 +352,16 @@ const ShowUsers = () => {
         let lastChatUsers = '';
         (gChatUsers || []).forEach((item, index) => {
             lastChatUsers =
-                `<div
-                    key=${index}
-                    class="forum-user"
-                    data-user-id=${item.UserID}
-                    data-username=${item.Nickname}
-                    onclick="openChatModal(this)"
-                >
-                <div class="user-image"></div>
-                <div class="username">@${item.Nickname}</div>
-                </div>` + lastChatUsers;
+            `<div
+            key=${index}
+            class="forum-user"
+            data-user-id=${item.UserID}
+            data-username=${item.Nickname}
+            onclick="openChatModal(this)"
+        >
+        <div class="user-image"></div>
+        <div class="username">@${item.Nickname} <div class="notification" id="${item.UserID}">0</div></div>
+        </div>` + lastChatUsers;
         });
 
         let usersDivTitle = document.getElementById('forum-users-title');
@@ -297,25 +370,30 @@ const ShowUsers = () => {
         let users = '';
         gUsers.forEach((item, index) => {
             users =
-                `<div
-                    key=${index}
-                    class="forum-user"
-                    data-user-id=${item.UserID}
-                    data-username=${item.Nickname}
-                    onclick="openChatModal(this)"
-                >
-                <div class="user-image"></div>
-                <div class="username">@${item.Nickname}</div>
-                </div>` + users;
+            `<div
+            key=${index}
+            class="forum-user"
+            data-user-id=${item.UserID}
+            data-username=${item.Nickname}
+            onclick="openChatModal(this)"
+        >
+        <div class="user-image"></div>
+        <div class="username">@${item.Nickname} <div class="notification" id="${item.UserID}">0</div></div>
+        </div>` + users;
+
+            // AddNotification(notifs, item.UserID)
         });
+        if(firstRun){
         usersDiv.parentNode.insertBefore(
             lastChat,
             allUsersDivTitle.nextSibling
         );
+        }
         lastChat.innerHTML = users;
         usersDiv.innerHTML = lastChatUsers;
         usersDivTitle.innerText = `${(gChatUsers || []).length} Active User`;
         allUsersDivTitle.innerText = `${(gUsers || []).length} User`;
+        CheckNotificationDisplay([...(gUsers || []), ...(gChatUsers || [])]);
     }
 };
 
@@ -460,6 +538,7 @@ loginBtn.addEventListener('click', (e) => {
             return response.json();
         })
         .then((resp) => {
+            console.log('CALLED');
             validateUser(resp);
             showMessages(resp.Msg);
         });
@@ -549,6 +628,26 @@ const CHAT_CONTENT_CONTAINER = document.querySelector(
 );
 let valid = false;
 
+const DeleteChatNotifications = (usersID, recieversID) => {
+    const DELETE = {
+        userID: usersID,
+        recieverID: recieversID,
+    };
+    fetch('/Notify', {
+        method: 'PUT',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(DELETE),
+    });
+
+    //Remove the notifications from the clients page
+    const MESSAGE_BOX = document.getElementById(usersID);
+    MESSAGE_BOX.innerHTML = '0';
+    MESSAGE_BOX.style.display = 'none';
+};
+
 const openChatModal = (e) => {
     console.log('Valid', valid);
     const RECIEVER_ID = e.getAttribute('data-user-id'); //data-user-id is the id of the user where we click on. This will be use to access the data on the database
@@ -575,6 +674,10 @@ const openChatModal = (e) => {
         X: 0,
     };
 
+    DeleteChatNotifications(
+        RECIEVER_ID,
+        getCookie('session_token').split('&')[0]
+    );
     GetMsg(users, SEND_BTN);
 
     CHAT_CONTENT_CONTAINER.addEventListener('scroll', CheckScrollTop);
@@ -598,9 +701,7 @@ const ArrangeUsers = (userId) => {
     });
     gChatUsers = [...gChatUsers, user];
 
-    console.log(gChatUsers);
-
-    ShowUsers();
+    ShowUsers(false);
 };
 
 const SendMessage = () => {
@@ -704,6 +805,10 @@ const sendNewPost = () => {
                 showMessages(resp.Msg);
                 allPost = resp.Posts;
                 DisplayAllPost(resp.Posts);
+            })
+            .then(() => {
+                console.log('hello');
+                NewPostNotif();
             });
         closeNewPost();
         return;
@@ -777,10 +882,10 @@ const openResponseModal = (postId) => {
     }
     if (post.Category === 'javascript') {
         category =
-            '<div class="post-category javascript javascript-category">GoLang</div>';
+            '<div class="post-category javascript javascript-category">JavaScript</div>';
     }
     if (post.Category === 'rust') {
-        category = '<div class="post-category rust rust-category">GoLang</div>';
+        category = '<div class="post-category rust rust-category">Rust</div>';
     }
     responsePostContainer.innerHTML = `
     <div class="post-title">${post.Title}</div>
@@ -1084,4 +1189,39 @@ const openYourPost = (e) => {
 const filterPost = (tag) => {
     let newAllPost = allPost.filter((post) => post.Category === tag);
     DisplayAllPost(newAllPost);
+};
+const refreshThePost = () => {
+    fetch('/post')
+        .then((response) => {
+            return response.json();
+        })
+        .then((resp) => {
+            allPost = resp.Posts;
+            DisplayAllPost(resp.Posts);
+            return;
+        })
+        .then(() => {
+            const middleContainer = document.querySelector('.middle-container');
+            middleContainer.scrollTo({ top: 0, behavior: 'smooth' });
+            const notificationContainer = document.querySelector(
+                '#notification-container-id'
+            );
+            notificationContainer.classList.remove('visible');
+            return;
+        })
+        .catch((err) => {
+            console.log('refreshThePost()', err);
+        });
+    return;
+};
+let lastScrollTop = 0;
+const scrollOnPost = (e) => {
+    let scrollTop = e.scrollTop;
+    if (scrollTop <= lastScrollTop) {
+        //if scrolling up
+        if (scrollTop <= 30) {
+            refreshThePost();
+        }
+    }
+    lastScrollTop = scrollTop;
 };
