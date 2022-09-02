@@ -201,13 +201,17 @@ const CreateWebSocket = () => {
 };
 
 const validateCoookie = () => {
-    fetch('/vadidate').then(async (response) => {
-        resp = await response.json();
-        if (resp.Msg === 'Login successful') {
-            console.log('Valid cookie');
-            validateUser(resp);
-        }
-    });
+    fetch('/vadidate')
+        .then(async (response) => {
+            resp = await response.json();
+            if (resp.Msg === 'Login successful') {
+                console.log('Valid cookie');
+                validateUser(resp);
+            }
+        })
+        .catch(() => {
+            console.log('no valid cookie');
+        });
 };
 const removeAllChildNodes = (parent) => {
     while (parent.firstChild) {
@@ -312,7 +316,7 @@ const UpdateUserProfile = (resp) => {
     document.getElementById('edit-email-id').value = resp.User.Email;
     document.getElementById('edit-gender-id').value = resp.User.Gender;
 
-    console.log("RESP+++ ", resp.User)
+    console.log('RESP+++ ', resp.User);
 };
 
 const GetNotificationAmount = () => {
@@ -541,7 +545,6 @@ loginBtn.addEventListener('click', (e) => {
             return response.json();
         })
         .then((resp) => {
-            console.log('CALLED');
             validateUser(resp);
             showMessages(resp.Msg);
         });
@@ -1228,3 +1231,27 @@ const scrollOnPost = (e) => {
     }
     lastScrollTop = scrollTop;
 };
+const loadingPageTimer = (func, timeout = 300) => {
+    let timer;
+    return function (...args) {
+        if (timer) {
+            clearTimeout(timer);
+        }
+
+        timer = setTimeout(() => {
+            func.apply(this, args);
+        }, timeout);
+    };
+};
+let closePage;
+const closeLoadingPage = () => {
+    console.log('Close');
+    window.clearTimeout(closePage);
+    closePage = setTimeout(function () {
+        // Run the callback
+        const loadingPage = document.querySelector('.loading-page-background');
+        loadingPage.style.display = 'none';
+        console.log('go');
+    }, 2000);
+};
+closeLoadingPage();
