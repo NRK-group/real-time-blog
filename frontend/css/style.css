@@ -81,6 +81,7 @@ button {
     display: flex;
     flex-direction: column;
     height: 100vh;
+    width: max-content;
     border-left: 2px solid #e8e8e8;
     overflow: scroll;
     /* margin-left: 50px; */
