@@ -19,18 +19,23 @@
             </div>
             <div class="login-input-container">
                 <h1 class="login-title title">Login</h1>
-                <input
-                    type="text"
-                    class="access-input-fields"
-                    placeholder="Email or Nickname"
-                    id="login-email-or-username-id"
-                />
-                <input
-                    type="password"
-                    class="access-input-fields login-reveal-password"
-                    placeholder="Password"
-                    id="login-password-id"
-                />
+                <div class="inputBox">
+                    <input
+                        type="text"
+                        id="login-email-or-username-id"
+                        required
+                    />
+                    <span>Username or Email</span>
+                </div>
+                <div class="inputBox">
+                    <input
+                        type="password"
+                        class="login-reveal-password"
+                        id="login-password-id"
+                        required
+                    />
+                    <span>password</span>
+                </div>
                 <button
                     class="access-text show-password"
                     id="login-reveal-password"

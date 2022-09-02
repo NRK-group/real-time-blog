@@ -159,6 +159,8 @@ button {
 }
 
 .login-input-container {
+    display: flex;
+    flex-direction: column;
     border-radius: 15px;
     width: 450px;
     height: 375px;
@@ -594,7 +596,7 @@ input[type='email']:focus {
     display: flex;
     font-weight: 600;
     width: 100%;
-    padding: 2%
+    padding: 2%;
 }
 .post-content {
     line-height: 1.5;
@@ -1395,16 +1397,54 @@ ul {
     visibility: visible;
 }
 
-
 .notification {
     width: 20%;
     font-size: 75%;
     font-weight: bold;
     color: white;
     margin-top: auto;
-    margin-left:1vw;
+    margin-left: 1vw;
     border-radius: 10px;
     display: none;
     justify-content: center;
     background-color: #533de0;
+}
+.inputBox {
+    position: relative;
+    width: 250px;
+}
+.inputBox input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #533de0;
+    background: white;
+    border-radius: 5px;
+    outline: none;
+    color: #533de0;
+    font-size: 1em;
+    transition: 0.5s;
+    margin-bottom: 10px;
+}
+.inputBox span {
+    position: absolute;
+    left: 0;
+    padding: 10px;
+    pointer-events: none;
+    font-size: 0.8em;
+    letter-spacing: 0.2em;
+    color: #533de0;
+    text-transform: uppercase;
+    transition: 0.5s;
+}
+.inputBox input:valid ~ span,
+.inputBox input:focus ~ span {
+    transform: translateX(10px) translateY(-7px);
+    font-size: 0.65em;
+    padding: 0 10px;
+    background: white;
+    letter-spacing: 0.2em;
+}
+.inputBox input:valid,
+.inputBox input:focus {
+    border: 1.1px solid #533de0;
 }
