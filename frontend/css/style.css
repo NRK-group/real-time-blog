@@ -685,6 +685,10 @@ input[type='email']:focus {
     height: 35vh;
     overflow-x: scroll;
 }
+.forum-users-container-last-chat {
+    height: 25vh;
+    overflow-x: scroll;
+}
 .forum-user {
     /* background-color: #000000; */
     width: 100%;

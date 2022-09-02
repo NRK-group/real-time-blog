@@ -1,6 +1,6 @@
 const SendResponsebtn = document.getElementById('send-response-btn');
 
-let allPost;
+let allPost, gUsers, gChatUsers;
 
 const openRegristerModal = () => {
     const loginPageId = document.querySelector('#login-page-id');
@@ -259,12 +259,23 @@ const IsTyping = () => {
 };
 
 const validateUser = (resp) => {
+    console.log(resp);
     if (resp.Msg === 'Login successful') {
         //Create the cookie when logged in#
         CreateWebSocket();
-        ShowUsers(resp.Users);
+        console.log(resp);
+        gUsers = [];
+        gChatUsers = [];
+        if (resp.Users) {
+            gUsers = resp.Users;
+        }
+        if (resp.ChatUsers) {
+            gChatUsers = resp.ChatUsers;
+        }
+        console.log(gUsers);
         GetNotificationAmount();
-        allUsers = resp.Users;
+        ShowUsers();
+        allUsers = [...(gUsers || []), ...(gChatUsers || [])];
         allPost = resp.Posts;
         DisplayAllPost(resp.Posts);
         const loginPageId = document.querySelector('#login-page-id');
@@ -308,22 +319,23 @@ const GetNotificationAmount = () => {
             Accept: 'application/json',
             'Content-Type': 'application/json',
         },
-    }).then(async (response) => {
-        resp = await response.json();
-        return resp
-    }).then(resp => {
-        resp.forEach((thisUser) => {
-            console.log("This user: ", typeof thisUser.count);
-            if (thisUser.count == 0 || thisUser.count == undefined) return;
-            AddNotification(thisUser.count, thisUser.senderID);
+    })
+        .then(async (response) => {
+            resp = await response.json();
+            return resp;
         })
-    });
-
-    
+        .then((resp) => {
+            resp.forEach((thisUser) => {
+                console.log('This user: ', typeof thisUser.count);
+                if (thisUser.count == 0 || thisUser.count == undefined) return;
+                AddNotification(thisUser.count, thisUser.senderID);
+            });
+        });
 };
 
 //CheckNotificationDisplay will hide notification divs when their innerHTML is 0
 const CheckNotificationDisplay = (arr) => {
+    console.log(arr);
     arr.forEach((user) => {
         const NOTIF_BOX = document.getElementById(user.UserID);
         if (parseInt(NOTIF_BOX.innerHTML) < 1) {
@@ -332,29 +344,56 @@ const CheckNotificationDisplay = (arr) => {
     });
 };
 
-const ShowUsers = (Users) => {
-    if (Users) {
+const ShowUsers = (firstRun = true) => {
+    if (gUsers) {
         let usersDiv = document.getElementById('forum-users-container');
+        let lastChat = document.createElement('div');
+        lastChat.classList.add('forum-users-container');
+        let lastChatUsers = '';
+        (gChatUsers || []).forEach((item, index) => {
+            lastChatUsers =
+                `<div
+            key=${index}
+            class="forum-user"
+            data-user-id=${item.UserID}
+            data-username=${item.Nickname}
+            onclick="openChatModal(this)"
+        >
+        <div class="user-image"></div>
+        <div class="username">@${item.Nickname} <div class="notification" id="${item.UserID}">0</div></div>
+        </div>` + lastChatUsers;
+        });
+
         let usersDivTitle = document.getElementById('forum-users-title');
+        let allUsersDivTitle = document.getElementById('forum-all-users-title');
+
         let users = '';
-        Users.forEach((item, index) => {
+        gUsers.forEach((item, index) => {
             users =
                 `<div
-                    key=${index}
-                    class="forum-user"
-                    data-user-id=${item.UserID}
-                    data-username=${item.Nickname}
-                    onclick="openChatModal(this)"
-                >
-                <div class="user-image"></div>
-                <div class="username">@${item.Nickname} <div class="notification" id="${item.UserID}">0</div></div>
-                </div>` + users;
+            key=${index}
+            class="forum-user"
+            data-user-id=${item.UserID}
+            data-username=${item.Nickname}
+            onclick="openChatModal(this)"
+        >
+        <div class="user-image"></div>
+        <div class="username">@${item.Nickname} <div class="notification" id="${item.UserID}">0</div></div>
+        </div>` + users;
 
             // AddNotification(notifs, item.UserID)
         });
-        usersDiv.innerHTML = users;
-        usersDivTitle.innerText = `${Users.length} Active User`;
-        CheckNotificationDisplay(Users);
+        if (firstRun) {
+            usersDiv.parentNode.insertBefore(
+                lastChat,
+                allUsersDivTitle.nextSibling
+            );
+        }
+        lastChat.innerHTML = users;
+        usersDiv.innerHTML = lastChatUsers;
+        usersDivTitle.innerText = `${(gChatUsers || []).length} Active User`;
+        allUsersDivTitle.innerText = `${(gUsers || []).length} User`;
+        CheckNotificationDisplay([...(gUsers || []), ...(gChatUsers || [])]);
     }
 };
 
@@ -645,6 +684,26 @@ const openChatModal = (e) => {
     valid = true;
 };
 
+const ArrangeUsers = (userId) => {
+    let user;
+    gUsers.forEach((item, index) => {
+        if (userId === item.UserID) {
+            user = item;
+            gUsers.splice(index, 1);
+        }
+    });
+
+    gChatUsers.forEach((item, inx) => {
+        if (userId === item.UserID) {
+            user = item;
+            gChatUsers.splice(inx, 1);
+        }
+    });
+    gChatUsers = [...gChatUsers, user];
+
+    ShowUsers(false);
+};
+
 const SendMessage = () => {
     //Get the message from the text box
     const TEXT_BOX = document.querySelector('.chat-input-box');
@@ -669,6 +728,7 @@ const SendMessage = () => {
         DisplayMessage(MSG, 'chat sender', SORTED.split(' '));
         TEXT_BOX.value = '';
     }
+    ArrangeUsers(SEND_TO);
 };
 
 const closeChat = () => {
