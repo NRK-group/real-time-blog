@@ -1,6 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap');
+
 * {
     box-sizing: border-box;
     letter-spacing: 1px;
+    font-family: 'Outfit', sans-serif;
 }
 
 body {
@@ -302,11 +305,13 @@ input[type='email']:focus {
     box-shadow: 0 0 50px rgb(240, 240, 240);
 }
 .profile-picture {
-    height: 150px;
-    width: 150px;
+    height: 20vmin;
+    width: 20vmin;
+    min-height: 100px;
+    min-width: 100px;
     background-color: rgb(206, 232, 240);
     border-radius: 20px;
-    margin-bottom: 25px;
+    margin-bottom: 5vh;
 }
 .profile-button {
     padding: 10px 20px;
@@ -1164,13 +1169,16 @@ input[type='email']:focus {
 }
 .profile-modal {
     display: grid;
-    grid-template-rows: 2.7vh 22vh 60.3vh 9vh;
+    grid-template-rows: 2.7% 22% 57% 9%;
     background-color: white;
-    min-width: 60vw;
+    width: 60vw;
+    min-width: 650px;
     height: 95vh;
+    min-height: 500px;
     z-index: 1;
     border-radius: 16px;
     padding: 2px;
+    margin: auto;
 }
 .edit-profile-buttons {
     display: flex;
@@ -1231,18 +1239,28 @@ input[type='email']:focus {
 .profile-picture-container {
     display: flex;
     justify-content: center;
+    height: 70%;
+    width: 100%;
 }
 .profile-info-container {
     display: flex;
     justify-content: center;
 }
 .profile-info {
-    min-width: 50vw;
+    display: block;
     border-top: 1px solid rgb(220, 220, 220);
-    padding-left: 5vw;
+    /* padding-left: 5vw; */
+    padding-top: 25px ;
+    overflow: scroll;
+    margin-bottom: 5vh;
 }
 .edit-profile-input {
     margin: 15px auto;
+    border-bottom: 1px solid #e8e8e8;
+    width: 70%;
+    min-width: 450px;
+    height: 25%;
+    
 }
 .edit-profile-fields {
     width: 20vw;
@@ -1254,6 +1272,7 @@ input[type='email']:focus {
     padding: 7px;
     font-size: 15px;
     margin: auto;
+    min-height: 35px;
 }
 .post-filter-container {
     display: flex;
