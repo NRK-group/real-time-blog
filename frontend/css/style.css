@@ -178,18 +178,6 @@ button {
     margin: 5px auto;
 }
 
-.access-input-fields {
-    display: block;
-    margin: 15px auto;
-    margin-bottom: 0;
-    width: 250px;
-    height: 50px;
-    border-radius: 10px;
-    background-color: white;
-    padding: 7px;
-    font-size: 15px;
-}
-
 .access-btn {
     display: block;
     background-color: #543de0;
@@ -242,6 +230,8 @@ button {
     box-shadow: 0 0 50px rgb(250, 250, 250);
     padding: 5px;
     margin-bottom: 100px;
+    display: flex;
+    flex-direction: column;
 }
 
 .selector-holder {
@@ -260,20 +250,6 @@ button {
     height: 50px;
     display: inline-flex;
     background-color: inherit;
-    margin: 15px auto;
-    margin-bottom: 0;
-}
-
-.short-input-fields {
-    width: 120px;
-    height: inherit;
-    background-color: inherit;
-    color: inherit;
-    border-radius: 10px;
-    color: black;
-    padding: 7px;
-    font-size: 15px;
-    margin: auto;
 }
 
 input[type='text']:focus {
@@ -1446,5 +1422,29 @@ ul {
 }
 .inputBox input:valid,
 .inputBox input:focus {
+    border: 1.1px solid #533de0;
+}
+.inputBox select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #533de0;
+    background: white;
+    border-radius: 5px;
+    outline: none;
+    color: #533de0;
+    font-size: 1em;
+    transition: 0.5s;
+    margin-bottom: 10px;
+}
+.inputBox select:valid ~ span,
+.inputBox select:focus ~ span {
+    transform: translateX(10px) translateY(-7px);
+    font-size: 0.65em;
+    padding: 0 10px;
+    background: white;
+    letter-spacing: 0.2em;
+}
+.inputBox select:valid,
+.inputBox select:focus {
     border: 1.1px solid #533de0;
 }
