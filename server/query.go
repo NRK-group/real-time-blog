@@ -615,7 +615,6 @@ func (forum *DB) UpdateUserProfile(userID string, userData UpdateUserData) strin
 		rows.Scan(&password)
 	}
 
-	fmt.Println(userData.Password)
 	if !(CheckPasswordHash(userData.Password, password)) {
 		return "Error - password not macth"
 	}
@@ -631,6 +630,6 @@ func (forum *DB) UpdateUserProfile(userID string, userData UpdateUserData) strin
 		fmt.Println("Error executing update notifications: ", errExec)
 		return errExec.Error()
 	}
-	
+
 	return "Update is complete "
 }

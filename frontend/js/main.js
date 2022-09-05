@@ -350,8 +350,6 @@ const EditUserProfile = () => {
         lastName: lastName,
     };
 
-    console.log(UserInfo)
-
     if (CheckRequirements(UserInfo) === '') {
         fetch('/updateuser', {
             method: 'POST',
@@ -363,7 +361,7 @@ const EditUserProfile = () => {
         })
             .then(async (response) => {
                 resp = await response.json();
-               
+
                 return resp;
             })
             .then((resp) => {
