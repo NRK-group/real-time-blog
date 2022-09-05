@@ -1271,11 +1271,12 @@ const refreshThePost = () => {
 };
 let lastScrollTop = 0;
 const scrollOnPost = (e) => {
+    const allPost = document.querySelector('#all-post-id');
     let scrollTop = e.scrollTop;
     if (scrollTop <= lastScrollTop) {
         //if scrolling up
         if (scrollTop <= 30) {
-            refreshThePost();
+            if (allPost.classList.contains('all-post-active')) refreshThePost();
         }
     }
     lastScrollTop = scrollTop;
