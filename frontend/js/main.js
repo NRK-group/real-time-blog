@@ -654,13 +654,18 @@ const FetchMsgs = (chat, SEND_BTN) => {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(chat),
-    }).then(async (response) => {
-        resp = await response.json();
-        SEND_BTN.setAttribute('data-chat-id', resp.chatID);
-        //Add the first 10 messages
-        if (resp.Messages.length != 0) DisplayTenMessages(resp.Messages);
-        return resp;
-    });
+    })
+        .then(async (response) => {
+            resp = await response.json();
+            SEND_BTN.setAttribute('data-chat-id', resp.chatID);
+            //Add the first 10 messages
+            if ((resp.Messages || []).length != 0)
+                DisplayTenMessages(resp.Messages);
+            return resp;
+        })
+        .catch((err) => {
+            console.log('FetchMsgs() ERR:', err);
+        });
 };
 
 function AllowMSG() {
