@@ -633,3 +633,20 @@ func (forum *DB) UpdateUserProfile(userID string, userData UpdateUserData) strin
 
 	return "Update is complete "
 }
+
+func (forum *DB) RegisterUser(userData UserData) {
+	// Create a UserId for the new user using UUID
+	userID := uuid.NewV4().String()
+	// Turn age into an int
+	userAge, _ := strconv.Atoi(userData.Age)
+	// Gate the date of registration
+	userDate := time.Now().Format("January 2, 2006")
+	// Hash the password
+	password, hashErr := HashPassword(userData.Password)
+
+	if hashErr != nil {
+		fmt.Println("Error hashing password", hashErr)
+	}
+	// Valid registration so add the user to the database
+	forum.DB.Exec(`INSERT INTO User VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`, userID, "", userData.FirstName, userData.LastName, userData.Nickname, userData.Gender, userAge, "Offline", userData.Email, userDate, password, "")
+}
