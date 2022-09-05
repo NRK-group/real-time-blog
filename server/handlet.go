@@ -6,11 +6,8 @@ import (
 	"html/template"
 	"log"
 	"net/http"
-	"strconv"
 	"strings"
 	"time"
-
-	uuid "github.com/satori/go.uuid"
 )
 
 var page ReturnData
@@ -135,21 +132,7 @@ func (DB *DB) Register(w http.ResponseWriter, r *http.Request) {
 			w.Write([]byte("This Nickname is already in use"))
 			return
 		}
-
-		// Create a UserId for the new user using UUID
-		userID := uuid.NewV4().String()
-		// Turn age into an int
-		userAge, _ := strconv.Atoi(userData.Age)
-		// Gate the date of registration
-		userDate := time.Now().Format("January 2, 2006")
-		// Hash the password
-		password, hashErr := HashPassword(userData.Password)
-
-		if hashErr != nil {
-			fmt.Println("Error hashing password", hashErr)
-		}
-		// Valid registration so add the user to the database
-		DB.DB.Exec(`INSERT INTO User VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`, userID, "", userData.FirstName, userData.LastName, userData.Nickname, userData.Gender, userAge, "Offline", userData.Email, userDate, password, "")
+		DB.RegisterUser(userData)
 
 		w.Header().Set("Content-type", "application/text")
 		w.WriteHeader(http.StatusOK)
@@ -338,7 +321,7 @@ func (forum *DB) GetMessages(w http.ResponseWriter, r *http.Request) {
 		// Check if there is a chat between the two users
 		if chatDetails.ChatID = forum.CheckChatID(chatDetails.User, chatDetails.Reciever); chatDetails.ChatID != "" {
 			chatDetails.Messages = forum.TenMessages(chatDetails.ChatID, chatDetails.X)
-			//When a message is sent check for the chat id a nd create it
+			// When a message is sent check for the chat id a nd create it
 			// chatDetails.ChatID = forum.CreateChatID(chatDetails.User, chatDetails.Reciever)
 		}
 

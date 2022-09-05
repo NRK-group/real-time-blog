@@ -21,8 +21,19 @@ func main() {
 	}
 
 	defer db.Close()
-
-
+	// automate the user creation
+	// for i := 0; i < 100; i++ {
+	// 	userData := server.UserData{
+	// 		FirstName: "Tan" + strconv.Itoa(i),
+	// 		LastName:  "Tan" + strconv.Itoa(i),
+	// 		Nickname:  "Tan" + strconv.Itoa(i),
+	// 		Email:     "tan" + strconv.Itoa(i) + "@gmail.com",
+	// 		Gender:    "Male",
+	// 		Age:       "22",
+	// 		Password:  "hello123",
+	// 	}
+	// 	database.RegisterUser(userData)
+	// }
 
 	go server.SendMsgs()
 	http.HandleFunc("/", database.Home)
@@ -35,7 +46,7 @@ func main() {
 	http.HandleFunc("/MessageInfo", database.GetMessages)
 	http.HandleFunc("/Notify", database.Notifications)
 	http.HandleFunc("/response", database.Response)
-	http.HandleFunc("/favorite", database.Favorite) 
+	http.HandleFunc("/favorite", database.Favorite)
 	http.HandleFunc("/updateuser", database.UpdateUser)
 	frontend := http.FileServer(http.Dir("./frontend"))
 	http.Handle("/frontend/", http.StripPrefix("/frontend/", frontend)) // handling the CSS
