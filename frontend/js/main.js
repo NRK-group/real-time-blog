@@ -311,7 +311,7 @@ const UpdateUserProfile = (resp) => {
     document.getElementById('edit-email-id').value = resp.User.Email;
     document.getElementById('edit-gender-id').value = resp.User.Gender;
 
-    console.log("RESP+++ ", resp.User)
+    console.log('RESP+++ ', resp.User);
 };
 
 const editBtn = document.getElementById('save-changes-btn');
@@ -326,24 +326,45 @@ const EditUserProfile = () => {
     let firstName = document.getElementById('edit-first-name-id').value;
     let nickname = document.getElementById('edit-nickname-id').value;
     let age = document.getElementById('edit-age-id').value;
+    let gender = document.getElementById('edit-gender-id').value;
     let email = document.getElementById('edit-email-id').value;
-    let password = document.getElementById('new-password-id').value;
+    let password = document.getElementById('edit-password-id').value;
+    let newPassword = document.getElementById('new-password-id').value;
     let confirmPassword = document.getElementById(
-        'confirm-new-passwor-id'
+        'confirm-new-password-id'
     ).value;
 
     let UserInfo = {
         nickname: nickname,
         age: age,
-        password: password,
+        gender: gender,
+        password: newPassword,
         confirmPassword: confirmPassword,
-        email:email,
-        firstName:firstName,
-        lastName:lastName
+        oldPassword: password,
+        email: email,
+        firstName: firstName,
+        lastName: lastName,
     };
 
-    if (CheckRequirements(UserInfo) === '') {
+    console.log(UserInfo)
 
+    if (CheckRequirements(UserInfo) === '') {
+        fetch('/updateuser', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(UserInfo),
+        })
+            .then(async (response) => {
+                resp = await response.json();
+               
+                return resp;
+            })
+            .then((resp) => {
+                showMessages(resp.Msg);
+            });
     } else {
         showMessages(CheckRequirements(UserInfo));
     }
