@@ -12,21 +12,27 @@
         rgba(215, 129, 255, 0.2) 100%
     );
     --font-color: black;
+    --box-shadow10: 0 0 10px rgb(220, 220, 220);
     --box-shadow50: 0 0 50px rgb(240, 240, 240);
     --border1: 1px solid rgb(240, 240, 240);
+    --container-border: 2px solid #e8e8e8;
+    --box-shadow-inset: 0 0 10px rgb(220, 220, 220) inset;
 }
 [data-theme='dark'] {
     --primary-color: black;
     --secondary-color: rgb(50, 50, 50);
     --background: linear-gradient(
         180deg,
-        rgba(0, 213, 255, 0.2) 0%,
-        rgb(0, 0, 0) 49%,
-        rgba(174, 0, 255, 0.2) 100%
+        rgba(30, 30, 30) 0%,
+        rgb(40, 40, 40) 49%,
+        rgba(50, 50, 50) 100%
     );
     --font-color: white;
+    --box-shadow10: 0 0 10px rgb(20, 20, 20);
     --box-shadow50: 0 0 50px rgb(40, 40, 40);
     --border1: 1px solid rgb(0, 0, 0);
+    --container-border: 2px solid rgb(51, 51, 51);
+    --box-shadow-inset: 0 0 20px rgb(85, 85, 85) inset;
 }
 body {
     margin: 0;
@@ -52,7 +58,7 @@ button {
     display: grid;
     grid-template-columns: 20% 50% 5% 25%;
     background-color: white;
-    border-bottom: 1px solid #e8e8e8;
+    border-bottom: var(--container-border);
     min-height: 60px;
     background-color: var(--primary-color);
     z-index: 1;
@@ -65,7 +71,7 @@ button {
 
 .left-container {
     height: 100vh;
-    border-right: 2px solid #e8e8e8;
+    border-right: var(--container-border);
     padding-top: 50px;
     overflow: scroll;
 }
@@ -92,7 +98,7 @@ button {
     display: flex;
     flex-direction: column;
     height: 100vh;
-    border-left: 2px solid #e8e8e8;
+    border-left: var(--container-border);
     overflow: scroll;
 }
 .title-container {
@@ -146,12 +152,12 @@ button {
     transition: all 0.3s;
 }
 .logout-btn:hover {
-    background-color: white;
+    background-color: var(--background);
     color: #543de0;
     -webkit-transition: all 0.5s;
     -moz-transition: all 0.5s;
     transition: all 0.5s;
-    box-shadow: 0 0 10px rgb(220, 220, 220) inset;
+    box-shadow: var(--box-shadow-inset);
 }
 .access-page {
     width: 100vw;
@@ -181,17 +187,16 @@ button {
     border-radius: 15px;
     width: 450px;
     height: 375px;
-    background-color: white;
+    background-color: var(--primary-color);
     text-align: center;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 0 50px rgb(240, 240, 240);
+    box-shadow: var(--box-shadow50);
     padding: 5px;
 }
 
 .access-text {
     background-color: inherit;
-    color: black;
     margin: 5px auto;
 }
 
@@ -220,12 +225,12 @@ button {
 }
 
 .access-btn:hover {
-    background-color: white;
+    background-color: var(--background);
     color: #543de0;
     -webkit-transition: all 0.5s;
     -moz-transition: all 0.5s;
     transition: all 0.5s;
-    box-shadow: 0 0 10px rgb(220, 220, 220) inset;
+    box-shadow: var(--box-shadow-inset);
 }
 .access-btn:focus {
     background-color: #543de0;
@@ -252,11 +257,11 @@ button {
     border-radius: 15px;
     width: 450px;
     height: 650px;
-    background-color: white;
+    background-color: var(--primary-color);
     text-align: center;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 0 50px rgb(250, 250, 250);
+    box-shadow: var(--box-shadow50);
     padding: 5px;
     margin-bottom: 100px;
 }
@@ -265,11 +270,11 @@ button {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: white;
+    background-color: var(--background);
 }
 
 .access-selector-fields {
-    background-color: white;
+    background-color: var(--background);
 }
 
 .short-input-div {
@@ -284,8 +289,6 @@ button {
 .short-input-fields {
     width: 120px;
     height: inherit;
-    background-color: inherit;
-    color: inherit;
     border-radius: 10px;
     color: black;
     padding: 7px;
@@ -299,7 +302,7 @@ input[type='text']:focus {
     -webkit-transition: all 0.3s;
     -moz-transition: all 0.3s;
     transition: all 0.3s;
-    box-shadow: 0 0 10px rgb(220, 220, 220) inset;
+    box-shadow: var(--box-shadow-inset);
 }
 
 input[type='number']:focus {
@@ -308,7 +311,7 @@ input[type='number']:focus {
     -webkit-transition: all 0.3s;
     -moz-transition: all 0.3s;
     transition: all 0.3s;
-    box-shadow: 0 0 10px rgb(220, 220, 220) inset;
+    box-shadow: var(--box-shadow-inset);
 }
 input[type='password']:focus {
     outline: 2px solid #543de0;
@@ -316,7 +319,7 @@ input[type='password']:focus {
     -webkit-transition: all 0.3s;
     -moz-transition: all 0.3s;
     transition: all 0.3s;
-    box-shadow: 0 0 10px rgb(220, 220, 220) inset;
+    box-shadow: var(--box-shadow-inset);
 }
 
 input[type='email']:focus {
@@ -325,7 +328,7 @@ input[type='email']:focus {
     -webkit-transition: all 0.3s;
     -moz-transition: all 0.3s;
     transition: all 0.3s;
-    box-shadow: 0 0 10px rgb(220, 220, 220) inset;
+    box-shadow: var(--box-shadow-inset);
 }
 
 .profile-container {
@@ -359,12 +362,12 @@ input[type='email']:focus {
     text-align: center;
 }
 .profile-button:hover {
-    background-color: white;
+    background-color: var(--background);
     color: #543de0;
     -webkit-transition: all 0.5s;
     -moz-transition: all 0.5s;
     transition: all 0.5s;
-    box-shadow: 0 0 10px rgb(220, 220, 220) inset;
+    box-shadow: var(--box-shadow-inset);
 }
 .edit-icon {
     color: white;
@@ -392,7 +395,7 @@ input[type='email']:focus {
     visibility: hidden;
     min-width: 400px;
     margin-left: -200px;
-    background-color: white;
+    background-color: var(--primary-color);
     color: #543de0;
     text-align: center;
     border-radius: 20px;
@@ -410,7 +413,7 @@ input[type='email']:focus {
     -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
     animation: fadein 0.5s, fadeout 0.5s 2.5s;
     z-index: 5;
-    box-shadow: 0 0 10px rgb(220, 220, 220) inset;
+    box-shadow: var(--box-shadow-inset);
 }
 
 @-webkit-keyframes fadein {
@@ -468,7 +471,7 @@ input[type='email']:focus {
     align-items: center;
 }
 .new-post-btn {
-    background-color: white;
+    background-color: var(--background);
     height: 120px;
     padding: 10px;
     width: 700px;
@@ -519,7 +522,7 @@ input[type='email']:focus {
     align-items: center;
     padding: 0px 30px;
     cursor: pointer;
-    box-shadow: 0 0 20px rgb(220, 220, 220) inset;
+    box-shadow: var(--box-shadow-inset);
 }
 .new-post-top-content div:hover {
     box-shadow: 0 0 2px rgb(100, 100, 230) inset;
@@ -541,7 +544,7 @@ input[type='email']:focus {
     justify-content: center;
     align-items: center;
     border-radius: 16px;
-    border: 1px solid white;
+    border: 1px solid;
     cursor: pointer;
 }
 .golang {
@@ -550,7 +553,7 @@ input[type='email']:focus {
 .golang:hover {
     color: #6ad6e3;
     border-color: #6ad6e3;
-    box-shadow: 0 0 10px rgb(220, 220, 220) inset;
+    box-shadow: var(--box-shadow-inset);
     -webkit-transition: all 0.3s;
     -moz-transition: all 0.3s;
     transition: all 0.3s;
@@ -560,19 +563,24 @@ input[type='email']:focus {
 }
 .javascript:hover {
     color: #f0db4f;
-    box-shadow: 0 0 10px rgb(220, 220, 220) inset;
+    box-shadow: var(--box-shadow-inset);
     border-color: #f0db4f;
     -webkit-transition: all 0.3s;
     -moz-transition: all 0.3s;
     transition: all 0.3s;
 }
 .rust {
-    color: #000000;
+    color: var(--font-color);
+}
+.rust-icon {
+    color: var(--background);
+    fill: currentColor;
+    height: 30px;
+    width: 30px;
 }
 .rust:hover {
-    color: #000000;
-    box-shadow: 0 0 10px rgb(220, 220, 220) inset;
-    border-color: #000000;
+    box-shadow: var(--box-shadow-inset);
+    border-color: var(--background);
     -webkit-transition: all 0.3s;
     -moz-transition: all 0.3s;
     transition: all 0.3s;
@@ -588,7 +596,7 @@ input[type='email']:focus {
     width: 700px;
     min-height: 250px;
     margin: 20px 0px;
-    background-color: white;
+    background-color: var(--background);
     box-shadow: var(--box-shadow50);
     border-radius: 16px;
     padding: 50px;
@@ -635,7 +643,7 @@ input[type='email']:focus {
     border: 1px solid white;
     cursor: pointer;
     color: #6ad6e3;
-    box-shadow: 0 0 10px rgb(220, 220, 220) inset;
+    box-shadow: var(--box-shadow-inset);
     border-color: #6ad6e3;
 }
 .javascript-category {
@@ -649,7 +657,7 @@ input[type='email']:focus {
     border: 1px solid white;
     cursor: pointer;
     color: #f0db4f;
-    box-shadow: 0 0 10px rgb(220, 220, 220) inset;
+    box-shadow: var(--box-shadow-inset);
     border-color: #f0db4f;
 }
 .rust-category {
@@ -660,11 +668,10 @@ input[type='email']:focus {
     justify-content: center;
     align-items: center;
     border-radius: 16px;
-    border: 1px solid white;
+    border: 1px solid;
     cursor: pointer;
-    color: #000000;
-    box-shadow: 0 0 20px rgb(220, 220, 220) inset;
-    border-color: #000000;
+    color: var(--font-color);
+    box-shadow: var(--box-shadow-inset);
 }
 .post-buttons {
     margin-top: 40px;
@@ -755,6 +762,7 @@ input[type='email']:focus {
     height: 100%; /* Full height */
     z-index: 1;
     justify-content: center;
+    background-color: var(--background);
     /* align-items: center; */
 }
 .chat-modal-container::before {
@@ -771,7 +779,7 @@ input[type='email']:focus {
     display: grid;
     height: 74vh;
     grid-template-rows: 3% 9.5% 78% 9.5%;
-    background-color: white;
+    background-color: var(--primary-color);
     width: 50vw;
     min-width: 550px;
     height: 75vh;
@@ -815,7 +823,7 @@ input[type='email']:focus {
     display: flex;
     align-items: center;
     padding-left: 50px;
-    border-bottom: 1px solid #00000020;
+    border-bottom: var(--container-border);
     height: 100%;
 }
 .chat-content-container {
@@ -833,7 +841,7 @@ input[type='email']:focus {
 }
 .chat-content {
     display: block;
-    background-color: white;
+    background-color: var(--primary-color);
     min-width: 80px;
     min-height: 10px;
     border-radius: 5px;
@@ -844,7 +852,7 @@ input[type='email']:focus {
     flex-direction: row-reverse;
 }
 .chat-input-container {
-    border-top: 1px solid #00000020;
+    border-top: var(--container-border);
     height: 100%;
     width: 100%;
     display: flex;
@@ -878,20 +886,20 @@ input[type='email']:focus {
     border-radius: 16px;
     justify-content: center;
     align-items: center;
-    box-shadow: 0 0 20px rgb(220, 220, 220);
+    box-shadow: var(--box-shadow10);
     font-size: 75%;
 }
 .send-chat-btn:hover {
-    background-color: white;
+    background-color: var(--background);
     color: #533de0;
-    box-shadow: 0 0 20px rgb(220, 220, 220) inset;
+    box-shadow: var(--box-shadow-inset);
     -webkit-transition: all 0.3s;
     -moz-transition: all 0.3s;
     transition: all 0.3s;
 }
 .send-chat-btn:focus {
     background-color: #533de0;
-    box-shadow: 0 0 20px rgb(220, 220, 220);
+    box-shadow: var(--box-shadow10);
     color: white;
 }
 .create-post-modal-container {
@@ -908,7 +916,7 @@ input[type='email']:focus {
 .create-post-container {
     display: grid;
     grid-template-rows: 2.1vh 10vh 7vh 7vh 27.9vh 7vh;
-    background-color: white;
+    background-color: var(--primary-color);
     min-width: 40vw;
     z-index: 1;
     margin: auto;
@@ -953,7 +961,7 @@ input[type='email']:focus {
 }
 .post-btn:hover {
     background-color: white;
-    box-shadow: 0 0 20px rgb(220, 220, 220) inset;
+    box-shadow: var(--box-shadow-inset);
     color: #533de0;
     -webkit-transition: all 0.3s;
     -moz-transition: all 0.3s;
@@ -1030,46 +1038,12 @@ input[type='email']:focus {
     margin: auto;
     padding: 2px;
 }
-.response-modal-container {
-    display: none;
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 100vw; /* Full width */
-    height: 100vh; /* Full height */
-    z-index: 1;
-    justify-content: center;
-    /* align-items: center; */
-}
-.response-modal-container::before {
-    content: '';
-    position: absolute;
-    background-color: black;
-    top: 0px;
-    right: 0px;
-    bottom: 0px;
-    left: 0px;
-    opacity: 0.5;
-}
-.response-modal {
-    display: grid;
-    grid-template-rows: 2.7vh 33.3vh 10vh 48vh;
-    background-color: white;
-    min-width: 50vw;
-    height: 95vh;
-    z-index: 1;
-    margin: auto;
-    border-radius: 16px;
-    overflow: scroll;
-    margin: auto;
-    padding: 2px;
-}
 .create-response-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    border-top: 1px solid #00000020;
-    border-bottom: 1px solid #00000020;
+    border-top: var(--container-border);
+    border-bottom: var(--container-border);
 }
 .create-response-input-box {
     resize: none;
@@ -1093,7 +1067,7 @@ input[type='email']:focus {
 .send-response-btn:hover {
     background-color: white;
     color: #533de0;
-    box-shadow: 0 0 10px rgb(220, 220, 220) inset;
+    box-shadow: var(--box-shadow-inset);
     -webkit-transition: all 0.3s;
     -moz-transition: all 0.3s;
     transition: all 0.3s;
@@ -1203,7 +1177,7 @@ input[type='email']:focus {
 .profile-modal {
     display: grid;
     grid-template-rows: 2.7vh 22vh 60.3vh 9vh;
-    background-color: white;
+    background-color: var(--primary-color);
     min-width: 60vw;
     height: 95vh;
     z-index: 1;
@@ -1223,11 +1197,11 @@ input[type='email']:focus {
     color: #543de0;
     border-radius: 16px;
     cursor: pointer;
-    box-shadow: 0 0 10px rgb(220, 220, 220);
+    box-shadow: var(--box-shadow10);
     /* border: 1px solid #533de0; */
 }
 .discard-changes-btn:hover {
-    box-shadow: 0 0 10px rgb(220, 220, 220) inset;
+    box-shadow: var(--box-shadow-inset);
     -webkit-transition: all 0.3s;
     -moz-transition: all 0.3s;
     transition: all 0.3s;
@@ -1242,7 +1216,7 @@ input[type='email']:focus {
     background-color: #543de0;
     border-radius: 16px;
     cursor: pointer;
-    box-shadow: 0 0 10px rgb(220, 220, 220);
+    box-shadow: var(--box-shadow10);
 }
 .save-icon {
     color: white;
@@ -1254,8 +1228,8 @@ input[type='email']:focus {
 }
 .save-changes-btn:hover {
     color: #533de0;
-    background-color: white;
-    box-shadow: 0 0 10px rgb(220, 220, 220) inset;
+    background-color: var(--background);
+    box-shadow: var(--box-shadow-inset);
     -webkit-transition: all 0.3s;
     -moz-transition: all 0.3s;
     transition: all 0.3s;
@@ -1325,8 +1299,8 @@ ul {
     height: 15px;
 }
 .filter:hover {
-    background-color: white;
-    box-shadow: 0 0 10px rgb(220, 220, 220) inset;
+    background-color: var(--background);
+    box-shadow: var(--box-shadow-inset);
     -webkit-transition: all 0.3s;
     -moz-transition: all 0.3s;
     transition: all 0.3s;
@@ -1344,22 +1318,22 @@ ul {
 .all-post-active {
     color: #533de0;
     border: 1px solid #533de0;
-    box-shadow: 0 0 10px rgb(220, 220, 220) inset;
+    box-shadow: var(--box-shadow-inset);
 }
 .golang-active {
     color: #6ad6e3;
     border: 1px solid #6ad6e3;
-    box-shadow: 0 0 10px rgb(220, 220, 220) inset;
+    box-shadow: var(--box-shadow-inset);
 }
 .javascript-active {
     color: #f0db4f;
     border: 1px solid #f0db4f;
-    box-shadow: 0 0 10px rgb(220, 220, 220) inset;
+    box-shadow: var(--box-shadow-inset);
 }
 .rust-active {
-    color: #000000;
-    border: 1px solid #000000;
-    box-shadow: 0 0 10px rgb(220, 220, 220) inset;
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+    box-shadow: var(--box-shadow-inset);
 }
 .filter-title {
     opacity: 0.5;
