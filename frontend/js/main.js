@@ -756,12 +756,8 @@ const ArrangeUsers = (userId) => {
             user = item;
             gChatUsers.splice(inx, 1);
         }
-    // gChatUsers.forEach((item, inx) => {
-    //     if (userId === item.UserID) {
-    //         user = item;
-    //         gChatUsers.splice(inx, 1);
-    //     }
-    // });
+    })
+
     console.log("object ", user);
     gChatUsers = [...gChatUsers, user];
     ShowUsers(false);
