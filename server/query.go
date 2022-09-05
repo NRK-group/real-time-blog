@@ -603,3 +603,33 @@ func (forum *DB) GetNotifications(target string) []Notify {
 	}
 	return result
 }
+
+func (forum *DB) UpdateUserProfile(userID string, userData UpdateUserData) string {
+	rows, err := forum.DB.Query("SELECT password FROM User WHERE userID = '" + userID + "'")
+	if err != nil {
+		fmt.Print(err)
+		return "User doesn't exist"
+	}
+	var password string
+	for rows.Next() {
+		rows.Scan(&password)
+	}
+
+	if !(CheckPasswordHash(userData.Password, password)) {
+		return "Error - password not macth"
+	}
+
+	updateUser, err := forum.DB.Prepare(`UPDATE User SET firstName = ?, lastName = ?, nickName = ?, gender = ?, age = ?, password = ?, email = ?   WHERE userID = ?`)
+	if err != nil {
+		fmt.Println("Error Preparing update notification: ", err)
+		return err.Error()
+	}
+	newPass, _ := HashPassword(userData.NewPassword)
+	_, errExec := updateUser.Exec(userData.FirstName, userData.LastName, userData.Nickname, userData.Gender, userData.Age, newPass, userData.Email, userID)
+	if errExec != nil {
+		fmt.Println("Error executing update notifications: ", errExec)
+		return errExec.Error()
+	}
+
+	return "Update is complete "
+}

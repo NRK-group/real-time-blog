@@ -455,9 +455,8 @@ func (forum *DB) Favorite(w http.ResponseWriter, r *http.Request) {
 	http.Error(w, "400 Bad Request.", http.StatusBadRequest)
 }
 
-/*
-func (forum *DB) Users(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/users" {
+func (forum *DB) UpdateUser(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/updateuser" {
 		http.Error(w, "404 not found.", http.StatusNotFound)
 		return
 	}
@@ -474,18 +473,22 @@ func (forum *DB) Users(w http.ResponseWriter, r *http.Request) {
 	}
 	res := strings.Split(c.Value, "&")
 	if forum.CheckSession(res[2]) {
+		if r.Method == "POST" {
+			var userData UpdateUserData
+			err := json.NewDecoder(r.Body).Decode(&userData)
+			if err != nil {
+				fmt.Print(err.Error())
+				http.Error(w, "500 Internal Server Error.", http.StatusInternalServerError)
+				w.WriteHeader(http.StatusInternalServerError)
+				return
+			}
 
-	if r.Method == "GET" {
-
-
-
-
-
-			page = ReturnData{Posts: forum.AllPost("", res[0]), Users: forum.ArrangeUsers() Msg: "successful react to post--" }
+			page = ReturnData{Msg: forum.UpdateUserProfile(res[0], userData)}
 			marshallPage, err := json.Marshal(page)
 			if err != nil {
 				fmt.Println("Error marshalling the data: ", err.Error())
 			}
+
 			w.WriteHeader(http.StatusOK)
 			w.Header().Set("Content-type", "application/json")
 			w.Write(marshallPage)
@@ -494,8 +497,6 @@ func (forum *DB) Users(w http.ResponseWriter, r *http.Request) {
 	}
 	http.Error(w, "400 Bad Request.", http.StatusBadRequest)
 }
-
-*/
 
 func SetupCorsResponse(w http.ResponseWriter, req *http.Request) {
 	(w).Header().Set("Access-Control-Allow-Origin", "*")

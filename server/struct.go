@@ -83,6 +83,18 @@ type UserData struct {
 	ConfirmPasspord string `string:"confirmPassword"`
 }
 
+type UpdateUserData struct {
+	FirstName       string `json:"firstName"`
+	Nickname        string `json:"nickname"`
+	LastName        string `json:"lastName"`
+	Age             string `json:"age"`
+	Gender          string `json:"gender"`
+	Email           string `json:"email"`
+	Password        string `json:"oldPassword"`
+	NewPassword        string `json:"password"`
+	ConfirmPasspord string `json:"confirmPassword"`
+}
+
 type UserLoginData struct {
 	EmailOrNickname string `json:"emailOrUsername"`
 	Password        string `json:"password"`
