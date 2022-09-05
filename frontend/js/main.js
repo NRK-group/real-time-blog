@@ -655,13 +655,18 @@ const FetchMsgs = (chat, SEND_BTN) => {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(chat),
-    }).then(async (response) => {
-        resp = await response.json();
-        SEND_BTN.setAttribute('data-chat-id', resp.chatID);
-        //Add the first 10 messages
-        if (resp.Messages.length != 0) DisplayTenMessages(resp.Messages);
-        return resp;
-    });
+    })
+        .then(async (response) => {
+            resp = await response.json();
+            SEND_BTN.setAttribute('data-chat-id', resp.chatID);
+            //Add the first 10 messages
+            if ((resp.Messages || []).length != 0)
+                DisplayTenMessages(resp.Messages);
+            return resp;
+        })
+        .catch((err) => {
+            console.log('FetchMsgs() ERR:', err);
+        });
 };
 
 function AllowMSG() {
@@ -1275,11 +1280,12 @@ const refreshThePost = () => {
 };
 let lastScrollTop = 0;
 const scrollOnPost = (e) => {
+    const allPost = document.querySelector('#all-post-id');
     let scrollTop = e.scrollTop;
     if (scrollTop <= lastScrollTop) {
         //if scrolling up
         if (scrollTop <= 30) {
-            refreshThePost();
+            if (allPost.classList.contains('all-post-active')) refreshThePost();
         }
     }
     lastScrollTop = scrollTop;
