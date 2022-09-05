@@ -967,10 +967,10 @@ input[type='email']:focus {
     display: flex;
     justify-content: space-evenly;
     align-items: center;
-    box-shadow: 0 0 20px rgb(220, 220, 220);
+    box-shadow: var(--box-shadow10);
 }
 .post-btn:hover {
-    background-color: white;
+    background-color: var(--background);
     box-shadow: var(--box-shadow-inset);
     color: #533de0;
     -webkit-transition: all 0.3s;
@@ -1075,7 +1075,7 @@ input[type='email']:focus {
     border-radius: 16px;
 }
 .send-response-btn:hover {
-    background-color: white;
+    background-color: var(--background);
     color: #533de0;
     box-shadow: var(--box-shadow-inset);
     -webkit-transition: all 0.3s;
@@ -1355,8 +1355,8 @@ ul {
     box-shadow: var(--box-shadow-inset);
 }
 .rust-active {
-    color: var(--primary-color);
-    border: 1px solid var(--primary-color);
+    color: var(--font-color);
+    border: 1px solid var(--font-color);
     box-shadow: var(--box-shadow-inset);
 }
 .filter-title {
