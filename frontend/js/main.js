@@ -1,6 +1,6 @@
 const SendResponsebtn = document.getElementById('send-response-btn');
 
-let allPost;
+let allPost, gUsers, gChatUsers;
 
 const openRegristerModal = () => {
     const loginPageId = document.querySelector('#login-page-id');
@@ -142,7 +142,7 @@ const ProcessMessage = (message) => {
 };
 
 const AddNotification = (i, senderID) => {
-    // console.log();
+    console.log('Adding notification with:', senderID);
     const MESSAGE_BOX = document.getElementById(senderID);
     let notValue = parseInt(MESSAGE_BOX.innerHTML);
     notValue += parseInt(i);
@@ -201,12 +201,17 @@ const CreateWebSocket = () => {
 };
 
 const validateCoookie = () => {
-    fetch('/vadidate').then(async (response) => {
-        resp = await response.json();
-        if (resp.Msg === 'Login successful') {
-            validateUser(resp);
-        }
-    });
+    fetch('/vadidate')
+        .then(async (response) => {
+            resp = await response.json();
+            if (resp.Msg === 'Login successful') {
+                console.log('Valid cookie');
+                validateUser(resp);
+            }
+        })
+        .catch(() => {
+            console.log('no valid cookie');
+        });
 };
 const removeAllChildNodes = (parent) => {
     while (parent.firstChild) {
@@ -258,11 +263,23 @@ const IsTyping = () => {
 };
 
 const validateUser = (resp) => {
+    console.log(resp);
     if (resp.Msg === 'Login successful') {
         //Create the cookie when logged in#
         CreateWebSocket();
-        ShowUsers(resp.Users);
-        allUsers = resp.Users;
+        console.log(resp);
+        gUsers = [];
+        gChatUsers = [];
+        if (resp.Users) {
+            gUsers = resp.Users;
+        }
+        if (resp.ChatUsers) {
+            gChatUsers = resp.ChatUsers;
+        }
+        console.log(gUsers);
+        GetNotificationAmount();
+        ShowUsers();
+        allUsers = [...(gUsers || []), ...(gChatUsers || [])];
         allPost = resp.Posts;
         DisplayAllPost(resp.Posts);
         const loginPageId = document.querySelector('#login-page-id');
@@ -296,29 +313,94 @@ const UpdateUserProfile = (resp) => {
     document.getElementById('edit-last-name-id').value = resp.User.Lastname;
     document.getElementById('edit-nickname-id').value = resp.User.Nickname;
     document.getElementById('edit-age-id').value = resp.User.Age;
-    document.getElementById('edit-emial-id').value = resp.User.Email;
+    document.getElementById('edit-email-id').value = resp.User.Email;
+    document.getElementById('edit-gender-id').value = resp.User.Gender;
+
+    console.log('RESP+++ ', resp.User);
 };
 
-const ShowUsers = (Users) => {
-    if (Users) {
+const GetNotificationAmount = () => {
+    fetch('/Notify', {
+        method: 'GET',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+    })
+        .then(async (response) => {
+            resp = await response.json();
+            return resp;
+        })
+        .then((resp) => {
+            resp.forEach((thisUser) => {
+                console.log('This user: ', typeof thisUser.count);
+                if (thisUser.count == 0 || thisUser.count == undefined) return;
+                AddNotification(thisUser.count, thisUser.senderID);
+            });
+        });
+};
+
+//CheckNotificationDisplay will hide notification divs when their innerHTML is 0
+const CheckNotificationDisplay = (arr) => {
+    console.log(arr);
+    arr.forEach((user) => {
+        const NOTIF_BOX = document.getElementById(user.UserID);
+        if (parseInt(NOTIF_BOX.innerHTML) < 1) {
+            NOTIF_BOX.display = 'none';
+        }
+    });
+};
+
+const ShowUsers = (firstRun = true) => {
+    if (gUsers) {
         let usersDiv = document.getElementById('forum-users-container');
+        let lastChat = document.createElement('div');
+        lastChat.classList.add('forum-users-container');
+        let lastChatUsers = '';
+        (gChatUsers || []).forEach((item, index) => {
+            lastChatUsers =
+                `<div
+            key=${index}
+            class="forum-user"
+            data-user-id=${item.UserID}
+            data-username=${item.Nickname}
+            onclick="openChatModal(this)"
+        >
+        <div class="user-image"></div>
+        <div class="username">@${item.Nickname} <div class="notification" id="${item.UserID}">0</div></div>
+        </div>` + lastChatUsers;
+        });
+
         let usersDivTitle = document.getElementById('forum-users-title');
+        let allUsersDivTitle = document.getElementById('forum-all-users-title');
+
         let users = '';
-        Users.forEach((item, index) => {
+        gUsers.forEach((item, index) => {
             users =
                 `<div
-                    key=${index}
-                    class="forum-user"
-                    data-user-id=${item.UserID}
-                    data-username=${item.Nickname}
-                    onclick="openChatModal(this)"
-                >
-                <div class="user-image"></div>
-                <div class="username">@${item.Nickname} <div class="notification" id="${item.UserID}">0</div></div>
-                </div>` + users;
+            key=${index}
+            class="forum-user"
+            data-user-id=${item.UserID}
+            data-username=${item.Nickname}
+            onclick="openChatModal(this)"
+        >
+        <div class="user-image"></div>
+        <div class="username">@${item.Nickname} <div class="notification" id="${item.UserID}">0</div></div>
+        </div>` + users;
+
+            // AddNotification(notifs, item.UserID)
         });
-        usersDiv.innerHTML = users;
-        usersDivTitle.innerText = `${Users.length} Active User`;
+        if (firstRun) {
+            usersDiv.parentNode.insertBefore(
+                lastChat,
+                allUsersDivTitle.nextSibling
+            );
+        }
+        lastChat.innerHTML = users;
+        usersDiv.innerHTML = lastChatUsers;
+        usersDivTitle.innerText = `${(gChatUsers || []).length} Active User`;
+        allUsersDivTitle.innerText = `${(gUsers || []).length} User`;
+        CheckNotificationDisplay([...(gUsers || []), ...(gChatUsers || [])]);
     }
 };
 
@@ -557,7 +639,7 @@ const DeleteChatNotifications = (usersID, recieversID) => {
         userID: usersID,
         recieverID: recieversID,
     };
-    fetch('/MessageInfo', {
+    fetch('/Notify', {
         method: 'PUT',
         headers: {
             Accept: 'application/json',
@@ -608,6 +690,26 @@ const openChatModal = (e) => {
     valid = true;
 };
 
+const ArrangeUsers = (userId) => {
+    let user;
+    gUsers.forEach((item, index) => {
+        if (userId === item.UserID) {
+            user = item;
+            gUsers.splice(index, 1);
+        }
+    });
+
+    gChatUsers.forEach((item, inx) => {
+        if (userId === item.UserID) {
+            user = item;
+            gChatUsers.splice(inx, 1);
+        }
+    });
+    gChatUsers = [...gChatUsers, user];
+
+    ShowUsers(false);
+};
+
 const SendMessage = () => {
     //Get the message from the text box
     const TEXT_BOX = document.querySelector('.chat-input-box');
@@ -632,6 +734,7 @@ const SendMessage = () => {
         DisplayMessage(MSG, 'chat sender', SORTED.split(' '));
         TEXT_BOX.value = '';
     }
+    ArrangeUsers(SEND_TO);
 };
 
 const closeChat = () => {
@@ -1128,6 +1231,30 @@ const scrollOnPost = (e) => {
     }
     lastScrollTop = scrollTop;
 };
+const loadingPageTimer = (func, timeout = 300) => {
+    let timer;
+    return function (...args) {
+        if (timer) {
+            clearTimeout(timer);
+        }
+
+        timer = setTimeout(() => {
+            func.apply(this, args);
+        }, timeout);
+    };
+};
+let closePage;
+const closeLoadingPage = () => {
+    console.log('Close');
+    window.clearTimeout(closePage);
+    closePage = setTimeout(function () {
+        // Run the callback
+        const loadingPage = document.querySelector('.loading-page-background');
+        loadingPage.style.display = 'none';
+        console.log('go');
+    }, 2000);
+};
+closeLoadingPage();
 
 const toggleSwitch = document.querySelector(
     '.theme-switch input[type="checkbox"]'

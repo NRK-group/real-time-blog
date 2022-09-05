@@ -55,7 +55,7 @@ type Favorite struct {
 	FavoriteID string
 	PostID     string `json:"postID"`
 	UserID     string
-	React      int    `json:"react"`
+	React      int `json:"react"`
 }
 
 type Chat struct {
@@ -89,20 +89,21 @@ type UserLoginData struct {
 }
 
 type ReturnData struct {
-	User  User
-	Users []User
-	Posts []Post
-	Msg   string
+	User      User
+	Users     []User
+	ChatUsers []User
+	Posts     []Post
+	Msg       string
 }
 
 type NewMessage struct {
-	Mesg        string `json:"message"`
-	UserID      string `json:"userID"`
-	RecieverID  string `json:"recieverID"`
-	ChatID      string `json:"chatID"`
-	Date        string `json:"date"`
-	Notification bool `json:"notification"`
-	messageType int
+	Mesg         string `json:"message"`
+	UserID       string `json:"userID"`
+	RecieverID   string `json:"recieverID"`
+	ChatID       string `json:"chatID"`
+	Date         string `json:"date"`
+	Notification bool   `json:"notification"`
+	messageType  int
 }
 
 type SendMessage struct {
@@ -112,10 +113,10 @@ type SendMessage struct {
 }
 
 type ReturnMessages struct {
-	User string `json:"userID"`
+	User     string `json:"userID"`
 	Reciever string `json:"recieverID"`
-	ChatID string `json:"chatID"`
-	X int `json:"X"`
+	ChatID   string `json:"chatID"`
+	X        int    `json:"X"`
 	Messages []SendMessage
 }
 
@@ -126,8 +127,8 @@ type PostData struct {
 }
 
 type ResponseData struct {
-	PostID    string `json:"postID"`
-	Content  string `json:"responseContent"`
+	PostID  string `json:"postID"`
+	Content string `json:"responseContent"`
 }
 
 type CheckTyping struct {
@@ -138,5 +139,10 @@ type CheckTyping struct {
 
 type MessageRequest struct {
 	ChatID string `json:"chatID"`
-	Rows string `json:"rows"`
+	Rows   string `json:"rows"`
+}
+
+type Notify struct {
+	SenderID string `json:"senderID"`
+	Count    int    `json:"count"`
 }

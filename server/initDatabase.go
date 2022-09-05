@@ -116,7 +116,7 @@ func initMessage(db *sql.DB) {
 	);
 	`)
 	if err != nil {
-		fmt.Println("Error initialising the message table: ",err)
+		fmt.Println("Error initialising the message table: ", err)
 		// return
 	}
 	stmt.Exec()
@@ -131,7 +131,7 @@ func initMessageNotifications(db *sql.DB) {
 	);
 	`)
 	if err != nil {
-		fmt.Println("Error initialising the message-notification table: ",err)
+		fmt.Println("Error initialising the message-notification table: ", err)
 		return
 	}
 	stmt.Exec()
@@ -143,6 +143,7 @@ func initChat(db *sql.DB) {
 		"chatID" TEXT UNIQUE NOT NULL,
 		"user1ID"	TEXT NOT NULL,
 		"user2ID"	TEXT NOT NULL,
+		"date"      TEXT NOT NULL,
 		PRIMARY KEY("chatID")
 		FOREIGN KEY ("user1ID")
 			REFERENCES "User" ("userID")

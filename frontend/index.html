@@ -12,6 +12,14 @@
         <title>Forum</title>
     </head>
     <body onload="validateCoookie()">
+        <!-- *start loading page -->
+        <div class="loading-page-background">
+            <div class="loading-page">
+                <span>F</span><span>O</span><span>R</span><span>U</span
+                ><span>M</span>
+            </div>
+        </div>
+        <!-- *end loading page -->
         <!-- * Login Screen Div -->
         <div class="login-page access-page open" id="login-page-id">
             <div class="logo">
@@ -19,18 +27,23 @@
             </div>
             <div class="login-input-container">
                 <h1 class="login-title title">Login</h1>
-                <input
-                    type="text"
-                    class="access-input-fields"
-                    placeholder="Email or Nickname"
-                    id="login-email-or-username-id"
-                />
-                <input
-                    type="password"
-                    class="access-input-fields login-reveal-password"
-                    placeholder="Password"
-                    id="login-password-id"
-                />
+                <div class="inputBox">
+                    <input
+                        type="text"
+                        id="login-email-or-username-id"
+                        required
+                    />
+                    <span>Username or Email</span>
+                </div>
+                <div class="inputBox">
+                    <input
+                        type="password"
+                        class="login-reveal-password"
+                        id="login-password-id"
+                        required
+                    />
+                    <span>password</span>
+                </div>
                 <button
                     class="access-text show-password"
                     id="login-reveal-password"
@@ -61,78 +74,84 @@
             <div class="register-input-container">
                 <h1 class="login-title title">Register</h1>
                 <div class="short-input-div">
-                    <input
-                        type="text"
-                        class="short-input-fields"
-                        placeholder="First Name"
-                        id="first-name-id"
-                        required
-                    />
-                    <input
-                        type="text"
-                        class="short-input-fields"
-                        placeholder="Nickname"
-                        id="nickname-id"
-                        required
-                    />
+                    <div class="inputBox">
+                        <input
+                            type="text"
+                            class="short-input-fields"
+                            id="first-name-id"
+                            required
+                        />
+                        <span>First Name</span>
+                    </div>
+                    <span> </span>
+                    <div class="inputBox">
+                        <input
+                            type="text"
+                            class="short-input-fields"
+                            id="nickname-id"
+                            required
+                        />
+                        <span>Nickname</span>
+                    </div>
                 </div>
-                <input
-                    type="text"
-                    class="access-input-fields"
-                    placeholder="Last Name"
-                    id="last-name-id"
-                    required
-                />
+                <div class="inputBox">
+                    <input type="text" id="last-name-id" required />
+                    <span>Last Name</span>
+                </div>
                 <div class="short-input-div">
+                    <div class="inputBox">
+                        <input
+                            type="number"
+                            class="short-input-fields"
+                            min="13"
+                            id="age-id"
+                            required
+                        />
+                        <span>Age</span>
+                    </div>
+                    <div class="inputBox">
+                        <select
+                            class="short-input-fields"
+                            placeholder="gender"
+                            id="gender-id"
+                            required
+                        >
+                            <option value="" disabled selected hidden></option>
+                            <option value="Male" class="short-input-fields">
+                                Male
+                            </option>
+                            <option value="Female" class="short-input-fields">
+                                Female
+                            </option>
+                            <option value="Other" class="short-input-fields">
+                                Other
+                            </option>
+                        </select>
+                        <span>Gender</span>
+                    </div>
+                </div>
+                <div class="inputBox">
+                    <input type="email" id="email-id" required />
+                    <span>Email</span>
+                </div>
+                <div class="inputBox">
                     <input
-                        type="number"
-                        class="short-input-fields"
-                        min="13"
-                        placeholder="Age"
-                        id="age-id"
+                        type="password"
+                        class="password reg-password-field"
+                        id="password-id"
                         required
                     />
-                    <select
-                        class="short-input-fields"
-                        placeholder="gender"
-                        id="gender-id"
-                        required
-                    >
-                        <option value="" disabled selected hidden>
-                            Gender
-                        </option>
-                        <option value="Male" class="short-input-fields">
-                            Male
-                        </option>
-                        <option value="Female" class="short-input-fields">
-                            Female
-                        </option>
-                        <option value="Other" class="short-input-fields">
-                            Other
-                        </option>
-                    </select>
+                    <span>Password</span>
                 </div>
-                <input
-                    type="email"
-                    class="access-input-fields"
-                    placeholder="Email"
-                    id="email-id"
-                    required
-                />
-                <input
-                    type="password"
-                    class="access-input-fields password reg-password-field"
-                    placeholder="Password"
-                    id="password-id"
-                    required
-                />
-                <input
-                    type="password"
-                    class="access-input-fields reg-password-field"
-                    placeholder="Confirm Password"
-                    id="confirm-password-id"
-                    required
-                />
+                <div class="inputBox">
+                    <input
+                        type="password"
+                        class="reg-password-field"
+                        id="confirm-password-id"
+                        required
+                    />
+                    <span>Confirm Password</span>
+                </div>
                 <button
                     class="access-text show-password"
                     id="register-reveal-password"
@@ -186,7 +205,7 @@
             <div class="bottom-container">
                 <div class="left-container">
                     <div class="post-filter-container">
-                        <div class="filter-title">General Filter</div>
+                        <div class="filter-title">General Filters</div>
                         <nav class="post-filter">
                             <ul>
                                 <li>
@@ -264,7 +283,7 @@
                         </nav>
                     </div>
                     <div class="personal-filter-container">
-                        <div class="filter-title">Personal Filter</div>
+                        <div class="filter-title">Personal Filters</div>
                         <nav class="personal-filter">
                             <ul>
                                 <li>
@@ -413,14 +432,18 @@
                             </button>
                         </div>
                     </div>
-                    <div class="users-container">
+                    <div id="users-container" class="users-container">
                         <div
                             id="forum-users-title"
                             class="forum-users-title"
                         ></div>
                         <div
                             id="forum-users-container"
-                            class="forum-users-container"
+                            class="forum-users-container-last-chat"
+                        ></div>
+                        <div
+                            id="forum-all-users-title"
+                            class="forum-users-title"
                         ></div>
                     </div>
                 </div>
@@ -597,87 +620,103 @@
                 </div>
                 <div class="profile-info-container">
                     <div class="profile-info">
-                        <div class="edit-profile-input">
-                            <label for="edit-first-name-id">First name:</label>
+                        <div class="inputBox">
                             <input
                                 type="text"
-                                name=""
+                                class="short-input-fields"
                                 id="edit-first-name-id"
-                                class="edit-profile-fields"
-                                placeholder="Edit first name"
+                                required
                             />
+                            <span>First Name</span>
                         </div>
-                        <div class="edit-profile-input">
-                            <label for="edit-last-name-id">Last name:</label>
+                        <div class="inputBox">
                             <input
                                 type="text"
-                                name=""
-                                id="edit-last-name-id"
-                                class="edit-profile-fields"
-                                placeholder="Edit last name"
-                            />
-                        </div>
-                        <div class="edit-profile-input">
-                            <label for="edit-nickname-id">Nickname:</label>
-                            <input
-                                type="text"
-                                name=""
+                                class="short-input-fields"
                                 id="edit-nickname-id"
-                                class="edit-profile-fields"
-                                placeholder="Edit eickname"
+                                required
                             />
+                            <span>Nickname</span>
                         </div>
-                        <div class="edit-profile-input">
-                            <label for="edit-age-id">Age:</label>
+                        <div class="inputBox">
                             <input
                                 type="text"
-                                name=""
+                                id="edit-last-name-id"
+                                required
+                            />
+                            <span>Last Name</span>
+                        </div>
+                        <div class="inputBox">
+                            <input
+                                type="number"
+                                class="short-input-fields"
+                                min="13"
                                 id="edit-age-id"
-                                class="edit-profile-fields"
-                                placeholder="Edit age"
+                                required
                             />
+                            <span>Age</span>
                         </div>
-                        <div class="edit-profile-input">
-                            <label for="edit-email-id">Email:</label>
-                            <input
-                                type="text"
-                                name=""
-                                id="edit-emial-id"
-                                class="edit-profile-fields"
-                                placeholder="Edit email"
-                            />
-                        </div>
-                        <div class="edit-profile-input">
-                            <label for="old-password-id">Old password:</label>
-                            <input
-                                type="text"
-                                name=""
-                                id="old-password-id"
-                                class="edit-profile-fields"
-                                placeholder="Old password"
-                            />
-                        </div>
-                        <div class="edit-profile-input">
-                            <label for="new-password-id">New password:</label>
-                            <input
-                                type="text"
-                                name=""
-                                id="new-password-id"
-                                class="edit-profile-fields"
-                                placeholder="New password"
-                            />
-                        </div>
-                        <div class="edit-profile-input">
-                            <label for="edit-email-id"
-                                >Confirm new password:</label
+                        <div class="inputBox">
+                            <select
+                                class="short-input-fields"
+                                placeholder="gender"
+                                id="edit-gender-id"
+                                required
                             >
+                                <option
+                                    value=""
+                                    disabled
+                                    selected
+                                    hidden
+                                ></option>
+                                <option value="Male" class="short-input-fields">
+                                    Male
+                                </option>
+                                <option
+                                    value="Female"
+                                    class="short-input-fields"
+                                >
+                                    Female
+                                </option>
+                                <option
+                                    value="Other"
+                                    class="short-input-fields"
+                                >
+                                    Other
+                                </option>
+                            </select>
+                            <span>Gender</span>
+                        </div>
+                        <div class="inputBox">
+                            <input type="email" id="edit-email-id" required />
+                            <span>Email</span>
+                        </div>
+                        <div class="inputBox">
                             <input
-                                type="text"
-                                name=""
-                                id="confirm-new-passwor-id"
-                                class="edit-profile-fields"
-                                placeholder="Confirm new password"
+                                type="password"
+                                class="password reg-password-field"
+                                id="password-id"
+                                required
                             />
+                            <span>Old Password</span>
+                        </div>
+                        <div class="inputBox">
+                            <input
+                                type="password"
+                                class="password reg-password-field"
+                                id="password-id"
+                                required
+                            />
+                            <span>New Password</span>
+                        </div>
+                        <div class="inputBox">
+                            <input
+                                type="password"
+                                class="password reg-password-field"
+                                id="password-id"
+                                required
+                            />
+                            <span>Confirm New Password</span>
                         </div>
                     </div>
                 </div>

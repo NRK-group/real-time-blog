@@ -1,6 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;500;700&display=swap');
+
 * {
     box-sizing: border-box;
     letter-spacing: 1px;
+    font-family: 'Outfit', sans-serif;
+    /* font-family: 'Space Grotesk', sans-serif; */
+    /* font-family: 'Jost', sans-serif; */
+    /* font-family: 'Josefin Sans', sans-serif; */
 }
 :root {
     --primary-color: white;
@@ -66,7 +75,8 @@ button {
 
 .bottom-container {
     display: grid;
-    grid-template-columns: 15% 60% 25%;
+    grid-template-columns: 18% 60% 20%;
+    /* min-width: 900px; */
 }
 
 .left-container {
@@ -74,13 +84,17 @@ button {
     border-right: var(--container-border);
     padding-top: 50px;
     overflow: scroll;
+    min-width: 200px;
 }
 
 .middle-container {
     height: 100vh;
+    width: 90%;
+    min-width: 650px;
     overflow-y: scroll;
     scroll-behavior: smooth;
     padding-top: 30px;
+    margin: auto;
 }
 /* Hide scrollbar for Chrome, Safari and Opera */
 ::-webkit-scrollbar {
@@ -93,13 +107,14 @@ button {
     scrollbar-width: none; /* Firefox */
 }
 .right-container {
-    /* display: grid;
-    grid-template-rows: 50vh 50vh; */
     display: flex;
     flex-direction: column;
     height: 100vh;
+    width: max-content;
     border-left: var(--container-border);
     overflow: scroll;
+    /* margin-left: 50px; */
+    padding: 1%;
 }
 .title-container {
     display: flex;
@@ -184,6 +199,8 @@ button {
 }
 
 .login-input-container {
+    display: flex;
+    flex-direction: column;
     border-radius: 15px;
     width: 450px;
     height: 375px;
@@ -198,18 +215,6 @@ button {
 .access-text {
     background-color: inherit;
     margin: 5px auto;
-}
-
-.access-input-fields {
-    display: block;
-    margin: 15px auto;
-    margin-bottom: 0;
-    width: 250px;
-    height: 50px;
-    border-radius: 10px;
-    background-color: white;
-    padding: 7px;
-    font-size: 15px;
 }
 
 .access-btn {
@@ -264,6 +269,8 @@ button {
     box-shadow: var(--box-shadow50);
     padding: 5px;
     margin-bottom: 100px;
+    display: flex;
+    flex-direction: column;
 }
 
 .selector-holder {
@@ -282,18 +289,6 @@ button {
     height: 50px;
     display: inline-flex;
     background-color: inherit;
-    margin: 15px auto;
-    margin-bottom: 0;
-}
-
-.short-input-fields {
-    width: 120px;
-    height: inherit;
-    border-radius: 10px;
-    color: black;
-    padding: 7px;
-    font-size: 15px;
-    margin: auto;
 }
 
 input[type='text']:focus {
@@ -335,8 +330,10 @@ input[type='email']:focus {
     padding: 10%;
 }
 .profile-card {
+    /* height: 45vh; */
     height: 350px;
     width: 100%;
+    min-width: 200px;
     background-color: var(--primary-color);
     border-radius: 20px;
     display: flex;
@@ -346,11 +343,13 @@ input[type='email']:focus {
     box-shadow: var(--box-shadow50);
 }
 .profile-picture {
-    height: 150px;
-    width: 150px;
+    height: 15vmin;
+    width: 15vmin;
+    min-height: 100px;
+    min-width: 100px;
     background-color: rgb(206, 232, 240);
     border-radius: 20px;
-    margin-bottom: 25px;
+    margin-bottom: 5vh;
 }
 .profile-button {
     padding: 10px 20px;
@@ -474,7 +473,9 @@ input[type='email']:focus {
     background-color: var(--background);
     height: 120px;
     padding: 10px;
-    width: 700px;
+    /* width: 700px; */
+    width: 90%;
+    min-width: 550px;
     border-radius: 16px;
     box-shadow: var(--box-shadow50);
     background-color: var(--primary-color);
@@ -588,9 +589,13 @@ input[type='email']:focus {
 .all-post-container {
     display: flex;
     align-items: center;
-    /* justify-content: center; */
+    justify-content: center;
     flex-direction: column;
-    padding-bottom: 100px;
+    min-width: 600px;
+    margin-right: 30px;
+    margin-left: 30px;
+    padding-bottom: 15vh ;
+
 }
 .post-container {
     width: 700px;
@@ -602,6 +607,7 @@ input[type='email']:focus {
     padding: 50px;
     background-color: var(--primary-color);
     grid-template-columns: 20% 20% 40% 20%;
+    margin: 2vh 30px;
 }
 .post-title {
     font-size: 30px;
@@ -735,6 +741,10 @@ input[type='email']:focus {
     height: 35vh;
     overflow-x: scroll;
 }
+.forum-users-container-last-chat {
+    height: 25vh;
+    overflow-x: scroll;
+}
 .forum-user {
     /* background-color: #000000; */
     width: 100%;
@@ -830,6 +840,7 @@ input[type='email']:focus {
     height: 100%;
     padding: 0 20px;
     overflow: scroll;
+    word-wrap: break-word;
 }
 .chat {
     width: 100%;
@@ -1083,7 +1094,7 @@ input[type='email']:focus {
     /* background: #000000; */
     width: 45vw;
     min-height: 50px;
-    margin: 10px auto;
+    margin: 15px auto;
     display: flex;
     flex-direction: column;
 }
@@ -1176,13 +1187,17 @@ input[type='email']:focus {
 }
 .profile-modal {
     display: grid;
-    grid-template-rows: 2.7vh 22vh 60.3vh 9vh;
+    grid-template-rows: 2.7% 22% 57% 9%;
     background-color: var(--primary-color);
-    min-width: 60vw;
+    width: 60vw;
+    min-width: 650px;
     height: 95vh;
+    min-height: 500px;
     z-index: 1;
     border-radius: 16px;
     padding: 2px;
+    margin: auto;
+    /* margin-top: 11vh; */
 }
 .edit-profile-buttons {
     display: flex;
@@ -1243,18 +1258,27 @@ input[type='email']:focus {
 .profile-picture-container {
     display: flex;
     justify-content: center;
+    height: 70%;
+    width: 100%;
 }
 .profile-info-container {
     display: flex;
     justify-content: center;
 }
 .profile-info {
-    min-width: 50vw;
+    display: block;
     border-top: 1px solid rgb(220, 220, 220);
-    padding-left: 5vw;
+    /* padding-left: 5vw; */
+    padding-top: 25px;
+    overflow: scroll;
+    margin-bottom: 5vh;
 }
 .edit-profile-input {
     margin: 15px auto;
+    border-bottom: 1px solid #e8e8e8;
+    width: 70%;
+    min-width: 450px;
+    height: 25%;
 }
 .edit-profile-fields {
     width: 20vw;
@@ -1266,6 +1290,7 @@ input[type='email']:focus {
     padding: 7px;
     font-size: 15px;
     margin: auto;
+    min-height: 35px;
 }
 .post-filter-container {
     display: flex;
@@ -1287,7 +1312,7 @@ ul {
     align-items: center;
     border-radius: 16px;
     cursor: pointer;
-    font-size: 1vw;
+    font-size: 14px;
     border: 1px solid #00000000;
 }
 .home-icon {
@@ -1458,4 +1483,121 @@ input:checked + .slider:before {
 
 .slider.round:before {
     border-radius: 50%;
+}
+
+.inputBox {
+    position: relative;
+    width: 250px;
+}
+.inputBox input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #533de0;
+    background: white;
+    border-radius: 5px;
+    outline: none;
+    color: #533de0;
+    font-size: 1em;
+    transition: 0.5s;
+    margin-bottom: 10px;
+}
+.inputBox span {
+    position: absolute;
+    left: 0;
+    padding: 10px;
+    pointer-events: none;
+    font-size: 0.8em;
+    letter-spacing: 0.2em;
+    color: #533de0;
+    text-transform: uppercase;
+    transition: 0.5s;
+}
+.inputBox input:valid ~ span,
+.inputBox input:focus ~ span {
+    transform: translateX(10px) translateY(-7px);
+    font-size: 0.65em;
+    padding: 0 10px;
+    background: white;
+    letter-spacing: 0.2em;
+}
+.inputBox input:valid,
+.inputBox input:focus {
+    border: 1.1px solid #533de0;
+}
+.inputBox select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #533de0;
+    background: white;
+    border-radius: 5px;
+    outline: none;
+    color: #533de0;
+    font-size: 1em;
+    transition: 0.5s;
+    margin-bottom: 10px;
+}
+.inputBox select:valid ~ span,
+.inputBox select:focus ~ span {
+    transform: translateX(10px) translateY(-7px);
+    font-size: 0.65em;
+    padding: 0 10px;
+    background: white;
+    letter-spacing: 0.2em;
+}
+.inputBox select:valid,
+.inputBox select:focus {
+    border: 1.1px solid #533de0;
+}
+.loading-page-background {
+    display: flex;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100vw; /* Full width */
+    height: 100vh; /* Full height */
+    z-index: 2;
+    justify-content: center;
+    align-items: center;
+    background: white;
+}
+.loading-page {
+    display: flex;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100vw; /* Full width */
+    height: 100vh; /* Full height */
+    z-index: 2;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(
+        180deg,
+        rgba(202, 240, 248, 0.5) 0%,
+        rgba(255, 255, 255, 1) 49%,
+        rgba(215, 129, 255, 0.5) 100%
+    );
+    font-size: 100px;
+    letter-spacing: 10px;
+    font-weight: 700;
+    cursor: pointer;
+}
+.loading-page :nth-child(1) {
+    -webkit-animation: fadein 3s;
+    animation: fadein 3s;
+}
+.loading-page :nth-child(2) {
+    -webkit-animation: fadein 4s;
+    animation: fadein 4s;
+}
+.loading-page :nth-child(3) {
+    -webkit-animation: fadein 5s;
+    animation: fadein 5s;
+}
+.loading-page :nth-child(4) {
+    -webkit-animation: fadein 6s;
+    animation: fadein 6s;
+}
+.loading-page :nth-child(5) {
+    -webkit-animation: fadein 7s;
+    animation: fadein 7s;
 }
