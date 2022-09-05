@@ -594,8 +594,7 @@ input[type='email']:focus {
     min-width: 600px;
     margin-right: 30px;
     margin-left: 30px;
-    padding-bottom: 15vh ;
-
+    padding-bottom: 15vh;
 }
 .post-container {
     width: 700px;
@@ -1493,7 +1492,7 @@ input:checked + .slider:before {
     width: 100%;
     padding: 10px;
     border: 1px solid #533de0;
-    background: white;
+    background: var(--primary-color);
     border-radius: 5px;
     outline: none;
     color: #533de0;
@@ -1528,7 +1527,7 @@ input:checked + .slider:before {
     width: 100%;
     padding: 10px;
     border: 1px solid #533de0;
-    background: white;
+    background: var(--primary-color);
     border-radius: 5px;
     outline: none;
     color: #533de0;
@@ -1541,7 +1540,7 @@ input:checked + .slider:before {
     transform: translateX(10px) translateY(-7px);
     font-size: 0.65em;
     padding: 0 10px;
-    background: white;
+    background: var(--primary-color);
     letter-spacing: 0.2em;
 }
 .inputBox select:valid,
@@ -1558,7 +1557,7 @@ input:checked + .slider:before {
     z-index: 2;
     justify-content: center;
     align-items: center;
-    background: white;
+    background: var(--primary-color);
 }
 .loading-page {
     display: flex;
@@ -1570,12 +1569,7 @@ input:checked + .slider:before {
     z-index: 2;
     justify-content: center;
     align-items: center;
-    background: linear-gradient(
-        180deg,
-        rgba(202, 240, 248, 0.5) 0%,
-        rgba(255, 255, 255, 1) 49%,
-        rgba(215, 129, 255, 0.5) 100%
-    );
+    background: var(--background);
     font-size: 100px;
     letter-spacing: 10px;
     font-weight: 700;
