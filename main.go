@@ -35,7 +35,8 @@ func main() {
 	http.HandleFunc("/MessageInfo", database.GetMessages)
 	http.HandleFunc("/Notify", database.Notifications)
 	http.HandleFunc("/response", database.Response)
-	http.HandleFunc("/favorite", database.Favorite)
+	http.HandleFunc("/favorite", database.Favorite) 
+	http.HandleFunc("/updateuser", database.UpdateUser)
 	frontend := http.FileServer(http.Dir("./frontend"))
 	http.Handle("/frontend/", http.StripPrefix("/frontend/", frontend)) // handling the CSS
 	fmt.Printf("Starting server at port 8800\n")
