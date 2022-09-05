@@ -1493,3 +1493,56 @@ ul {
 .inputBox select:focus {
     border: 1.1px solid #533de0;
 }
+.loading-page-background {
+    display: flex;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100vw; /* Full width */
+    height: 100vh; /* Full height */
+    z-index: 2;
+    justify-content: center;
+    align-items: center;
+    background: white;
+}
+.loading-page {
+    display: flex;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100vw; /* Full width */
+    height: 100vh; /* Full height */
+    z-index: 2;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(
+        180deg,
+        rgba(202, 240, 248, 0.5) 0%,
+        rgba(255, 255, 255, 1) 49%,
+        rgba(215, 129, 255, 0.5) 100%
+    );
+    font-size: 100px;
+    letter-spacing: 10px;
+    font-weight: 700;
+    cursor: pointer;
+}
+.loading-page :nth-child(1) {
+    -webkit-animation: fadein 3s;
+    animation: fadein 3s;
+}
+.loading-page :nth-child(2) {
+    -webkit-animation: fadein 4s;
+    animation: fadein 4s;
+}
+.loading-page :nth-child(3) {
+    -webkit-animation: fadein 5s;
+    animation: fadein 5s;
+}
+.loading-page :nth-child(4) {
+    -webkit-animation: fadein 6s;
+    animation: fadein 6s;
+}
+.loading-page :nth-child(5) {
+    -webkit-animation: fadein 7s;
+    animation: fadein 7s;
+}
