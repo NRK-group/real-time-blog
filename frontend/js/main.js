@@ -405,12 +405,16 @@ const CheckNotificationDisplay = (arr) => {
 };
 
 const ShowUsers = (firstRun = true) => {
-    console.log("showusers -> gUsers: ", gUsers)
+    console.log('showusers -> gUsers: ', gUsers);
     if (gUsers) {
         let usersDiv = document.getElementById('forum-users-container');
         let lastChat = document.getElementById('all-forum-users-container');
         let lastChatUsers = '';
         (gChatUsers || []).forEach((item, index) => {
+            let username;
+            item.Nickname.length < 8
+                ? (username = item.Nickname)
+                : (username = item.Nickname.slice(0, 6) + '...');
             lastChatUsers =
                 `<div
             key=${index}
@@ -420,7 +424,7 @@ const ShowUsers = (firstRun = true) => {
             onclick="openChatModal(this)"
         >
         <div class="user-image"></div>
-        <div class="username">@${item.Nickname} <div class="notification" id="${item.UserID}">0</div></div>
+        <div class="username">${username} <div class="notification" id="${item.UserID}">0</div></div>
         </div>` + lastChatUsers;
         });
 
@@ -429,6 +433,10 @@ const ShowUsers = (firstRun = true) => {
 
         let users = '';
         (gUsers || []).forEach((item, index) => {
+            let username;
+            item.Nickname.length < 8
+                ? (username = item.Nickname)
+                : (username = item.Nickname.slice(0, 6) + '...');
             users =
                 `<div
             key=${index}
@@ -438,7 +446,7 @@ const ShowUsers = (firstRun = true) => {
             onclick="openChatModal(this)"
         >
         <div class="user-image"></div>
-        <div class="username">@${item.Nickname} <div class="notification" id="${item.UserID}">0</div></div>
+        <div class="username">${username} <div class="notification" id="${item.UserID}">0</div></div>
         </div>` + users;
 
             // AddNotification(notifs, item.UserID)
@@ -761,9 +769,9 @@ const ArrangeUsers = (userId) => {
             user = item;
             gChatUsers.splice(inx, 1);
         }
-    })
+    });
 
-    console.log("object ", user);
+    console.log('object ', user);
     gChatUsers = [...gChatUsers, user];
     ShowUsers(false);
 };
@@ -791,7 +799,7 @@ const SendMessage = () => {
         socket.send(JSON.stringify(INFORMATION));
         DisplayMessage(MSG, 'chat sender', SORTED.split(' '));
         TEXT_BOX.value = '';
-        console.log("gUsers in socket.send: ", gUsers)
+        console.log('gUsers in socket.send: ', gUsers);
         ArrangeUsers(SEND_TO);
     }
 };
