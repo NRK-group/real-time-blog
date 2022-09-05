@@ -352,6 +352,7 @@ const CheckNotificationDisplay = (arr) => {
 };
 
 const ShowUsers = (firstRun = true) => {
+    console.log("showusers -> gUsers: ", gUsers)
     if (gUsers) {
         let usersDiv = document.getElementById('forum-users-container');
         let lastChat = document.createElement('div');
@@ -398,8 +399,8 @@ const ShowUsers = (firstRun = true) => {
         }
         lastChat.innerHTML = users;
         usersDiv.innerHTML = lastChatUsers;
-        usersDivTitle.innerText = `${(gChatUsers || []).length} Active User`;
-        allUsersDivTitle.innerText = `${(gUsers || []).length} User`;
+        usersDivTitle.innerText = `Chats`;
+        allUsersDivTitle.innerText = `Users`;
         CheckNotificationDisplay([...(gUsers || []), ...(gChatUsers || [])]);
     }
 };
@@ -691,20 +692,41 @@ const openChatModal = (e) => {
 };
 
 const ArrangeUsers = (userId) => {
+    console.log("USER: ", userId);
     let user;
-    gUsers.forEach((item, index) => {
-        if (userId === item.UserID) {
-            user = item;
-            gUsers.splice(index, 1);
-        }
-    });
+    console.log('gUsers Before: ', gUsers);
 
-    gChatUsers.forEach((item, inx) => {
-        if (userId === item.UserID) {
-            user = item;
-            gChatUsers.splice(inx, 1);
+    for (let i = 0; i < gUsers.length; i++) {
+        if (userId === gUsers[i].UserID) {
+             console.log("REMOVIng From users");
+             user = gUsers[i];
+             gUsers.splice(i, 1);
+             break;
+         }
+    }
+    // gUsers.forEach((item, index) => {
+    //     if (userId === item.UserID) {
+    //         user = item;
+    //         gUsers.splice(index, 1);
+    //     }
+    // });
+
+    console.log("gUsers After: ", gUsers)
+
+    for (let i = 0; i < gChatUsers.length; i++) {
+        if (userId === gChatUsers[i].UserID) {
+            user = gChatUsers[i];
+            gChatUsers.splice(i, 1);
+            break;
         }
-    });
+    }
+    // gChatUsers.forEach((item, inx) => {
+    //     if (userId === item.UserID) {
+    //         user = item;
+    //         gChatUsers.splice(inx, 1);
+    //     }
+    // });
+    console.log("object ", user);
     gChatUsers = [...gChatUsers, user];
 
     ShowUsers(false);
@@ -733,8 +755,9 @@ const SendMessage = () => {
         socket.send(JSON.stringify(INFORMATION));
         DisplayMessage(MSG, 'chat sender', SORTED.split(' '));
         TEXT_BOX.value = '';
+        console.log("gUsers in socket.send: ", gUsers)
+        ArrangeUsers(SEND_TO);
     }
-    ArrangeUsers(SEND_TO);
 };
 
 const closeChat = () => {

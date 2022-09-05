@@ -336,11 +336,10 @@ func (forum *DB) GetMessages(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// Check if there is a chat between the two users
-		if chatDetails.ChatID = forum.CheckChatID(chatDetails.User, chatDetails.Reciever); chatDetails.ChatID == "" {
-			chatDetails.ChatID = forum.CreateChatID(chatDetails.User, chatDetails.Reciever)
-		} else {
-			// Get the first 10 messages
+		if chatDetails.ChatID = forum.CheckChatID(chatDetails.User, chatDetails.Reciever); chatDetails.ChatID != "" {
 			chatDetails.Messages = forum.TenMessages(chatDetails.ChatID, chatDetails.X)
+			//When a message is sent check for the chat id a nd create it
+			// chatDetails.ChatID = forum.CreateChatID(chatDetails.User, chatDetails.Reciever)
 		}
 
 		marshallChat, marshErr := json.Marshal(chatDetails)
