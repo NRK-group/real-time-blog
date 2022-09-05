@@ -405,7 +405,7 @@ const CheckNotificationDisplay = (arr) => {
 };
 
 const ShowUsers = (firstRun = true) => {
-    console.log("showusers -> gUsers: ", gUsers)
+    console.log('showusers -> gUsers: ', gUsers);
     if (gUsers) {
         let usersDiv = document.getElementById('forum-users-container');
         let lastChat = document.getElementById('all-forum-users-container');
@@ -761,9 +761,9 @@ const ArrangeUsers = (userId) => {
             user = item;
             gChatUsers.splice(inx, 1);
         }
-    })
+    });
 
-    console.log("object ", user);
+    console.log('object ', user);
     gChatUsers = [...gChatUsers, user];
     ShowUsers(false);
 };
@@ -791,7 +791,7 @@ const SendMessage = () => {
         socket.send(JSON.stringify(INFORMATION));
         DisplayMessage(MSG, 'chat sender', SORTED.split(' '));
         TEXT_BOX.value = '';
-        console.log("gUsers in socket.send: ", gUsers)
+        console.log('gUsers in socket.send: ', gUsers);
         ArrangeUsers(SEND_TO);
     }
 };
@@ -1338,3 +1338,23 @@ if (currentTheme) {
         toggleSwitch.checked = true;
     }
 }
+const OpenNewPostCategory = (e) => {
+    const postModalContainer = document.querySelector(
+        '#create-post-modal-container-id'
+    );
+    let postTitle = document.getElementById('new-post-title-id');
+    let postCategory = document.getElementById('new-post-category-id');
+    let postContent = document.getElementById('new-post-content-id');
+    postTitle.value = '';
+    postContent.value = '';
+    if (e.classList.contains('golang')) {
+        postCategory.value = 'golang';
+    }
+    if (e.classList.contains('javascript')) {
+        postCategory.value = 'javascript';
+    }
+    if (e.classList.contains('rust')) {
+        postCategory.value = 'rust';
+    }
+    postModalContainer.style.display = 'flex';
+};
