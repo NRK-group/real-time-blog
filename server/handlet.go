@@ -25,7 +25,7 @@ func (forum *DB) CheckCookie(w http.ResponseWriter, r *http.Request) {
 		co := []string{}
 
 		if err != nil {
-			http.Error(w, "500 Internal error", http.StatusInternalServerError)
+			http.Error(w, "403 Access Forbidden error", http.StatusForbidden)
 			return
 
 		} else {
@@ -69,29 +69,6 @@ func (forum *DB) Home(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "500 Internal error", http.StatusInternalServerError)
 		return
 	}
-	/*
-
-		var page ReturnData
-
-		cookie, err := r.Cookie("session_token")
-
-		if err != nil {
-			page = ReturnData{User: User{}, Posts: forum.AllPost("", "")}
-			if err := t.Execute(w, page); err != nil {
-				http.Error(w, "500 Internal error", http.StatusInternalServerError)
-				return
-			}
-		} else {
-
-			co := forum.CheckCookie(w, cookie)
-
-			page = ReturnData{User: forum.GetUser(co[0]), Posts: forum.AllPost("", "")}
-		}
-		if err := t.Execute(w, page); err != nil {
-			http.Error(w, "500 Internal error", http.StatusInternalServerError)
-			return
-		}
-	*/
 }
 
 func (DB *DB) Register(w http.ResponseWriter, r *http.Request) {
