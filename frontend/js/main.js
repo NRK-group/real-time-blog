@@ -203,13 +203,17 @@ const CreateWebSocket = () => {
 };
 
 const validateCoookie = () => {
-    fetch('/vadidate').then(async (response) => {
-        resp = await response.json();
-        if (resp.Msg === 'Login successful') {
-            console.log('Valid cookie');
-            validateUser(resp);
-        }
-    });
+    fetch('/vadidate')
+        .then(async (response) => {
+            resp = await response.json();
+            if (resp.Msg === 'Login successful') {
+                console.log('Valid cookie');
+                validateUser(resp);
+            }
+        })
+        .catch(() => {
+            console.log('no valid cookie');
+        });
 };
 const removeAllChildNodes = (parent) => {
     while (parent.firstChild) {
@@ -590,7 +594,6 @@ loginBtn.addEventListener('click', (e) => {
             return response.json();
         })
         .then((resp) => {
-            console.log('CALLED');
             validateUser(resp);
             showMessages(resp.Msg);
         });
@@ -1279,3 +1282,51 @@ const scrollOnPost = (e) => {
     }
     lastScrollTop = scrollTop;
 };
+const loadingPageTimer = (func, timeout = 300) => {
+    let timer;
+    return function (...args) {
+        if (timer) {
+            clearTimeout(timer);
+        }
+
+        timer = setTimeout(() => {
+            func.apply(this, args);
+        }, timeout);
+    };
+};
+let closePage;
+const closeLoadingPage = () => {
+    console.log('Close');
+    window.clearTimeout(closePage);
+    closePage = setTimeout(function () {
+        // Run the callback
+        const loadingPage = document.querySelector('.loading-page-background');
+        loadingPage.style.display = 'none';
+        console.log('go');
+    }, 2000);
+};
+closeLoadingPage();
+
+const toggleSwitch = document.querySelector(
+    '.theme-switch input[type="checkbox"]'
+);
+function switchTheme(e) {
+    if (e.target.checked) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        localStorage.setItem('theme', 'dark');
+    } else {
+        document.documentElement.setAttribute('data-theme', 'light');
+        localStorage.setItem('theme', 'light');
+    }
+}
+toggleSwitch.addEventListener('change', switchTheme, false);
+const currentTheme = localStorage.getItem('theme')
+    ? localStorage.getItem('theme')
+    : null;
+
+if (currentTheme) {
+    document.documentElement.setAttribute('data-theme', currentTheme);
+    if (currentTheme === 'dark') {
+        toggleSwitch.checked = true;
+    }
+}
