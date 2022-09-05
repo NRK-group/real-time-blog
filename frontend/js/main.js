@@ -405,6 +405,7 @@ const CheckNotificationDisplay = (arr) => {
 };
 
 const ShowUsers = (firstRun = true) => {
+    console.log("showusers -> gUsers: ", gUsers)
     if (gUsers) {
         let usersDiv = document.getElementById('forum-users-container');
         let lastChat = document.getElementById('all-forum-users-container');
@@ -445,8 +446,8 @@ const ShowUsers = (firstRun = true) => {
 
         lastChat.innerHTML = users;
         usersDiv.innerHTML = lastChatUsers;
-        usersDivTitle.innerText = `${(gChatUsers || []).length} Active User`;
-        allUsersDivTitle.innerText = `${(gUsers || []).length} User`;
+        usersDivTitle.innerText = `Chats`;
+        allUsersDivTitle.innerText = `Users`;
         CheckNotificationDisplay([...(gUsers || []), ...(gChatUsers || [])]);
     }
 };
@@ -760,7 +761,9 @@ const ArrangeUsers = (userId) => {
             user = item;
             gChatUsers.splice(inx, 1);
         }
-    });
+    })
+
+    console.log("object ", user);
     gChatUsers = [...gChatUsers, user];
     ShowUsers(false);
 };
@@ -788,8 +791,9 @@ const SendMessage = () => {
         socket.send(JSON.stringify(INFORMATION));
         DisplayMessage(MSG, 'chat sender', SORTED.split(' '));
         TEXT_BOX.value = '';
+        console.log("gUsers in socket.send: ", gUsers)
+        ArrangeUsers(SEND_TO);
     }
-    ArrangeUsers(SEND_TO);
 };
 
 const closeChat = () => {

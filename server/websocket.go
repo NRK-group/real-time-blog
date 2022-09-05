@@ -53,6 +53,13 @@ func (forum *DB) reader(conn *websocket.Conn) {
 			}
 			return
 		}
+
+		if details.ChatID = forum.CheckChatID(details.UserID, details.RecieverID); details.ChatID == "" {
+			// chatDetails.ChatID = forum.TenMessages(chatDetails.ChatID, chatDetails.X)
+			//When a message is sent check for the chat id a nd create it
+			details.ChatID = forum.CreateChatID(details.UserID, details.RecieverID)
+		}
+
 		// Add To the channel instead of writing the message back
 		if _, recieverValid := users[details.RecieverID]; !recieverValid || details.Notification {
 			fmt.Println("User sending two isnt active UserID: ", details.RecieverID)
