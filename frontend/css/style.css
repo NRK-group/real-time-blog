@@ -757,6 +757,7 @@ input[type='email']:focus {
     overflow-y: scroll;
     overflow-x: hidden;
     padding-right: 5%;
+    margin-bottom: 50px;
 }
 .forum-user {
     /* background-color: #000000; */
