@@ -140,7 +140,7 @@ func (forum *DB) Login(w http.ResponseWriter, r *http.Request) {
 		loginResp := forum.LoginUsers(userLoginData.EmailOrNickname, userLoginData.Password)
 		if loginResp[0] == 'E' {
 
-			page = ReturnData{}
+			page = ReturnData{Msg: loginResp}
 			marshallPage, err := json.Marshal(page)
 			if err != nil {
 				fmt.Println("Error marshalling the data: ", err)

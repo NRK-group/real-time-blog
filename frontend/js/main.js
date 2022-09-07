@@ -156,7 +156,7 @@ let socket;
 
 const CreateWebSocket = () => {
 
-    socket = new WebSocket(`ws://${location.host}/ws`);
+    socket = new WebSocket(`wss://${location.host}/ws`);
     socket.onopen = () => {
         //Access The cookie value
         let cookie = getCookie('session_token');
