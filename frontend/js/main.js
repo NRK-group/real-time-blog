@@ -154,8 +154,9 @@ const AddNotification = (i, senderID) => {
 
 let socket;
 
-const CreateWebSocket = (port) => {
-    socket = new WebSocket(`ws://localhost:${port}/ws`);
+const CreateWebSocket = () => {
+
+    socket = new WebSocket(`ws://${location.host}/ws`);
     socket.onopen = () => {
         //Access The cookie value
         let cookie = getCookie('session_token');
@@ -267,9 +268,8 @@ const IsTyping = () => {
 
 const validateUser = (resp) => {
     if (resp.Msg === 'Login successful') {
-
         //Create the cookie when logged in#
-        CreateWebSocket(resp.Port);
+        CreateWebSocket();
         gUsers = [];
         gChatUsers = [];
         if (resp.Users) {

@@ -105,7 +105,6 @@ type ReturnData struct {
 	Users     []User
 	ChatUsers []User
 	Posts     []Post
-	Port      string
 	Msg       string
 }
 
