@@ -6,6 +6,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 )
@@ -41,8 +42,13 @@ func (forum *DB) CheckCookie(w http.ResponseWriter, r *http.Request) {
 				return
 
 			}
+			port := ""
+			port = os.Getenv("PORT")
+			if port == "" {
+				port = "8800"
+			}
 			chatusers, alluser, _ := forum.ArrangeUsers(co[0])
-			page = ReturnData{User: forum.GetUser(co[0]), Posts: forum.AllPost("", co[0]), Msg: "Login successful", Users: alluser, ChatUsers: chatusers}
+			page = ReturnData{User: forum.GetUser(co[0]), Posts: forum.AllPost("", co[0]), Msg: "Login successful", Users: alluser, ChatUsers: chatusers, Port: port}
 			marshallPage, err := json.Marshal(page)
 			if err != nil {
 				fmt.Println("Error marshalling the data: ", err)
