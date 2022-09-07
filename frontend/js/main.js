@@ -321,9 +321,26 @@ const UpdateUserProfile = (resp) => {
 const editBtn = document.getElementById('save-changes-btn');
 
 editBtn.onclick = () => {
-    console.log('dthdgh');
     EditUserProfile();
 };
+
+let profilePicture = document.getElementById('profile-picture')
+let uploadFileInput = document.getElementById('uploadfile')
+let profilePictureImg = document.getElementById('profile-picture-img')
+
+profilePicture.onclick =()=>{
+    uploadFileInput.click()
+}
+
+uploadFileInput.onchange = () => {
+    const [file] = uploadFileInput.files
+    if (file) {
+        profilePictureImg.src = URL.createObjectURL(file)
+        profilePicture.style.display = "none"
+        profilePictureImg.style.display = "block"
+    }
+  }
+
 
 const EditUserProfile = () => {
     let lastName = document.getElementById('edit-last-name-id').value;
@@ -351,13 +368,16 @@ const EditUserProfile = () => {
     };
 
     if (CheckRequirements(UserInfo) === '') {
+        const formData = new FormData();
+        formData.append('file', uploadFileInput.files[0]);
+
         fetch('/updateuser', {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(UserInfo),
+            body: (formData, JSON.stringify(UserInfo))
         })
             .then(async (response) => {
                 resp = await response.json();

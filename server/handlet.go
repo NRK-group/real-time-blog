@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"html/template"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"strings"
@@ -442,8 +443,97 @@ func (forum *DB) UpdateUser(w http.ResponseWriter, r *http.Request) {
 				w.WriteHeader(http.StatusInternalServerError)
 				return
 			}
-
 			page = ReturnData{Msg: forum.UpdateUserProfile(res[0], userData)}
+
+			marshallPage, err := json.Marshal(page)
+			if err != nil {
+				fmt.Println("Error marshalling the data: ", err.Error())
+			}
+			w.WriteHeader(http.StatusOK)
+			w.Header().Set("Content-type", "application/json")
+			w.Write(marshallPage)
+			return
+		}
+	}
+	http.Error(w, "400 Bad Request.", http.StatusBadRequest)
+}
+
+
+func (forum *DB) UpdateUserImage(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/updateuserimage" {
+		http.Error(w, "404 not found.", http.StatusNotFound)
+		return
+	}
+	c, err := r.Cookie("session_token")
+	if err != nil {
+		if err == http.ErrNoCookie {
+			// If the cookie is not set, return an unauthorized status
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+		// For any other type of error, return a bad request status
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	res := strings.Split(c.Value, "&")
+	if forum.CheckSession(res[2]) {
+		if r.Method == "POST" {
+			if err != nil {
+				fmt.Print(err.Error())
+				http.Error(w, "500 Internal Server Error.", http.StatusInternalServerError)
+				w.WriteHeader(http.StatusInternalServerError)
+				return
+			}
+
+			imgUrl := " "
+
+			// Parse our multipart form, 10 << 20 specifies a maximum
+			// upload of 10 MB files.
+			r.ParseMultipartForm(10 << 20)
+
+			// FormFile returns the first file for the given key `myFile`
+			// it also returns the FileHeader so we can get the Filename,
+			// the Header and the size of the file
+			file, handler, err := r.FormFile("file")
+			fmt.Println(err)
+			if err == nil {
+
+				defer file.Close()
+				// Create a temporary file within our temp-images directory that follows
+				// a particular naming pattern
+				getFilePrefix := strings.Split(handler.Filename, ".")
+				var imgType string
+				imageTypes := "img png gif svg jpg jpeg"
+				// fmt.Print(getFileName[len(getFileName)-2])
+				if strings.Contains(imageTypes, getFilePrefix[len(getFilePrefix)-1]) {
+					if handler.Size > int64(20000000) {
+						fmt.Fprintf(w, "File size exceed")
+						return
+					}
+					imgType = getFilePrefix[len(getFilePrefix)-1]
+					tempFile, err := ioutil.TempFile("frontend/img", "*."+imgType)
+					if err != nil {
+						fmt.Println(err)
+					}
+					defer tempFile.Close()
+					imgUrl = "../" + tempFile.Name()
+					// read all of the contents of our uploaded file into a
+					// byte array
+					fileBytes, err := ioutil.ReadAll(file)
+					if err != nil {
+						fmt.Println(err)
+					}
+					// write this byte array to our temporary file
+					tempFile.Write(fileBytes)
+
+				}
+
+			}
+
+			forum.Update("User", "imgUrl", imgUrl, "userID", res[0] )
+
+			page = ReturnData{User: forum.GetUser(res[0])}
+
 			marshallPage, err := json.Marshal(page)
 			if err != nil {
 				fmt.Println("Error marshalling the data: ", err.Error())
@@ -457,6 +547,7 @@ func (forum *DB) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	}
 	http.Error(w, "400 Bad Request.", http.StatusBadRequest)
 }
+
 
 func SetupCorsResponse(w http.ResponseWriter, req *http.Request) {
 	(w).Header().Set("Access-Control-Allow-Origin", "*")

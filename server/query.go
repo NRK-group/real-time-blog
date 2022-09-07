@@ -618,7 +618,7 @@ func (forum *DB) UpdateUserProfile(userID string, userData UpdateUserData) strin
 	if !(CheckPasswordHash(userData.Password, password)) {
 		return "Error - password not macth"
 	}
-
+	
 	updateUser, err := forum.DB.Prepare(`UPDATE User SET firstName = ?, lastName = ?, nickName = ?, gender = ?, age = ?, password = ?, email = ?   WHERE userID = ?`)
 	if err != nil {
 		fmt.Println("Error Preparing update notification: ", err)
