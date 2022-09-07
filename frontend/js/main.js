@@ -155,7 +155,6 @@ const AddNotification = (i, senderID) => {
 let socket;
 
 const CreateWebSocket = () => {
-
     socket = new WebSocket(`wss://${location.host}/ws`);
     socket.onopen = () => {
         //Access The cookie value
@@ -234,7 +233,7 @@ const Logout = () => {
         mainPageId.classList.remove('open');
         loginPageId.classList.add('open');
         registerPageId.classList.add('close');
-        mainPageId.style.display = 'grid';
+        mainPageId.style.display = 'none';
     });
 };
 
