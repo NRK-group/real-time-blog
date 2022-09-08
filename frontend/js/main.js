@@ -415,6 +415,10 @@ const ShowUsers = (firstRun = true) => {
             item.Nickname.length < 8
                 ? (username = item.Nickname)
                 : (username = item.Nickname.slice(0, 6) + '...');
+            let status;
+            item.Status === 'Online'
+                ? (status = 'online')
+                : (status = 'offline');
             lastChatUsers =
                 `<div
             key=${index}
@@ -423,6 +427,11 @@ const ShowUsers = (firstRun = true) => {
             data-username=${item.Nickname}
             onclick="openChatModal(this)"
         >
+        <span class="icon ${status}">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+            <path d="M256 512c141.4 0 256-114.6 256-256S397.4 0 256 0S0 114.6 0 256S114.6 512 256 512z"/>
+        </svg>
+        </span>
         <div class="user-image"></div>
         <div class="username">${username} <div class="notification" id="${item.UserID}">0</div></div>
         </div>` + lastChatUsers;
@@ -445,6 +454,11 @@ const ShowUsers = (firstRun = true) => {
             data-username=${item.Nickname}
             onclick="openChatModal(this)"
         >
+        <span class="icon offline">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+            <path d="M256 512c141.4 0 256-114.6 256-256S397.4 0 256 0S0 114.6 0 256S114.6 512 256 512z"/>
+        </svg>
+        </span>
         <div class="user-image"></div>
         <div class="username">${username} <div class="notification" id="${item.UserID}">0</div></div>
         </div>` + users;
