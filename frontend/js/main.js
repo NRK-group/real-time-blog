@@ -1,3 +1,4 @@
+
 const SendResponsebtn = document.getElementById('send-response-btn');
 
 let allPost, gUsers, gChatUsers;
@@ -297,6 +298,9 @@ const validateUser = (resp) => {
     }
 };
 
+let profilePictureMain = document.getElementById('profile-picture-main')
+let profilePictureImgMain = document.getElementById('profile-picture-img-main')
+
 const UpdateUserProfile = (resp) => {
     document.getElementById(
         'profile-name-id'
@@ -308,6 +312,13 @@ const UpdateUserProfile = (resp) => {
     document.querySelector(
         '#account-date-created-id'
     ).innerText = `since ${yearCreated}`;
+    
+    if (resp.User.ImgUrl != ""){  
+        profilePictureImgMain.src = resp.User.ImgUrl
+        profilePictureImgMain.style.display = "block"
+        profilePictureMain.style.display = "none"
+        
+    }
     //User model
     document.getElementById('edit-first-name-id').value = resp.User.Firstname;
     document.getElementById('edit-last-name-id').value = resp.User.Lastname;
@@ -315,19 +326,27 @@ const UpdateUserProfile = (resp) => {
     document.getElementById('edit-age-id').value = resp.User.Age;
     document.getElementById('edit-email-id').value = resp.User.Email;
     document.getElementById('edit-gender-id').value = resp.User.Gender;
+    if (resp.User.ImgUrl != ""){
+        profilePicture.style.display = "none"
+        profilePictureImg.src = resp.User.ImgUrl
+        profilePictureImg.style.display = "block"
+    }
 
-    console.log('RESP+++ ', resp.User);
 };
 
 const editBtn = document.getElementById('save-changes-btn');
+let profilePicture = document.getElementById('profile-picture')
+let uploadFileInput = document.getElementById('uploadfile')
+let profilePictureImg = document.getElementById('profile-picture-img')
 
 editBtn.onclick = () => {
     EditUserProfile();
 };
 
-let profilePicture = document.getElementById('profile-picture')
-let uploadFileInput = document.getElementById('uploadfile')
-let profilePictureImg = document.getElementById('profile-picture-img')
+
+profilePictureImg.onclick = () => {
+    uploadFileInput.click()
+}
 
 profilePicture.onclick =()=>{
     uploadFileInput.click()
@@ -335,10 +354,28 @@ profilePicture.onclick =()=>{
 
 uploadFileInput.onchange = () => {
     const [file] = uploadFileInput.files
-    if (file) {
+    if (file) {  
         profilePictureImg.src = URL.createObjectURL(file)
         profilePicture.style.display = "none"
         profilePictureImg.style.display = "block"
+
+        const formData = new FormData();
+        formData.append('file', uploadFileInput.files[0]);
+
+        fetch('/updateuserimage', {
+            method: 'POST',
+            body: formData
+        })
+            .then(async (response) => {
+                resp = await response.json();
+
+                return resp;
+            })
+            .then((resp) => {
+                profilePictureImgMain.src = resp.User.ImgUrl
+                showMessages(resp);
+            });
+
     }
   }
 
@@ -369,8 +406,6 @@ const EditUserProfile = () => {
     };
 
     if (CheckRequirements(UserInfo) === '') {
-        const formData = new FormData();
-        formData.append('file', uploadFileInput.files[0]);
 
         fetch('/updateuser', {
             method: 'POST',
@@ -378,7 +413,7 @@ const EditUserProfile = () => {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
             },
-            body: (formData, JSON.stringify(UserInfo))
+            body: JSON.stringify(UserInfo)
         })
             .then(async (response) => {
                 resp = await response.json();
@@ -440,6 +475,7 @@ const ShowUsers = (firstRun = true) => {
             item.Status === 'Online'
                 ? (status = 'online')
                 : (status = 'offline');
+                userimg = item.ImgUrl != ""? `<img src=${item.ImgUrl} alt="profile-picture" class="user-image"></img> `:`<div class="user-image"></div>`
             lastChatUsers =
                 `<div
             key=${index}
@@ -453,7 +489,7 @@ const ShowUsers = (firstRun = true) => {
             <path d="M256 512c141.4 0 256-114.6 256-256S397.4 0 256 0S0 114.6 0 256S114.6 512 256 512z"/>
         </svg>
         </span>
-        <div class="user-image"></div>
+        ${userimg}
         <div class="username">${username} <div class="notification" id="${item.UserID}">0</div></div>
         </div>` + lastChatUsers;
         });
@@ -467,6 +503,7 @@ const ShowUsers = (firstRun = true) => {
             item.Nickname.length < 8
                 ? (username = item.Nickname)
                 : (username = item.Nickname.slice(0, 6) + '...');
+                userimg = item.ImgUrl != ""? `<img src=${item.ImgUrl} alt="profile-picture" class="user-image"></img> `:`<div class="user-image"></div>`
             users =
                 `<div
             key=${index}
@@ -480,7 +517,7 @@ const ShowUsers = (firstRun = true) => {
             <path d="M256 512c141.4 0 256-114.6 256-256S397.4 0 256 0S0 114.6 0 256S114.6 512 256 512z"/>
         </svg>
         </span>
-        <div class="user-image"></div>
+        ${userimg}
         <div class="username">${username} <div class="notification" id="${item.UserID}">0</div></div>
         </div>` + users;
 
@@ -983,6 +1020,7 @@ const openResponseModal = (postId) => {
         '#response-post-container'
     );
     let category = '';
+    userimg = post.ImgUrl != ""? `<img src=${post.ImgUrl} alt="profile-picture" class="user-image"></img> `:`<div class="user-image"></div>`
     if (post.Category === 'golang') {
         category =
             '<div class="post-category golang golang-category">GoLang</div>';
@@ -998,7 +1036,7 @@ const openResponseModal = (postId) => {
     <div class="post-title">${post.Title}</div>
     <div class="post-profile"> 
         <div class="post-user-profile">
-            <div class="user-image"></div>
+            ${userimg}
             <span>
                 <div class="username">${post.UserID}</div>
                 <div class="post-created">${post.Date}</div>
@@ -1114,10 +1152,15 @@ const CreatePost = (
     postProfile.className = 'post-profile';
     const postUserProfile = document.createElement('div');
     postUserProfile.className = 'post-user-profile';
-    const userImage = document.createElement('div');
+    let userImage = document.createElement('div');
+    console.log("user Img", userImageValue.length )
+    if(userImageValue.length > 7) {
+         userImage = document.createElement('img');
+        userImage.src = userImageValue; // this need to be converted to an image
+    } 
     userImage.className = 'user-image';
     //create an image to add the image here
-    userImage.value = userImageValue; // this need to be converted to an image
+    
     const span = document.createElement('span');
     const username = document.createElement('div');
     username.className = 'username';

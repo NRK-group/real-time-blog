@@ -264,7 +264,7 @@ func (forum *DB) Post(w http.ResponseWriter, r *http.Request) {
 
 		if forum.CheckSession(res[2]) {
 
-			postID, err := forum.CreatePost(res[0], postData.Title, postData.Category, "imgurl", postData.Content)
+			postID, err := forum.CreatePost(res[0], postData.Title, postData.Category, forum.GetUser(res[0]).ImgUrl, postData.Content)
 			fmt.Println(postID)
 			fmt.Println(err)
 			page = ReturnData{Posts: forum.AllPost("", res[0]), Msg: "successful Post"}
@@ -486,25 +486,15 @@ func (forum *DB) UpdateUserImage(w http.ResponseWriter, r *http.Request) {
 			}
 
 			imgUrl := " "
-
-			// Parse our multipart form, 10 << 20 specifies a maximum
-			// upload of 10 MB files.
 			r.ParseMultipartForm(10 << 20)
-
-			// FormFile returns the first file for the given key `myFile`
-			// it also returns the FileHeader so we can get the Filename,
-			// the Header and the size of the file
 			file, handler, err := r.FormFile("file")
 			fmt.Println(err)
 			if err == nil {
 
 				defer file.Close()
-				// Create a temporary file within our temp-images directory that follows
-				// a particular naming pattern
 				getFilePrefix := strings.Split(handler.Filename, ".")
 				var imgType string
 				imageTypes := "img png gif svg jpg jpeg"
-				// fmt.Print(getFileName[len(getFileName)-2])
 				if strings.Contains(imageTypes, getFilePrefix[len(getFilePrefix)-1]) {
 					if handler.Size > int64(20000000) {
 						fmt.Fprintf(w, "File size exceed")
@@ -517,17 +507,12 @@ func (forum *DB) UpdateUserImage(w http.ResponseWriter, r *http.Request) {
 					}
 					defer tempFile.Close()
 					imgUrl = "../" + tempFile.Name()
-					// read all of the contents of our uploaded file into a
-					// byte array
 					fileBytes, err := ioutil.ReadAll(file)
 					if err != nil {
 						fmt.Println(err)
 					}
-					// write this byte array to our temporary file
 					tempFile.Write(fileBytes)
-
 				}
-
 			}
 
 			forum.Update("User", "imgUrl", imgUrl, "userID", res[0] )
