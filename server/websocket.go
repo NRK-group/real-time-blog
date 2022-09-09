@@ -54,7 +54,7 @@ func (forum *DB) reader(conn *websocket.Conn) {
 			return
 		}
 
-		if details.ChatID = forum.CheckChatID(details.UserID, details.RecieverID); details.ChatID == "" {
+		if details.ChatID, _ = forum.CheckChatID(details.UserID, details.RecieverID); details.ChatID == "" {
 			// chatDetails.ChatID = forum.TenMessages(chatDetails.ChatID, chatDetails.X)
 			//When a message is sent check for the chat id a nd create it
 			details.ChatID = forum.CreateChatID(details.UserID, details.RecieverID)

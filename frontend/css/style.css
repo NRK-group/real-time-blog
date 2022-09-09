@@ -359,6 +359,32 @@ input[type='email']:focus {
     border-radius: 20px;
     margin-bottom: 5vh;
 }
+
+.profile-picture-img {
+    height: 15vmin;
+    width: 15vmin;
+    min-height: 100px;
+    min-width: 100px;
+    display: none;
+    border-radius: 20px;
+    margin-bottom: 5vh;
+}
+
+.profile-picture:hover {
+    border: solid 4px #543de0;
+    cursor: pointer;
+}
+
+.profile-picture-img:hover {
+    border: solid 4px #543de0;
+    cursor: pointer;
+}
+
+.wrapper {
+    display:none;
+}
+
+
 .profile-button {
     padding: 10px 20px;
     color: white;
