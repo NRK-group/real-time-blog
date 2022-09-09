@@ -1409,7 +1409,7 @@ ul {
     padding: 1vw;
 }
 .icon {
-    color: #00000020;;
+    color: #533de0;;
     fill: currentColor;
     display: flex;
     margin: 10px auto;
@@ -1636,7 +1636,9 @@ input:checked + .slider:before {
     -webkit-animation: fadein 7s;
     animation: fadein 7s;
 }
-
+.offline {
+    color: #00000000;
+}
 .online {
     color: #30a24c;
 }
