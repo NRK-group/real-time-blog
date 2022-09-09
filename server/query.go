@@ -650,3 +650,5 @@ func (forum *DB) RegisterUser(userData UserData) {
 	// Valid registration so add the user to the database
 	forum.DB.Exec(`INSERT INTO User VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`, userID, "", userData.FirstName, userData.LastName, userData.Nickname, userData.Gender, userAge, "Offline", userData.Email, userDate, password, "")
 }
+
+//ChangeStauts changes the status of a 

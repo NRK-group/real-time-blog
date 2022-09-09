@@ -503,7 +503,7 @@ input[type='email']:focus {
     background-color: rgb(206, 232, 240);
     border-radius: 16px;
     cursor: pointer;
-    margin-right: 10px;
+    margin: 0 10px;
 }
 .user-image:hover {
     box-shadow: 0 0 2px rgb(100, 100, 230);
@@ -1385,10 +1385,10 @@ ul {
 .icon {
     color: #533de0;
     fill: currentColor;
-    display: inline-block;
-    margin-right: 10px;
-    width: 15px;
-    height: 15px;
+    display: flex;
+    margin: 10px auto;
+    width: 12px;
+    height: 12px;
 }
 .response-post-container {
     width: 700px;
@@ -1610,9 +1610,9 @@ input:checked + .slider:before {
     -webkit-animation: fadein 7s;
     animation: fadein 7s;
 }
-.offline {
+.Offline {
     color: #00000020;
 }
-.online {
+.Online {
     color: #30a24c;
 }
