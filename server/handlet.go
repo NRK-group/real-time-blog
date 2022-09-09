@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"html/template"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"strings"
@@ -140,7 +141,7 @@ func (forum *DB) Login(w http.ResponseWriter, r *http.Request) {
 		loginResp := forum.LoginUsers(userLoginData.EmailOrNickname, userLoginData.Password)
 		if loginResp[0] == 'E' {
 
-			page = ReturnData{}
+			page = ReturnData{Msg: loginResp}
 			marshallPage, err := json.Marshal(page)
 			if err != nil {
 				fmt.Println("Error marshalling the data: ", err)
@@ -263,7 +264,7 @@ func (forum *DB) Post(w http.ResponseWriter, r *http.Request) {
 
 		if forum.CheckSession(res[2]) {
 
-			postID, err := forum.CreatePost(res[0], postData.Title, postData.Category, "imgurl", postData.Content)
+			postID, err := forum.CreatePost(res[0], postData.Title, postData.Category, forum.GetUser(res[0]).ImgUrl, postData.Content)
 			fmt.Println(postID)
 			fmt.Println(err)
 			page = ReturnData{Posts: forum.AllPost("", res[0]), Msg: "successful Post"}
@@ -296,7 +297,7 @@ func (forum *DB) GetMessages(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// Check if there is a chat between the two users
-		if chatDetails.ChatID = forum.CheckChatID(chatDetails.User, chatDetails.Reciever); chatDetails.ChatID != "" {
+		if chatDetails.ChatID, _ = forum.CheckChatID(chatDetails.User, chatDetails.Reciever); chatDetails.ChatID != "" {
 			chatDetails.Messages = forum.TenMessages(chatDetails.ChatID, chatDetails.X)
 			// When a message is sent check for the chat id a nd create it
 			// chatDetails.ChatID = forum.CreateChatID(chatDetails.User, chatDetails.Reciever)
@@ -442,8 +443,81 @@ func (forum *DB) UpdateUser(w http.ResponseWriter, r *http.Request) {
 				w.WriteHeader(http.StatusInternalServerError)
 				return
 			}
-
 			page = ReturnData{Msg: forum.UpdateUserProfile(res[0], userData)}
+
+			marshallPage, err := json.Marshal(page)
+			if err != nil {
+				fmt.Println("Error marshalling the data: ", err.Error())
+			}
+			w.WriteHeader(http.StatusOK)
+			w.Header().Set("Content-type", "application/json")
+			w.Write(marshallPage)
+			return
+		}
+	}
+	http.Error(w, "400 Bad Request.", http.StatusBadRequest)
+}
+
+func (forum *DB) UpdateUserImage(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/updateuserimage" {
+		http.Error(w, "404 not found.", http.StatusNotFound)
+		return
+	}
+	c, err := r.Cookie("session_token")
+	if err != nil {
+		if err == http.ErrNoCookie {
+			// If the cookie is not set, return an unauthorized status
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+		// For any other type of error, return a bad request status
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	res := strings.Split(c.Value, "&")
+	if forum.CheckSession(res[2]) {
+		if r.Method == "POST" {
+			if err != nil {
+				fmt.Print(err.Error())
+				http.Error(w, "500 Internal Server Error.", http.StatusInternalServerError)
+				w.WriteHeader(http.StatusInternalServerError)
+				return
+			}
+
+			imgUrl := " "
+			r.ParseMultipartForm(10 << 20)
+			file, handler, err := r.FormFile("file")
+			fmt.Println(err)
+			if err == nil {
+
+				defer file.Close()
+				getFilePrefix := strings.Split(handler.Filename, ".")
+				var imgType string
+				imageTypes := "img png gif svg jpg jpeg"
+				if strings.Contains(imageTypes, getFilePrefix[len(getFilePrefix)-1]) {
+					if handler.Size > int64(20000000) {
+						fmt.Fprintf(w, "File size exceed")
+						return
+					}
+					imgType = getFilePrefix[len(getFilePrefix)-1]
+					tempFile, err := ioutil.TempFile("frontend/img", "*."+imgType)
+					if err != nil {
+						fmt.Println(err)
+					}
+					defer tempFile.Close()
+					imgUrl = "../" + tempFile.Name()
+					fileBytes, err := ioutil.ReadAll(file)
+					if err != nil {
+						fmt.Println(err)
+					}
+					tempFile.Write(fileBytes)
+				}
+			}
+
+			forum.Update("User", "imgUrl", imgUrl, "userID", res[0])
+
+			page = ReturnData{User: forum.GetUser(res[0])}
+
 			marshallPage, err := json.Marshal(page)
 			if err != nil {
 				fmt.Println("Error marshalling the data: ", err.Error())
@@ -484,7 +558,7 @@ func (forum *DB) WsEndpoint(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(users)
 	userIdVal := strings.Split(c.Value, "&")[0]
 	users[userIdVal] = ws
-	fmt.Println(userIdVal, " is connected.")
+	// fmt.Println(userIdVal, " is connected.")
 	go forum.reader(ws)
 }
 
@@ -519,7 +593,7 @@ func (forum *DB) Notifications(w http.ResponseWriter, r *http.Request) {
 		username := strings.Split(c.Value, "&")[0]
 
 		getNotifs = forum.GetNotifications(username)
-		fmt.Println("getNotifs", getNotifs)
+		// fmt.Println("getNotifs", getNotifs)
 		values, marshErr := json.Marshal(getNotifs)
 		if marshErr != nil {
 			fmt.Println("Error marshalling notification results")
