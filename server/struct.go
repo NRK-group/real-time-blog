@@ -158,3 +158,9 @@ type Notify struct {
 	SenderID string `json:"senderID"`
 	Count    int    `json:"count"`
 }
+
+type StateChange struct {
+	Change string `json:"change"`
+	Active string `json:"active"`
+	UserID string `json:"userID"`
+}

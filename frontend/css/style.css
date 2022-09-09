@@ -381,9 +381,8 @@ input[type='email']:focus {
 }
 
 .wrapper {
-    display:none;
+    display: none;
 }
-
 
 .profile-button {
     padding: 10px 20px;
@@ -529,7 +528,7 @@ input[type='email']:focus {
     background-color: rgb(206, 232, 240);
     border-radius: 16px;
     cursor: pointer;
-    margin-right: 10px;
+    margin: 0 10px;
 }
 .user-image:hover {
     box-shadow: 0 0 2px rgb(100, 100, 230);
@@ -1581,7 +1580,7 @@ input:checked + .slider:before {
     transform: translateX(10px) translateY(-7px);
     font-size: 0.65em;
     padding: 0 10px;
-    background: var(--primary-color);
+    background: white;
     letter-spacing: 0.2em;
 }
 .inputBox select:valid,
@@ -1637,8 +1636,12 @@ input:checked + .slider:before {
     animation: fadein 7s;
 }
 .offline {
-    color: #00000020;
+    color: #00000000;
 }
 .online {
     color: #30a24c;
+    display: flex;
+    margin: 10px auto;
+    width: 12px;
+    height: 12px;
 }

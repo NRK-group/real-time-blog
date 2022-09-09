@@ -15,7 +15,7 @@ func initUser(db *sql.DB) {
 		"nickName"	CHARACTER(11) UNIQUE NOT NULL,
 		"gender"	CHARACTER(20) NOT NULL,
 		"age"   int,
-		"status"  CHARACTER(20) NOT NULL,
+		"status"  CHARACTER(20) NOT NULL DEFAULT "offline",
 		"email"	TEXT UNIQUE NOT NULL,
 		"dateCreated" TEXT NOT NULL,
 		"password"	TEXT NOT NULL,

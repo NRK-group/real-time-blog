@@ -197,6 +197,7 @@ func (forum *DB) Logout(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
+
 		res := strings.Split(c.Value, "&")
 		err = forum.RemoveSession(res[2])
 		if err != nil {
@@ -206,7 +207,21 @@ func (forum *DB) Logout(w http.ResponseWriter, r *http.Request) {
 		// Remove the user from ws connection map
 		if _, exsists := users[res[0]]; exsists {
 			delete(users, res[0])
+			fmt.Println("removing this user from the database: ", res[1])
 		}
+		// Update the users status in the database
+		forum.Update("User", "Status", "offline", "userID", res[0])
+
+	//Let all users know this users is offline
+	change := StateChange{Change: "status", Active: "offline", UserID: res[0]}
+	send, marshErr := json.Marshal(change)
+	if marshErr != nil {
+		fmt.Println("Problem marshalling change of status struct: ", marshErr)
+	}
+	for _, v := range users {
+			v.WriteMessage(1, send)
+	}
+
 		// Set the new token as the users `session_token` cookie
 		http.SetCookie(w, &http.Cookie{
 			Name:    "session_token",
@@ -558,6 +573,17 @@ func (forum *DB) WsEndpoint(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(users)
 	userIdVal := strings.Split(c.Value, "&")[0]
 	users[userIdVal] = ws
+	//Let all users know this users is online
+	change := StateChange{Change: "status", Active: "online", UserID: userIdVal}
+	send, marshErr := json.Marshal(change)
+	if marshErr != nil {
+		fmt.Println("Problem marshalling change of status struct: ", marshErr)
+	}
+	for k, v := range users {
+		if k != userIdVal {
+			v.WriteMessage(1, send)
+		}
+	}
 	// fmt.Println(userIdVal, " is connected.")
 	go forum.reader(ws)
 }
@@ -601,6 +627,5 @@ func (forum *DB) Notifications(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Header().Set("Content-type", "application/json")
 		w.Write(values)
-
 	}
 }
