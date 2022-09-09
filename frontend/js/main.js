@@ -280,6 +280,7 @@ const validateUser = (resp) => {
         ShowUsers();
         allUsers = [...(gUsers || []), ...(gChatUsers || [])];
         allPost = resp.Posts;
+        console.log("allUsers", gChatUsers)
         DisplayAllPost(resp.Posts);
         const loginPageId = document.querySelector('#login-page-id');
         const registerPageId = document.querySelector('#register-page-id');
