@@ -114,7 +114,7 @@ func (forum *DB) LoginUsers(emailOrNickname, pas string) string {
 		return err.Error()
 	}
 	users.SessionID = sess
-	forum.Update("User", "Status", "Online", "userID", userID)
+	forum.Update("User", "Status", "online", "userID", userID)
 	return users.UserID + "&" + users.Nickname + "&" + users.SessionID
 }
 
@@ -162,7 +162,7 @@ func (forum *DB) GetUser(uID string) User {
 			DateCreated: dateCreated,
 		}
 	}
-	forum.Update("User", "Status", "Online", "userID", userID)
+	forum.Update("User", "Status", "online", "userID", userID)
 	return user
 }
 
@@ -642,7 +642,7 @@ func (forum *DB) RegisterUser(userData UserData) {
 		fmt.Println("Error hashing password", hashErr)
 	}
 	// Valid registration so add the user to the database
-	forum.DB.Exec(`INSERT INTO User VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`, userID, "", userData.FirstName, userData.LastName, userData.Nickname, userData.Gender, userAge, "Offline", userData.Email, userDate, password, "")
+	forum.DB.Exec(`INSERT INTO User VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`, userID, "", userData.FirstName, userData.LastName, userData.Nickname, userData.Gender, userAge, "offline", userData.Email, userDate, password, "")
 }
 
 //ChangeStauts changes the status of a 

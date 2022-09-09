@@ -152,6 +152,15 @@ const AddNotification = (i, senderID) => {
     MESSAGE_BOX.style.display = 'flex';
 };
 
+const UpdateStatus = (updater) => {
+    //get the div holding the usersname of the online user
+    const MESSAGE_DIV = document.querySelector(
+        `[data-user-id="${updater.userID}"] > .icon`
+    );
+    MESSAGE_DIV.setAttribute('class', `icon ${updater.active}`);
+    console.log('MESSAGEDIV === ', MESSAGE_DIV);
+};
+
 let socket;
 const CreateWebSocket = () => {
     socket = new WebSocket('ws://localhost:8800/ws');
@@ -164,10 +173,11 @@ const CreateWebSocket = () => {
     };
     socket.onmessage = (text) => {
         let messageInfo = JSON.parse(text.data);
-        console.log("New Message", messageInfo)
-        if (messageInfo.change === "status") {
-            console.log("Triggered: ", messageInfo.userID, messageInfo.active)
-            return
+        console.log('New Message', messageInfo);
+        if (messageInfo.change === 'status') {
+            console.log(messageInfo.userID, ' is ', messageInfo.active);
+            UpdateStatus(messageInfo);
+            return;
         }
         if (messageInfo.message === 'e702c728-67f2-4ecd-9e79-4795010501ea') {
             const notificationContainer = document.querySelector(
@@ -285,7 +295,7 @@ const validateUser = (resp) => {
         if (resp.ChatUsers) {
             gChatUsers = resp.ChatUsers;
         }
-        console.log("Printing all the users: ", gUsers, gChatUsers)
+        console.log('Printing all the users: ', gUsers, gChatUsers);
         GetNotificationAmount();
         ShowUsers();
         allUsers = [...(gUsers || []), ...(gChatUsers || [])];
@@ -474,10 +484,7 @@ const ShowUsers = (firstRun = true) => {
             item.Nickname.length < 8
                 ? (username = item.Nickname)
                 : (username = item.Nickname.slice(0, 6) + '...');
-            let status;
-            item.Status === 'Online'
-                ? (status = 'online')
-                : (status = 'offline');
+
             userimg =
                 item.ImgUrl != ''
                     ? `<img src=${item.ImgUrl} alt="profile-picture" class="user-image"></img> `
@@ -490,7 +497,7 @@ const ShowUsers = (firstRun = true) => {
             data-username=${item.Nickname}
             onclick="openChatModal(this)"
         >
-        <span class="icon ${status}">
+        <span class="icon ${item.Status}">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
             <path d="M256 512c141.4 0 256-114.6 256-256S397.4 0 256 0S0 114.6 0 256S114.6 512 256 512z"/>
         </svg>
@@ -513,10 +520,6 @@ const ShowUsers = (firstRun = true) => {
                 item.ImgUrl != ''
                     ? `<img src=${item.ImgUrl} alt="profile-picture" class="user-image"></img> `
                     : `<div class="user-image"></div>`;
-            let status;
-            item.Status === 'Online'
-                ? (status = 'online')
-                : (status = 'offline');
             users =
                 `<div
             key=${index}
@@ -525,7 +528,7 @@ const ShowUsers = (firstRun = true) => {
             data-username=${item.Nickname}
             onclick="openChatModal(this)"
         >
-        <span class="icon ${status}">
+        <span class="icon ${item.Status}">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
             <path d="M256 512c141.4 0 256-114.6 256-256S397.4 0 256 0S0 114.6 0 256S114.6 512 256 512z"/>
         </svg>
