@@ -381,9 +381,8 @@ input[type='email']:focus {
 }
 
 .wrapper {
-    display:none;
+    display: none;
 }
-
 
 .profile-button {
     padding: 10px 20px;
@@ -1409,12 +1408,12 @@ ul {
     padding: 1vw;
 }
 .icon {
-    color: #533de0;;
+    color: #533de0;
     fill: currentColor;
-    display: flex;
-    margin: 10px auto;
-    width: 12px;
-    height: 12px;
+    display: inline-block;
+    margin-right: 10px;
+    width: 15px;
+    height: 15px;
 }
 .response-post-container {
     width: 700px;
@@ -1581,7 +1580,7 @@ input:checked + .slider:before {
     transform: translateX(10px) translateY(-7px);
     font-size: 0.65em;
     padding: 0 10px;
-    background: var(--primary-color);
+    background: white;
     letter-spacing: 0.2em;
 }
 .inputBox select:valid,
@@ -1641,4 +1640,8 @@ input:checked + .slider:before {
 }
 .online {
     color: #30a24c;
+    display: flex;
+    margin: 10px auto;
+    width: 12px;
+    height: 12px;
 }
