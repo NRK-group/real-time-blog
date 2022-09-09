@@ -1,3 +1,4 @@
+
 const SendResponsebtn = document.getElementById('send-response-btn');
 
 let allPost, gUsers, gChatUsers;
@@ -133,11 +134,11 @@ const ProcessMessage = (message) => {
                     username = gChatUsers[i].Nickname;
                 }
             }
-             for (let i = 0; i < gUsers.length; i++) {
-                 if (gUsers[i].UserID === message.senderID) {
-                     username = gUsers[i].Nickname;
-                 }
-             }
+            for (let i = 0; i < gUsers.length; i++) {
+                if (gUsers[i].UserID === message.senderID) {
+                    username = gUsers[i].Nickname;
+                }
+            }
             //User has started typing
             TYPING_MSG.innerHTML = `${username} Is Typing ...`;
             TYPING_MSG.classList.add('animate-typing');
@@ -164,7 +165,7 @@ const UpdateStatus = (updater) => {
     );
     for (let i = 0; i < gUsers.length; i++) {
         if (gUsers[i].UserID === updater.UserID) {
-            gUsers[i].active = updater.active
+            gUsers[i].active = updater.active;
         }
     }
     for (let i = 0; i < gChatUsers.length; i++) {
@@ -195,7 +196,8 @@ const CreateWebSocket = () => {
         }
         if (messageInfo.change === 'NewUser') {
             //If a new user has been registered add them to the gusers array
-            document.querySelector('.message-notification').style.display = 'flex'
+            document.querySelector('.message-notification').style.display =
+                'flex';
             return;
         }
         if (messageInfo.message === 'e702c728-67f2-4ecd-9e79-4795010501ea') {
@@ -252,10 +254,11 @@ const removeAllChildNodes = (parent) => {
         parent.removeChild(parent.firstChild);
     }
 };
-const Logout = () => {
+const Logout = (check) => {
     fetch('/logout').then(async (response) => {
         resp = await response.text();
-        showMessages(resp);
+        if (check)showMessages(resp);
+        
         const loginPageId = document.querySelector('#login-page-id');
         const registerPageId = document.querySelector('#register-page-id');
         const mainPageId = document.querySelector('#main-page-id');
@@ -267,6 +270,7 @@ const Logout = () => {
         mainPageId.style.display = 'none';
     });
 };
+
 
 const TypingMessage = (val) => {
     const USER_ID = getCookie('session_token').split('&')[0];
@@ -627,7 +631,7 @@ const ClearRegistrationFields = () => {
 const logoutBtn = document.getElementById('logout-btn');
 
 logoutBtn.onclick = () => {
-    Logout();
+    Logout(true);
 };
 
 const registerBtn = document.querySelector('#register-btn-id');
@@ -713,29 +717,29 @@ loginBtn.addEventListener('click', (e) => {
         });
 });
 
- const GetUsers = () => {
-    fetch( "/login", {
+const GetUsers = () => {
+    fetch('/login', {
         method: 'GET',
         headers: {
-         'Content-Type': 'application/json',
+            'Content-Type': 'application/json',
         },
-    }).then(async resp => {
+    }).then(async (resp) => {
         response = await resp.json();
-         gUsers = [];
-         gChatUsers = [];
-         if (response.Users) {
-             gUsers = response.Users;
-         }
-         if (response.ChatUsers) {
-             gChatUsers = response.ChatUsers;
-         }
-         console.log('Printing all the users: ', gUsers, gChatUsers);
-         ShowUsers();
-         GetNotificationAmount();
-         allUsers = [...(gUsers || []), ...(gChatUsers || [])];
-    })
+        gUsers = [];
+        gChatUsers = [];
+        if (response.Users) {
+            gUsers = response.Users;
+        }
+        if (response.ChatUsers) {
+            gChatUsers = response.ChatUsers;
+        }
+        console.log('Printing all the users: ', gUsers, gChatUsers);
+        ShowUsers();
+        GetNotificationAmount();
+        allUsers = [...(gUsers || []), ...(gChatUsers || [])];
+    });
     document.querySelector('.message-notification').style.display = 'none';
-}
+};
 
 function unSet(fields, revBtn) {
     setTimeout(function () {
