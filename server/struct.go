@@ -162,5 +162,7 @@ type Notify struct {
 type StateChange struct {
 	Change string `json:"change"`
 	Active string `json:"active"`
-	UserID string `json:"userID"`
+	UserID string `json:"UserID"`
+	Nickname string `json:"Nickname"`
+	ImgUrl string `json:"ImgUrl"`
 }

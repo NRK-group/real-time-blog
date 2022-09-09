@@ -128,11 +128,16 @@ const ProcessMessage = (message) => {
     if (message.message === ' ') {
         {
             let username;
-            for (let i = 0; i < allUsers.length; i++) {
-                if (allUsers[i].UserID === message.senderID) {
-                    username = allUsers[i].Nickname;
+            for (let i = 0; i < gChatUsers.length; i++) {
+                if (gChatUsers[i].UserID === message.senderID) {
+                    username = gChatUsers[i].Nickname;
                 }
             }
+             for (let i = 0; i < gUsers.length; i++) {
+                 if (gUsers[i].UserID === message.senderID) {
+                     username = gUsers[i].Nickname;
+                 }
+             }
             //User has started typing
             TYPING_MSG.innerHTML = `${username} Is Typing ...`;
             TYPING_MSG.classList.add('animate-typing');
@@ -155,10 +160,19 @@ const AddNotification = (i, senderID) => {
 const UpdateStatus = (updater) => {
     //get the div holding the usersname of the online user
     const MESSAGE_DIV = document.querySelector(
-        `[data-user-id="${updater.userID}"] > .icon`
+        `[data-user-id="${updater.UserID}"] > .icon`
     );
+    for (let i = 0; i < gUsers.length; i++) {
+        if (gUsers[i].UserID === updater.UserID) {
+            gUsers[i].active = updater.active
+        }
+    }
+    for (let i = 0; i < gChatUsers.length; i++) {
+        if (gChatUsers[i].UserID === updater.UserID) {
+            gChatUsers[i].active = updater.active;
+        }
+    }
     MESSAGE_DIV.setAttribute('class', `icon ${updater.active}`);
-    console.log('MESSAGEDIV === ', MESSAGE_DIV);
 };
 
 let socket;
@@ -177,6 +191,11 @@ const CreateWebSocket = () => {
         if (messageInfo.change === 'status') {
             console.log(messageInfo.userID, ' is ', messageInfo.active);
             UpdateStatus(messageInfo);
+            return;
+        }
+        if (messageInfo.change === 'NewUser') {
+            //If a new user has been registered add them to the gusers array
+            document.querySelector('.message-notification').style.display = 'flex'
             return;
         }
         if (messageInfo.message === 'e702c728-67f2-4ecd-9e79-4795010501ea') {
@@ -693,6 +712,30 @@ loginBtn.addEventListener('click', (e) => {
             showMessages(resp.Msg);
         });
 });
+
+ const GetUsers = () => {
+    fetch( "/login", {
+        method: 'GET',
+        headers: {
+         'Content-Type': 'application/json',
+        },
+    }).then(async resp => {
+        response = await resp.json();
+         gUsers = [];
+         gChatUsers = [];
+         if (response.Users) {
+             gUsers = response.Users;
+         }
+         if (response.ChatUsers) {
+             gChatUsers = response.ChatUsers;
+         }
+         console.log('Printing all the users: ', gUsers, gChatUsers);
+         ShowUsers();
+         GetNotificationAmount();
+         allUsers = [...(gUsers || []), ...(gChatUsers || [])];
+    })
+    document.querySelector('.message-notification').style.display = 'none';
+}
 
 function unSet(fields, revBtn) {
     setTimeout(function () {

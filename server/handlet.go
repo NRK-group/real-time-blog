@@ -110,7 +110,8 @@ func (DB *DB) Register(w http.ResponseWriter, r *http.Request) {
 			w.Write([]byte("This Nickname is already in use"))
 			return
 		}
-		DB.RegisterUser(userData)
+		newUser := DB.RegisterUser(userData)
+		SendToAll(newUser)
 
 		w.Header().Set("Content-type", "application/text")
 		w.WriteHeader(http.StatusOK)
@@ -157,8 +158,16 @@ func (forum *DB) Login(w http.ResponseWriter, r *http.Request) {
 			Value:   loginResp,
 			Expires: time.Now().Add(24 * time.Hour),
 		})
+	}
 
-		userid := strings.Split(loginResp, "&")[0]
+	if r.Method == "POST" || r.Method == "GET" {
+		c, err := r.Cookie("session_token")
+		if err != nil {
+			fmt.Println("ERROR getting cookie value: ", err)
+			return
+		}
+
+		userid := strings.Split(c.Value, "&")[0]
 
 		chatusers, alluser, _ := forum.ArrangeUsers(userid)
 
@@ -212,15 +221,10 @@ func (forum *DB) Logout(w http.ResponseWriter, r *http.Request) {
 		// Update the users status in the database
 		forum.Update("User", "Status", "offline", "userID", res[0])
 
-	//Let all users know this users is offline
-	change := StateChange{Change: "status", Active: "offline", UserID: res[0]}
-	send, marshErr := json.Marshal(change)
-	if marshErr != nil {
-		fmt.Println("Problem marshalling change of status struct: ", marshErr)
-	}
-	for _, v := range users {
-			v.WriteMessage(1, send)
-	}
+		// Let all users know this users is offline
+		change := StateChange{Change: "status", Active: "offline", UserID: res[0]}
+		//This function sends a marshalled struct to all active users
+		SendToAll(change)
 
 		// Set the new token as the users `session_token` cookie
 		http.SetCookie(w, &http.Cookie{
@@ -553,6 +557,16 @@ func SetupCorsResponse(w http.ResponseWriter, req *http.Request) {
 	(w).Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Authorization")
 }
 
+func SendToAll(change StateChange) {
+	send, marshErr := json.Marshal(change)
+	if marshErr != nil {
+		fmt.Println("Problem marshalling change of status struct: ", marshErr)
+	}
+	for _, v := range users {
+			v.WriteMessage(1, send)
+	}
+}
+
 func (forum *DB) WsEndpoint(w http.ResponseWriter, r *http.Request) {
 	upgrader.CheckOrigin = func(r *http.Request) bool { return true }
 
@@ -573,7 +587,7 @@ func (forum *DB) WsEndpoint(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(users)
 	userIdVal := strings.Split(c.Value, "&")[0]
 	users[userIdVal] = ws
-	//Let all users know this users is online
+	// Let all users know this users is online
 	change := StateChange{Change: "status", Active: "online", UserID: userIdVal}
 	send, marshErr := json.Marshal(change)
 	if marshErr != nil {
