@@ -141,7 +141,7 @@ func (forum *DB) Login(w http.ResponseWriter, r *http.Request) {
 		loginResp := forum.LoginUsers(userLoginData.EmailOrNickname, userLoginData.Password)
 		if loginResp[0] == 'E' {
 
-			page = ReturnData{}
+			page = ReturnData{Msg: loginResp}
 			marshallPage, err := json.Marshal(page)
 			if err != nil {
 				fmt.Println("Error marshalling the data: ", err)
@@ -458,7 +458,6 @@ func (forum *DB) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	http.Error(w, "400 Bad Request.", http.StatusBadRequest)
 }
 
-
 func (forum *DB) UpdateUserImage(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/updateuserimage" {
 		http.Error(w, "404 not found.", http.StatusNotFound)
@@ -515,7 +514,7 @@ func (forum *DB) UpdateUserImage(w http.ResponseWriter, r *http.Request) {
 				}
 			}
 
-			forum.Update("User", "imgUrl", imgUrl, "userID", res[0] )
+			forum.Update("User", "imgUrl", imgUrl, "userID", res[0])
 
 			page = ReturnData{User: forum.GetUser(res[0])}
 
@@ -532,7 +531,6 @@ func (forum *DB) UpdateUserImage(w http.ResponseWriter, r *http.Request) {
 	}
 	http.Error(w, "400 Bad Request.", http.StatusBadRequest)
 }
-
 
 func SetupCorsResponse(w http.ResponseWriter, req *http.Request) {
 	(w).Header().Set("Access-Control-Allow-Origin", "*")

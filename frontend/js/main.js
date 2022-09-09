@@ -1,4 +1,3 @@
-
 const SendResponsebtn = document.getElementById('send-response-btn');
 
 let allPost, gUsers, gChatUsers;
@@ -233,7 +232,7 @@ const Logout = () => {
         mainPageId.classList.remove('open');
         loginPageId.classList.add('open');
         registerPageId.classList.add('close');
-        mainPageId.style.display = 'grid';
+        mainPageId.style.display = 'none';
     });
 };
 
@@ -266,9 +265,15 @@ const IsTyping = () => {
 };
 
 const validateUser = (resp) => {
+    console.log(resp, '--line 268');
+
     if (resp.Msg === 'Login successful') {
         //Create the cookie when logged in#
         CreateWebSocket();
+        if (resp.User.ImgUrl) {
+            const userImage = document.querySelector('#post-user-image');
+            userImage.outerHTML = `<img src=${resp.User.ImgUrl} alt="profile-picture" class="user-image"></img>`;
+        }
         gUsers = [];
         gChatUsers = [];
         if (resp.Users) {
@@ -281,7 +286,7 @@ const validateUser = (resp) => {
         ShowUsers();
         allUsers = [...(gUsers || []), ...(gChatUsers || [])];
         allPost = resp.Posts;
-        console.log("allUsers", gChatUsers)
+        console.log('allUsers', gChatUsers);
         DisplayAllPost(resp.Posts);
         const loginPageId = document.querySelector('#login-page-id');
         const registerPageId = document.querySelector('#register-page-id');
@@ -298,8 +303,8 @@ const validateUser = (resp) => {
     }
 };
 
-let profilePictureMain = document.getElementById('profile-picture-main')
-let profilePictureImgMain = document.getElementById('profile-picture-img-main')
+let profilePictureMain = document.getElementById('profile-picture-main');
+let profilePictureImgMain = document.getElementById('profile-picture-img-main');
 
 const UpdateUserProfile = (resp) => {
     document.getElementById(
@@ -312,12 +317,11 @@ const UpdateUserProfile = (resp) => {
     document.querySelector(
         '#account-date-created-id'
     ).innerText = `since ${yearCreated}`;
-    
-    if (resp.User.ImgUrl != ""){  
-        profilePictureImgMain.src = resp.User.ImgUrl
-        profilePictureImgMain.style.display = "block"
-        profilePictureMain.style.display = "none"
-        
+
+    if (resp.User.ImgUrl != '') {
+        profilePictureImgMain.src = resp.User.ImgUrl;
+        profilePictureImgMain.style.display = 'block';
+        profilePictureMain.style.display = 'none';
     }
     //User model
     document.getElementById('edit-first-name-id').value = resp.User.Firstname;
@@ -326,45 +330,43 @@ const UpdateUserProfile = (resp) => {
     document.getElementById('edit-age-id').value = resp.User.Age;
     document.getElementById('edit-email-id').value = resp.User.Email;
     document.getElementById('edit-gender-id').value = resp.User.Gender;
-    if (resp.User.ImgUrl != ""){
-        profilePicture.style.display = "none"
-        profilePictureImg.src = resp.User.ImgUrl
-        profilePictureImg.style.display = "block"
+    if (resp.User.ImgUrl != '') {
+        profilePicture.style.display = 'none';
+        profilePictureImg.src = resp.User.ImgUrl;
+        profilePictureImg.style.display = 'block';
     }
-
 };
 
 const editBtn = document.getElementById('save-changes-btn');
-let profilePicture = document.getElementById('profile-picture')
-let uploadFileInput = document.getElementById('uploadfile')
-let profilePictureImg = document.getElementById('profile-picture-img')
+let profilePicture = document.getElementById('profile-picture');
+let uploadFileInput = document.getElementById('uploadfile');
+let profilePictureImg = document.getElementById('profile-picture-img');
 
 editBtn.onclick = () => {
     EditUserProfile();
 };
 
-
 profilePictureImg.onclick = () => {
-    uploadFileInput.click()
-}
+    uploadFileInput.click();
+};
 
-profilePicture.onclick =()=>{
-    uploadFileInput.click()
-}
+profilePicture.onclick = () => {
+    uploadFileInput.click();
+};
 
 uploadFileInput.onchange = () => {
-    const [file] = uploadFileInput.files
-    if (file) {  
-        profilePictureImg.src = URL.createObjectURL(file)
-        profilePicture.style.display = "none"
-        profilePictureImg.style.display = "block"
+    const [file] = uploadFileInput.files;
+    if (file) {
+        profilePictureImg.src = URL.createObjectURL(file);
+        profilePicture.style.display = 'none';
+        profilePictureImg.style.display = 'block';
 
         const formData = new FormData();
         formData.append('file', uploadFileInput.files[0]);
 
         fetch('/updateuserimage', {
             method: 'POST',
-            body: formData
+            body: formData,
         })
             .then(async (response) => {
                 resp = await response.json();
@@ -372,13 +374,11 @@ uploadFileInput.onchange = () => {
                 return resp;
             })
             .then((resp) => {
-                profilePictureImgMain.src = resp.User.ImgUrl
+                profilePictureImgMain.src = resp.User.ImgUrl;
                 showMessages(resp);
             });
-
     }
-  }
-
+};
 
 const EditUserProfile = () => {
     let lastName = document.getElementById('edit-last-name-id').value;
@@ -406,14 +406,13 @@ const EditUserProfile = () => {
     };
 
     if (CheckRequirements(UserInfo) === '') {
-
         fetch('/updateuser', {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(UserInfo)
+            body: JSON.stringify(UserInfo),
         })
             .then(async (response) => {
                 resp = await response.json();
@@ -475,7 +474,10 @@ const ShowUsers = (firstRun = true) => {
             item.Status === 'Online'
                 ? (status = 'online')
                 : (status = 'offline');
-                userimg = item.ImgUrl != ""? `<img src=${item.ImgUrl} alt="profile-picture" class="user-image"></img> `:`<div class="user-image"></div>`
+            userimg =
+                item.ImgUrl != ''
+                    ? `<img src=${item.ImgUrl} alt="profile-picture" class="user-image"></img> `
+                    : `<div class="user-image"></div>`;
             lastChatUsers =
                 `<div
             key=${index}
@@ -503,7 +505,10 @@ const ShowUsers = (firstRun = true) => {
             item.Nickname.length < 8
                 ? (username = item.Nickname)
                 : (username = item.Nickname.slice(0, 6) + '...');
-                userimg = item.ImgUrl != ""? `<img src=${item.ImgUrl} alt="profile-picture" class="user-image"></img> `:`<div class="user-image"></div>`
+            userimg =
+                item.ImgUrl != ''
+                    ? `<img src=${item.ImgUrl} alt="profile-picture" class="user-image"></img> `
+                    : `<div class="user-image"></div>`;
             users =
                 `<div
             key=${index}
@@ -799,6 +804,12 @@ const openChatModal = (e) => {
         '#chat-modal-container-id'
     );
     const CHAT_USERNAME = document.querySelector('#chat-username-id');
+    const CHAT_USER_IMAGE = document.querySelector('#chat-header-user-image');
+    if (e.children[1].src) {
+        CHAT_USER_IMAGE.outerHTML = `<img src=${e.children[1].src} alt="profile-picture" id='chat-header-user-image' class="user-image"></img>`;
+    } else {
+        CHAT_USER_IMAGE.outerHTML = `<div id="chat-header-user-image" class="user-image"></div>`;
+    }
     CHAT_USERNAME.innerHTML = RECIEVER_USERNAME;
     //when open a specific chat, we're going to get the chat data between the current user and the user tat they click
     chatModalContainer.style.display = 'flex';
@@ -1020,7 +1031,10 @@ const openResponseModal = (postId) => {
         '#response-post-container'
     );
     let category = '';
-    userimg = post.ImgUrl != ""? `<img src=${post.ImgUrl} alt="profile-picture" class="user-image"></img> `:`<div class="user-image"></div>`
+    userimg =
+        post.ImgUrl != ''
+            ? `<img src=${post.ImgUrl} alt="profile-picture" class="user-image"></img> `
+            : `<div class="user-image"></div>`;
     if (post.Category === 'golang') {
         category =
             '<div class="post-category golang golang-category">GoLang</div>';
@@ -1153,14 +1167,14 @@ const CreatePost = (
     const postUserProfile = document.createElement('div');
     postUserProfile.className = 'post-user-profile';
     let userImage = document.createElement('div');
-    console.log("user Img", userImageValue.length )
-    if(userImageValue.length > 7) {
-         userImage = document.createElement('img');
+    console.log('user Img', userImageValue.length);
+    if (userImageValue.length > 7) {
+        userImage = document.createElement('img');
         userImage.src = userImageValue; // this need to be converted to an image
-    } 
+    }
     userImage.className = 'user-image';
     //create an image to add the image here
-    
+
     const span = document.createElement('span');
     const username = document.createElement('div');
     username.className = 'username';
