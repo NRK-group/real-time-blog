@@ -382,34 +382,41 @@ func (forum *DB) CreatePost(userID, title, category, imgurl, content string) (st
 	return postID.String(), nil
 }
 
-func (forum *DB) CheckChatID(userID, recieverID string) string {
+func (forum *DB) CheckChatID(userID, recieverID string) (string, string) {
 	// Query the DB and check if there is a chatId between the two users
 	searchOne := ""
-	chatID, err := forum.DB.Query(`SELECT chatID from Chat WHERE user1ID = ? AND user2ID = ?`, userID, recieverID)
+	searchOneDate := ""
+	chatID, err := forum.DB.Query(`SELECT chatID, date from Chat WHERE user1ID = ? AND user2ID = ?`, userID, recieverID)
 	if err != nil {
 		fmt.Println("Error executing chatID search 1: ", err)
-		return searchOne
+		return searchOne, ""
 	}
 
 	for chatID.Next() {
-		chatID.Scan(&searchOne)
+		chatID.Scan(&searchOne, &searchOneDate)
 	}
 
 	searchTwo := ""
-	secondChatID, err2 := forum.DB.Query(`SELECT chatID from Chat WHERE user1ID = ? AND user2ID = ?`, recieverID, userID)
+	searchTwoDate := ""
+	secondChatID, err2 := forum.DB.Query(`SELECT chatID, date from Chat WHERE user1ID = ? AND user2ID = ?`, recieverID, userID)
 	if err2 != nil {
 		fmt.Println("Error executing chatID search 2: ", err2)
-		return searchTwo
+		return searchTwo, ""
 	}
 
 	for secondChatID.Next() {
-		secondChatID.Scan(&searchTwo)
+		secondChatID.Scan(&searchTwo, &searchTwoDate)
 	}
-	fmt.Println("search One === ", searchOne, "search Two === ", searchTwo)
+	
 	if searchOne != "" {
-		return searchOne
+		return searchOne, searchOneDate
 	}
-	return searchTwo
+
+	if searchTwo != "" {
+		return searchTwo , searchTwoDate
+	}
+
+	return searchTwo , ""
 }
 
 func (forum *DB) CreateChatID(userID, recieverID string) string {
@@ -490,39 +497,28 @@ func (forum *DB) TenMessages(chatID string, x int) []SendMessage {
 	return result
 }
 
-func (forum *DB) FindUserChatTime(user User) string {
-	search := ""
-	chatID, err := forum.DB.Query(`SELECT date from Chat WHERE user1ID = ? OR user2ID = ?`, user.UserID, user.UserID)
-	if err != nil {
-		fmt.Println("Error executing chatID search 1: ", err)
-		return search
-	}
-	for chatID.Next() {
-		chatID.Scan(&search)
-	}
-	return search
-}
-
 // ArrangeUsers
 // is a method that will organized users by the last message sent, and return the all other users by alphabetic order.
 func (forum *DB) ArrangeUsers(userID string) ([]User, []User, error) {
-	var userLastMessage []User
+	userLastMessage := make([]User, 0)
 	var userAlphabeticOrder []User
 	allUsers := forum.GetAllUser(userID)
 
 	for x := 0; x < len(allUsers); x++ {
-		if forum.CheckChatID(userID, allUsers[x].UserID) != "" {
-			userLastMessage = append([]User{allUsers[x]}, userLastMessage...)
+		chatID, chatTime := forum.CheckChatID(userID, allUsers[x].UserID)
+		if chatID != "" {
+			allUsers[x].SessionID = chatTime
+			userLastMessage = append(userLastMessage, allUsers[x])
 		} else {
 			userAlphabeticOrder = append([]User{allUsers[x]}, userAlphabeticOrder...)
 		}
 	}
 
-	sort.Slice(userLastMessage, func(i, j int) bool {
-		one, _ := time.Parse("2006 January 02 15:04:05", forum.FindUserChatTime(userLastMessage[i]))
-		two, _ := time.Parse("2006 January 02 15:04:05", forum.FindUserChatTime(userLastMessage[j]))
-		return two.Before(one)
-	})
+	 sort.Slice(userLastMessage, func(i, j int) bool {
+		one, _ := time.Parse("2006 January 02 15:04:05", userLastMessage[i].SessionID)
+		two, _ := time.Parse("2006 January 02 15:04:05",userLastMessage[j].SessionID)
+	 	return one.UnixNano() < two.UnixNano()
+	 })
 
 	sort.Slice(userAlphabeticOrder, func(i, j int) bool {
 		return userAlphabeticOrder[i].Nickname > userAlphabeticOrder[j].Nickname
@@ -595,8 +591,6 @@ func (forum *DB) GetNotifications(target string) []Notify {
 
 	result := make([]Notify, 0)
 	for getNotQry.Next() {
-		fmt.Println()
-		fmt.Println("Searching for notifications!!!!!---!!!")
 		var temp Notify
 		getNotQry.Scan(&temp.SenderID, &temp.Count)
 		result = append(result, temp)

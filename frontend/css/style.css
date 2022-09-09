@@ -1631,3 +1631,9 @@ input:checked + .slider:before {
     -webkit-animation: fadein 7s;
     animation: fadein 7s;
 }
+.offline {
+    color: #00000020;
+}
+.online {
+    color: #30a24c;
+}

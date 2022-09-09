@@ -297,7 +297,7 @@ func (forum *DB) GetMessages(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// Check if there is a chat between the two users
-		if chatDetails.ChatID = forum.CheckChatID(chatDetails.User, chatDetails.Reciever); chatDetails.ChatID != "" {
+		if chatDetails.ChatID, _ = forum.CheckChatID(chatDetails.User, chatDetails.Reciever); chatDetails.ChatID != "" {
 			chatDetails.Messages = forum.TenMessages(chatDetails.ChatID, chatDetails.X)
 			// When a message is sent check for the chat id a nd create it
 			// chatDetails.ChatID = forum.CreateChatID(chatDetails.User, chatDetails.Reciever)
@@ -575,7 +575,7 @@ func (forum *DB) WsEndpoint(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(users)
 	userIdVal := strings.Split(c.Value, "&")[0]
 	users[userIdVal] = ws
-	fmt.Println(userIdVal, " is connected.")
+	// fmt.Println(userIdVal, " is connected.")
 	go forum.reader(ws)
 }
 
@@ -610,7 +610,7 @@ func (forum *DB) Notifications(w http.ResponseWriter, r *http.Request) {
 		username := strings.Split(c.Value, "&")[0]
 
 		getNotifs = forum.GetNotifications(username)
-		fmt.Println("getNotifs", getNotifs)
+		// fmt.Println("getNotifs", getNotifs)
 		values, marshErr := json.Marshal(getNotifs)
 		if marshErr != nil {
 			fmt.Println("Error marshalling notification results")
