@@ -407,16 +407,16 @@ func (forum *DB) CheckChatID(userID, recieverID string) (string, string) {
 	for secondChatID.Next() {
 		secondChatID.Scan(&searchTwo, &searchTwoDate)
 	}
-	
+
 	if searchOne != "" {
 		return searchOne, searchOneDate
 	}
 
 	if searchTwo != "" {
-		return searchTwo , searchTwoDate
+		return searchTwo, searchTwoDate
 	}
 
-	return searchTwo , ""
+	return searchTwo, ""
 }
 
 func (forum *DB) CreateChatID(userID, recieverID string) string {
@@ -514,14 +514,14 @@ func (forum *DB) ArrangeUsers(userID string) ([]User, []User, error) {
 		}
 	}
 
-	 sort.Slice(userLastMessage, func(i, j int) bool {
+	sort.Slice(userLastMessage, func(i, j int) bool {
 		one, _ := time.Parse("2006 January 02 15:04:05", userLastMessage[i].SessionID)
-		two, _ := time.Parse("2006 January 02 15:04:05",userLastMessage[j].SessionID)
-	 	return one.UnixNano() < two.UnixNano()
-	 })
+		two, _ := time.Parse("2006 January 02 15:04:05", userLastMessage[j].SessionID)
+		return one.UnixNano() < two.UnixNano()
+	})
 
 	sort.Slice(userAlphabeticOrder, func(i, j int) bool {
-		return userAlphabeticOrder[i].Nickname > userAlphabeticOrder[j].Nickname
+		return strings.ToLower(userAlphabeticOrder[i].Nickname) > strings.ToLower(userAlphabeticOrder[j].Nickname)
 	})
 
 	return userLastMessage, userAlphabeticOrder, nil
@@ -612,7 +612,7 @@ func (forum *DB) UpdateUserProfile(userID string, userData UpdateUserData) strin
 	if !(CheckPasswordHash(userData.Password, password)) {
 		return "Error - password not macth"
 	}
-	
+
 	updateUser, err := forum.DB.Prepare(`UPDATE User SET firstName = ?, lastName = ?, nickName = ?, gender = ?, age = ?, password = ?, email = ?   WHERE userID = ?`)
 	if err != nil {
 		fmt.Println("Error Preparing update notification: ", err)
@@ -628,7 +628,7 @@ func (forum *DB) UpdateUserProfile(userID string, userData UpdateUserData) strin
 	return "Update is complete "
 }
 
-func (forum *DB) RegisterUser(userData UserData) {
+func (forum *DB) RegisterUser(userData UserData) StateChange {
 	// Create a UserId for the new user using UUID
 	userID := uuid.NewV4().String()
 	// Turn age into an int
@@ -643,6 +643,8 @@ func (forum *DB) RegisterUser(userData UserData) {
 	}
 	// Valid registration so add the user to the database
 	forum.DB.Exec(`INSERT INTO User VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`, userID, "", userData.FirstName, userData.LastName, userData.Nickname, userData.Gender, userAge, "offline", userData.Email, userDate, password, "")
+
+	return StateChange{UserID: userID, Nickname: userData.Nickname, Change: "NewUser", Active: "offline", ImgUrl: ""}
 }
 
-//ChangeStauts changes the status of a 
+// ChangeStauts changes the status of a

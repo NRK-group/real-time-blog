@@ -770,6 +770,29 @@ input[type='email']:focus {
     padding: 0 5% 0 5%;
     width: 100%;
 }
+
+.message-notification {
+    display: none;
+    justify-content: center;
+    text-align: center;
+    width: 40%;
+    min-width: 100px;
+    height: 30px;
+    line-height: 30px;
+    background-color: #533de0;
+    color: white;
+    font-size: 14px;
+    border-radius: 15px;
+    margin-bottom: 3vh;
+}
+
+.message-notification:hover {
+    background-color: #00000000;
+    color: #533de0;
+    cursor: pointer;
+    transition: 0.5s;
+}
+
 .forum-users-container {
     height: 35vh;
     width: 70%;
@@ -1408,7 +1431,7 @@ ul {
     padding: 1vw;
 }
 .icon {
-    color: #533de0;
+    color: #533de000;;
     fill: currentColor;
     display: inline-block;
     margin-right: 10px;

@@ -110,7 +110,8 @@ func (DB *DB) Register(w http.ResponseWriter, r *http.Request) {
 			w.Write([]byte("This Nickname is already in use"))
 			return
 		}
-		DB.RegisterUser(userData)
+		newUser := DB.RegisterUser(userData)
+		SendToAll(newUser)
 
 		w.Header().Set("Content-type", "application/text")
 		w.WriteHeader(http.StatusOK)
@@ -128,41 +129,63 @@ func (forum *DB) Login(w http.ResponseWriter, r *http.Request) {
 	}
 	SetupCorsResponse(w, r)
 
-	if r.Method == "POST" {
-
-		var userLoginData UserLoginData
-		err := json.NewDecoder(r.Body).Decode(&userLoginData) // unmarshall the userdata
-		if err != nil {
-			fmt.Print(err)
-			http.Error(w, "500 Internal Server Error.", http.StatusInternalServerError)
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-		loginResp := forum.LoginUsers(userLoginData.EmailOrNickname, userLoginData.Password)
-		if loginResp[0] == 'E' {
-
-			page = ReturnData{Msg: loginResp}
-			marshallPage, err := json.Marshal(page)
+	if r.Method == "POST" || r.Method == "GET" {
+		detail := ""
+		if r.Method == "POST" {
+			var userLoginData UserLoginData
+			err := json.NewDecoder(r.Body).Decode(&userLoginData) // unmarshall the userdata
 			if err != nil {
-				fmt.Println("Error marshalling the data: ", err)
+				fmt.Print(err)
+				http.Error(w, "500 Internal Server Error.", http.StatusInternalServerError)
+				w.WriteHeader(http.StatusInternalServerError)
+				return
 			}
-			w.Header().Set("Content-type", "application/text")
-			w.WriteHeader(http.StatusOK)
-			w.Write(marshallPage)
-			return
+			loginResp := forum.LoginUsers(userLoginData.EmailOrNickname, userLoginData.Password)
+			detail = loginResp
+
+
+			if loginResp[0] == 'E' {
+
+				page = ReturnData{Msg: loginResp}
+				marshallPage, err := json.Marshal(page)
+				if err != nil {
+					fmt.Println("Error marshalling the data: ", err)
+				}
+				w.Header().Set("Content-type", "application/text")
+				w.WriteHeader(http.StatusOK)
+				w.Write(marshallPage)
+				return
+			}
+
+			http.SetCookie(w, &http.Cookie{
+				Name:    "session_token",
+				Value:   loginResp,
+				Expires: time.Now().Add(24 * time.Hour),
+			})
 		}
 
-		http.SetCookie(w, &http.Cookie{
-			Name:    "session_token",
-			Value:   loginResp,
-			Expires: time.Now().Add(24 * time.Hour),
-		})
+		c, err := r.Cookie("session_token")
+		if err != nil {
+			fmt.Println("Error Getting the cookie: ", err)
+		} else {
+			detail = c.Value
+		}
 
-		userid := strings.Split(loginResp, "&")[0]
+
+		userid := strings.Split(detail, "&")[0]
 
 		chatusers, alluser, _ := forum.ArrangeUsers(userid)
 
+		fmt.Println()
+		fmt.Println()
+		fmt.Println(len(chatusers), len(alluser))
+		fmt.Println()
+		fmt.Println()
+
+
+
 		page = ReturnData{User: forum.GetUser(userid), Posts: forum.AllPost("", userid), Msg: "Login successful", Users: alluser, ChatUsers: chatusers}
+
 		marshallPage, err := json.Marshal(page)
 		if err != nil {
 			fmt.Println("Error marshalling the data: ", err)
@@ -212,15 +235,10 @@ func (forum *DB) Logout(w http.ResponseWriter, r *http.Request) {
 		// Update the users status in the database
 		forum.Update("User", "Status", "offline", "userID", res[0])
 
-	//Let all users know this users is offline
-	change := StateChange{Change: "status", Active: "offline", UserID: res[0]}
-	send, marshErr := json.Marshal(change)
-	if marshErr != nil {
-		fmt.Println("Problem marshalling change of status struct: ", marshErr)
-	}
-	for _, v := range users {
-			v.WriteMessage(1, send)
-	}
+		// Let all users know this users is offline
+		change := StateChange{Change: "status", Active: "offline", UserID: res[0]}
+		// This function sends a marshalled struct to all active users
+		SendToAll(change)
 
 		// Set the new token as the users `session_token` cookie
 		http.SetCookie(w, &http.Cookie{
@@ -553,6 +571,16 @@ func SetupCorsResponse(w http.ResponseWriter, req *http.Request) {
 	(w).Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Authorization")
 }
 
+func SendToAll(change StateChange) {
+	send, marshErr := json.Marshal(change)
+	if marshErr != nil {
+		fmt.Println("Problem marshalling change of status struct: ", marshErr)
+	}
+	for _, v := range users {
+		v.WriteMessage(1, send)
+	}
+}
+
 func (forum *DB) WsEndpoint(w http.ResponseWriter, r *http.Request) {
 	upgrader.CheckOrigin = func(r *http.Request) bool { return true }
 
@@ -573,7 +601,7 @@ func (forum *DB) WsEndpoint(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(users)
 	userIdVal := strings.Split(c.Value, "&")[0]
 	users[userIdVal] = ws
-	//Let all users know this users is online
+	// Let all users know this users is online
 	change := StateChange{Change: "status", Active: "online", UserID: userIdVal}
 	send, marshErr := json.Marshal(change)
 	if marshErr != nil {
