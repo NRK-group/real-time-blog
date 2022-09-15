@@ -863,11 +863,11 @@ const openChatModal = (e) => {
     );
     const CHAT_USERNAME = document.querySelector('#chat-username-id');
     const CHAT_USER_IMAGE = document.querySelector('#chat-header-user-image');
-    if (e.children[1].src) {
-        CHAT_USER_IMAGE.outerHTML = `<img src=${e.children[1].src} alt="profile-picture" id='chat-header-user-image' class="user-image"></img>`;
-    } else {
+ //   if (e.children[1].src) {
+ //       CHAT_USER_IMAGE.outerHTML = `<img src=${e.children[1].src} alt="profile-picture" id='chat-header-user-image' class="user-image"></img>`;
+ //   } else {
         CHAT_USER_IMAGE.outerHTML = `<div id="chat-header-user-image" class="user-image"></div>`;
-    }
+ //   }
     CHAT_USERNAME.innerHTML = RECIEVER_USERNAME;
     //when open a specific chat, we're going to get the chat data between the current user and the user tat they click
     chatModalContainer.style.display = 'flex';
@@ -1225,10 +1225,10 @@ const CreatePost = (
     const postUserProfile = document.createElement('div');
     postUserProfile.className = 'post-user-profile';
     let userImage = document.createElement('div');
-    console.log('user Img', userImageValue.length);
-    if (userImageValue.length > 7) {
-        userImage = document.createElement('img');
-        userImage.src = userImageValue; // this need to be converted to an image
+    
+  if (userImageValue.length > 7) {
+       userImage = document.createElement('img');
+       userImage.src = userImageValue; // this need to be converted to an image
     }
     userImage.className = 'user-image';
     //create an image to add the image here
