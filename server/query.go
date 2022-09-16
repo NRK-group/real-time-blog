@@ -456,16 +456,31 @@ func (forum *DB) InsertMessage(details NewMessage) {
 	}
 }
 
+// func (forum *DB) QuerySpecificData(column, table, where, id string) (string, error) {
+// 	// ("imgUrl", "User", "userID", "7d6f9e83-f432-480f-a9e0-81e05181c662")
+// 	getData, err := forum.DB.Query("SELECT " + column + " FROM " + table + " WHERE " + where + " = '" + id + "'")
+// 	if err != nil {
+// 		fmt.Print("ERROR: QuerySpecificData", err)
+// 	}
+// 	var data string
+// 	for getData.Next() {
+// 		getData.Scan(&data)
+// 	}
+// 	fmt.Print(data)
+// 	return data, nil
+// }
+
 // CreateComment
 // is a method of database that add comment in it.
 func (forum *DB) CreateComment(userID, postID, content string) (string, error) {
 	date := time.Now().Format("2006 January 02")
 	time := time.Now()
 	commentID := uuid.NewV4()
+	imgUrl := forum.GetUser(userID).ImgUrl
 	stmt, _ := forum.DB.Prepare(`
 		INSERT INTO Comment (commentID, postID, userID, date, time, imgUrl, content) values (?, ?, ?, ?, ?,?,?)
 	`)
-	_, err := stmt.Exec(commentID, postID, userID, date, time, "imgUrl", content)
+	_, err := stmt.Exec(commentID, postID, userID, date, time, imgUrl, content)
 	if err != nil {
 		return "", err
 	}

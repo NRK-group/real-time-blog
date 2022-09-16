@@ -143,7 +143,6 @@ func (forum *DB) Login(w http.ResponseWriter, r *http.Request) {
 			loginResp := forum.LoginUsers(userLoginData.EmailOrNickname, userLoginData.Password)
 			detail = loginResp
 
-
 			if loginResp[0] == 'E' {
 
 				page = ReturnData{Msg: loginResp}
@@ -171,7 +170,6 @@ func (forum *DB) Login(w http.ResponseWriter, r *http.Request) {
 			detail = c.Value
 		}
 
-
 		userid := strings.Split(detail, "&")[0]
 
 		chatusers, alluser, _ := forum.ArrangeUsers(userid)
@@ -181,8 +179,6 @@ func (forum *DB) Login(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(len(chatusers), len(alluser))
 		fmt.Println()
 		fmt.Println()
-
-
 
 		page = ReturnData{User: forum.GetUser(userid), Posts: forum.AllPost("", userid), Msg: "Login successful", Users: alluser, ChatUsers: chatusers}
 
@@ -517,7 +513,7 @@ func (forum *DB) UpdateUserImage(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 
-			imgUrl := " "
+			imgUrl := forum.GetUser(res[0]).ImgUrl
 			r.ParseMultipartForm(10 << 20)
 			file, handler, err := r.FormFile("file")
 			fmt.Println(err)
@@ -526,7 +522,7 @@ func (forum *DB) UpdateUserImage(w http.ResponseWriter, r *http.Request) {
 				defer file.Close()
 				getFilePrefix := strings.Split(handler.Filename, ".")
 				var imgType string
-				imageTypes := "img png gif svg jpg jpeg"
+				imageTypes := "img png gif svg jpg jpeg JPG JPEG"
 				if strings.Contains(imageTypes, getFilePrefix[len(getFilePrefix)-1]) {
 					if handler.Size > int64(20000000) {
 						fmt.Fprintf(w, "File size exceed")
@@ -548,7 +544,8 @@ func (forum *DB) UpdateUserImage(w http.ResponseWriter, r *http.Request) {
 			}
 
 			forum.Update("User", "imgUrl", imgUrl, "userID", res[0])
-
+			forum.Update("Comment", "imgUrl", imgUrl, "userID", res[0])
+			forum.Update("Post", "imgUrl", imgUrl, "userID", res[0])
 			page = ReturnData{User: forum.GetUser(res[0])}
 
 			marshallPage, err := json.Marshal(page)
