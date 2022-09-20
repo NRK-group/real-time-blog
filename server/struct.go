@@ -91,7 +91,7 @@ type UpdateUserData struct {
 	Gender          string `json:"gender"`
 	Email           string `json:"email"`
 	Password        string `json:"oldPassword"`
-	NewPassword        string `json:"password"`
+	NewPassword     string `json:"password"`
 	ConfirmPasspord string `json:"confirmPassword"`
 }
 
@@ -160,9 +160,9 @@ type Notify struct {
 }
 
 type StateChange struct {
-	Change string `json:"change"`
-	Active string `json:"active"`
-	UserID string `json:"UserID"`
+	Change   string `json:"change"`
+	Active   string `json:"active"`
+	UserID   string `json:"UserID"`
 	Nickname string `json:"Nickname"`
-	ImgUrl string `json:"ImgUrl"`
+	ImgUrl   string `json:"ImgUrl"`
 }

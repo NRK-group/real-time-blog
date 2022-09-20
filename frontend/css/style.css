@@ -523,6 +523,7 @@ input[type='email']:focus {
 }
 .user-image {
     height: 40px;
+    width: 40px;
     min-width: 40px;
     border: 0.5px solid rgb(245, 245, 245);
     background-color: rgb(206, 232, 240);
@@ -1431,7 +1432,7 @@ ul {
     padding: 1vw;
 }
 .icon {
-    color: #533de000;;
+    color: #533de000;
     fill: currentColor;
     display: inline-block;
     margin-right: 10px;

@@ -1,4 +1,3 @@
-
 const SendResponsebtn = document.getElementById('send-response-btn');
 
 let allPost, gUsers, gChatUsers;
@@ -75,8 +74,8 @@ const AddMessages = (messageText, classType, sentTime) => {
     const MSG_HOLDER = document.createElement('div');
     MSG_HOLDER.className = classType;
     //Create the inside divs
-    const PROFILE_IMG = document.createElement('div');
-    PROFILE_IMG.className = 'user-image';
+    // const PROFILE_IMG = document.createElement('div');
+    // PROFILE_IMG.className = 'user-image';
 
     const MSG_CONTAINER = document.createElement('div');
     MSG_CONTAINER.className = 'chat-content';
@@ -92,7 +91,7 @@ const AddMessages = (messageText, classType, sentTime) => {
     DATE.classList.add('message-date');
     MSG_CONTAINER.append(DATE);
 
-    MSG_HOLDER.append(PROFILE_IMG, MSG_CONTAINER);
+    MSG_HOLDER.append(MSG_CONTAINER);
     return MSG_HOLDER;
 };
 
@@ -150,7 +149,7 @@ const ProcessMessage = (message) => {
 };
 
 const AddNotification = (i, senderID) => {
-    console.log('Adding notification with:', senderID);
+    // console.log('Adding notification with:', senderID);
     const MESSAGE_BOX = document.getElementById(senderID);
     let notValue = parseInt(MESSAGE_BOX.innerHTML);
     notValue += parseInt(i);
@@ -188,9 +187,9 @@ const CreateWebSocket = () => {
     };
     socket.onmessage = (text) => {
         let messageInfo = JSON.parse(text.data);
-        console.log('New Message', messageInfo);
+        // console.log('New Message', messageInfo);
         if (messageInfo.change === 'status') {
-            console.log(messageInfo.userID, ' is ', messageInfo.active);
+            // console.log(messageInfo.userID, ' is ', messageInfo.active);
             UpdateStatus(messageInfo);
             return;
         }
@@ -218,19 +217,19 @@ const CreateWebSocket = () => {
             CHAT_MODAL_CONTAINER.style.display === 'flex' &&
             SEND_BTN.getAttribute('data-reciever-id') == messageInfo.senderID
         ) {
-            console.log('Proccessing', messageInfo);
+            // console.log('Proccessing', messageInfo);
             ProcessMessage(messageInfo);
             return;
         }
         if (messageInfo.message != ' ') {
             //Show the notification animation
-            console.log('You have a message from: ', messageInfo.senderID);
+            // console.log('You have a message from: ', messageInfo.senderID);
 
             AddNotification(1, messageInfo.senderID);
             //Return the notification to the db
             messageInfo.notification = true;
             messageInfo.userID = messageInfo.senderID;
-            console.log('Sending back to the golang: ', messageInfo);
+            // console.log('Sending back to the golang: ', messageInfo);
             socket.send(JSON.stringify(messageInfo));
         }
     };
@@ -241,7 +240,7 @@ const validateCoookie = () => {
         .then(async (response) => {
             resp = await response.json();
             if (resp.Msg === 'Login successful') {
-                console.log('Valid cookie');
+                // console.log('Valid cookie');
                 validateUser(resp);
             }
         })
@@ -257,8 +256,8 @@ const removeAllChildNodes = (parent) => {
 const Logout = (check) => {
     fetch('/logout').then(async (response) => {
         resp = await response.text();
-        if (check)showMessages(resp);
-        
+        if (check) showMessages(resp);
+
         const loginPageId = document.querySelector('#login-page-id');
         const registerPageId = document.querySelector('#register-page-id');
         const mainPageId = document.querySelector('#main-page-id');
@@ -270,7 +269,6 @@ const Logout = (check) => {
         mainPageId.style.display = 'none';
     });
 };
-
 
 const TypingMessage = (val) => {
     const USER_ID = getCookie('session_token').split('&')[0];
@@ -301,14 +299,25 @@ const IsTyping = () => {
 };
 
 const validateUser = (resp) => {
-    console.log(resp, '--line 268');
+    // console.log(resp, '--line 268');
 
     if (resp.Msg === 'Login successful') {
         //Create the websocket when logged in#
         CreateWebSocket();
-        if (resp.User.ImgUrl) {
-            const userImage = document.querySelector('#post-user-image');
-            userImage.outerHTML = `<img src=${resp.User.ImgUrl} alt="profile-picture" class="user-image"></img>`;
+        const userImage = document.querySelector('#post-user-image');
+        console.log(resp.User.ImgUrl.length, 'Resp ===', resp.User.ImgUrl);
+        //Update profile img aswell
+        if (resp.User.ImgUrl.length !== 0) {
+            userImage.outerHTML = `<img src=${resp.User.ImgUrl} id="post-user-image" alt="profile-picture" class="user-image">`;
+            profilePictureImgMain.src = resp.User.ImgUrl;
+
+        } else {
+            console.log("No image")
+            userImage.outerHTML = `<div class="user-image" id="post-user-image"></div>`;
+            profilePictureImgMain.src = '#';
+            profilePictureImgMain.style.display = 'none';
+            profilePictureMain.style.display = 'block'
+
         }
         gUsers = [];
         gChatUsers = [];
@@ -318,12 +327,12 @@ const validateUser = (resp) => {
         if (resp.ChatUsers) {
             gChatUsers = resp.ChatUsers;
         }
-        console.log('Printing all the users: ', gUsers, gChatUsers);
+        // console.log('Printing all the users: ', gUsers, gChatUsers);
         GetNotificationAmount();
         ShowUsers();
         allUsers = [...(gUsers || []), ...(gChatUsers || [])];
         allPost = resp.Posts;
-        console.log('allUsers', gChatUsers);
+        // console.log('allUsers', gChatUsers);
         DisplayAllPost(resp.Posts);
         const loginPageId = document.querySelector('#login-page-id');
         const registerPageId = document.querySelector('#register-page-id');
@@ -478,7 +487,7 @@ const GetNotificationAmount = () => {
         })
         .then((resp) => {
             resp.forEach((thisUser) => {
-                console.log('This user: ', typeof thisUser.count);
+                // console.log('This user: ', typeof thisUser.count);
                 if (thisUser.count == 0 || thisUser.count == undefined) return;
                 AddNotification(thisUser.count, thisUser.senderID);
             });
@@ -487,7 +496,7 @@ const GetNotificationAmount = () => {
 
 //CheckNotificationDisplay will hide notification divs when their innerHTML is 0
 const CheckNotificationDisplay = (arr) => {
-    console.log(arr);
+    // console.log(arr);
     arr.forEach((user) => {
         const NOTIF_BOX = document.getElementById(user.UserID);
         if (parseInt(NOTIF_BOX.innerHTML) < 1) {
@@ -497,7 +506,7 @@ const CheckNotificationDisplay = (arr) => {
 };
 
 const ShowUsers = (firstRun = true) => {
-    console.log('showusers -> gUsers: ', gUsers);
+    // console.log('showusers -> gUsers: ', gUsers);
     if (gUsers) {
         let usersDiv = document.getElementById('forum-users-container');
         let lastChat = document.getElementById('all-forum-users-container');
@@ -733,7 +742,7 @@ const GetUsers = () => {
         if (response.ChatUsers) {
             gChatUsers = response.ChatUsers;
         }
-        console.log('Printing all the users: ', gUsers, gChatUsers);
+        // console.log('Printing all the users: ', gUsers, gChatUsers);
         ShowUsers();
         GetNotificationAmount();
         allUsers = [...(gUsers || []), ...(gChatUsers || [])];
@@ -790,7 +799,7 @@ const DisplayTenMessages = (messages) => {
 
 //FetchMsgs loads the next 10 messages of the conversation onto the screen
 const FetchMsgs = (chat, SEND_BTN) => {
-    console.log('Getting Messages');
+    // console.log('Getting Messages');
     fetch('/MessageInfo', {
         method: 'POST',
         headers: {
@@ -851,7 +860,7 @@ const DeleteChatNotifications = (usersID, recieversID) => {
 };
 
 const openChatModal = (e) => {
-    console.log('Valid', valid);
+    // console.log('Valid', valid);
     const RECIEVER_ID = e.getAttribute('data-user-id'); //data-user-id is the id of the user where we click on. This will be use to access the data on the database
     const RECIEVER_USERNAME = e.getAttribute('data-username');
     const CHAT_CONTAINER = document.querySelector('.chat-content-container');
@@ -863,11 +872,11 @@ const openChatModal = (e) => {
     );
     const CHAT_USERNAME = document.querySelector('#chat-username-id');
     const CHAT_USER_IMAGE = document.querySelector('#chat-header-user-image');
- //   if (e.children[1].src) {
- //       CHAT_USER_IMAGE.outerHTML = `<img src=${e.children[1].src} alt="profile-picture" id='chat-header-user-image' class="user-image"></img>`;
- //   } else {
+    if (e.children[1].src) {
+        CHAT_USER_IMAGE.outerHTML = `<img src=${e.children[1].src} alt="profile-picture" id='chat-header-user-image' class="user-image"></img>`;
+    } else {
         CHAT_USER_IMAGE.outerHTML = `<div id="chat-header-user-image" class="user-image"></div>`;
- //   }
+    }
     CHAT_USERNAME.innerHTML = RECIEVER_USERNAME;
     //when open a specific chat, we're going to get the chat data between the current user and the user tat they click
     chatModalContainer.style.display = 'flex';
@@ -912,7 +921,7 @@ const ArrangeUsers = (userId) => {
         }
     });
 
-    console.log('object ', user);
+    // console.log('object ', user);
     gChatUsers = [...gChatUsers, user];
     ShowUsers(false);
 };
@@ -940,7 +949,7 @@ const SendMessage = () => {
         socket.send(JSON.stringify(INFORMATION));
         DisplayMessage(MSG, 'chat sender', SORTED.split(' '));
         TEXT_BOX.value = '';
-        console.log('gUsers in socket.send: ', gUsers);
+        // console.log('gUsers in socket.send: ', gUsers);
         ArrangeUsers(SEND_TO);
     }
 };
@@ -1084,14 +1093,15 @@ const openResponseModal = (postId) => {
             break;
         }
     }
+    console.log(allPost, '---1085\n');
     CreateResponses(allPost, postId);
     const responsePostContainer = document.querySelector(
         '#response-post-container'
     );
     let category = '';
     userimg =
-        post.ImgUrl != ''
-            ? `<img src=${post.ImgUrl} alt="profile-picture" class="user-image"></img> `
+        post.ImgUrl.length !== 0
+            ? `<img src=${post.ImgUrl} alt="profile-picture" class="user-image">`
             : `<div class="user-image"></div>`;
     if (post.Category === 'golang') {
         category =
@@ -1129,15 +1139,19 @@ const CreateResponses = (allPost, postID) => {
             break;
         }
     }
+    console.log(allPost);
     let responseContainer = document.getElementById('all-reponse-container');
     if (allComments) {
         allComments.forEach((item) => {
+            let img = `<div class="user-image"></div>`;
+            if (item.ImgUrl.length !== 0) {
+                img = `<img src=${item.ImgUrl} alt="profile-picture" class="user-image">`;
+            }
             comments =
                 `
                 <div class="response-container">
                     <div class="response-user-profile">
-                        <div class="user-image">
-                        </div>
+                        ${img}
                         <span>
                             <div class="response-username">
                                 @${item.UserID}
@@ -1225,10 +1239,10 @@ const CreatePost = (
     const postUserProfile = document.createElement('div');
     postUserProfile.className = 'post-user-profile';
     let userImage = document.createElement('div');
-    
-  if (userImageValue.length > 7) {
-       userImage = document.createElement('img');
-       userImage.src = userImageValue; // this need to be converted to an image
+
+    if (userImageValue.length !== 0) {
+        userImage = document.createElement('img');
+        userImage.src = userImageValue; // this need to be converted to an image
     }
     userImage.className = 'user-image';
     //create an image to add the image here
@@ -1462,13 +1476,13 @@ const loadingPageTimer = (func, timeout = 300) => {
 };
 let closePage;
 const closeLoadingPage = () => {
-    console.log('Close');
+    // console.log('Close');
     window.clearTimeout(closePage);
     closePage = setTimeout(function () {
         // Run the callback
         const loadingPage = document.querySelector('.loading-page-background');
         loadingPage.style.display = 'none';
-        console.log('go');
+        // console.log('go');
     }, 2000);
 };
 closeLoadingPage();
