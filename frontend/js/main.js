@@ -169,7 +169,7 @@ const UpdateStatus = (updater) => {
 
 let socket;
 const CreateWebSocket = () => {
-    socket = new WebSocket('ws://localhost:8800/ws');
+    socket = new WebSocket(`wss://${location.host}/ws`);
     socket.onopen = () => {
         //Access The cookie value
         let cookie = getCookie('session_token');
