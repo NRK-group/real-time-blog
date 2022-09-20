@@ -305,11 +305,19 @@ const validateUser = (resp) => {
         //Create the websocket when logged in#
         CreateWebSocket();
         const userImage = document.querySelector('#post-user-image');
-        console.log(resp.User.ImgUrl);
+        console.log(resp.User.ImgUrl.length, 'Resp ===', resp.User.ImgUrl);
+        //Update profile img aswell
         if (resp.User.ImgUrl.length !== 0) {
             userImage.outerHTML = `<img src=${resp.User.ImgUrl} id="post-user-image" alt="profile-picture" class="user-image">`;
+            profilePictureImgMain.src = resp.User.ImgUrl;
+
         } else {
+            console.log("No image")
             userImage.outerHTML = `<div class="user-image" id="post-user-image"></div>`;
+            profilePictureImgMain.src = '#';
+            profilePictureImgMain.style.display = 'none';
+            profilePictureMain.style.display = 'block'
+
         }
         gUsers = [];
         gChatUsers = [];
