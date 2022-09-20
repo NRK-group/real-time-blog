@@ -945,10 +945,10 @@ const SendMessage = () => {
 
     if (MSG.trim().length !== 0) {
         socket.send(JSON.stringify(INFORMATION));
+        console.log("Sending message")
     const USER_NICKNAME = document.getElementById('profile-username-id');
         DisplayMessage(MSG, 'chat sender', SORTED.split(' '), USER_NICKNAME.innerHTML);
         TEXT_BOX.value = '';
-        // console.log('gUsers in socket.send: ', gUsers);
         ArrangeUsers(SEND_TO);
     }
 };

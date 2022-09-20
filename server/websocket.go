@@ -20,6 +20,10 @@ var (
 
 func (forum *DB) reader(conn *websocket.Conn) {
 	for {
+		fmt.Println()
+		fmt.Println("IN READER FOR LOOP")
+		fmt.Println()
+
 		// read in a message
 		messageType, p, err := conn.ReadMessage()
 		if err != nil {
@@ -74,7 +78,7 @@ func (forum *DB) reader(conn *websocket.Conn) {
 		}
 
 		// Now add the messafe to the database
-		if details.Mesg != " " && details.Mesg != "e702c728-67f2-4ecd-9e79-4795010501ea" && details.Nickname != "" {
+		if details.Mesg != " " && details.Mesg != "e702c728-67f2-4ecd-9e79-4795010501ea" && details.Nickname != "" && !details.Notification {
 			forum.InsertMessage(details)
 		}
 	}

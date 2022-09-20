@@ -437,6 +437,7 @@ func (forum *DB) CreateChatID(userID, recieverID string) string {
 }
 
 func (forum *DB) InsertMessage(details NewMessage) {
+
 	insertMessage, err1 := forum.DB.Prepare(`
 	INSERT INTO Message (chatID, content, date, userID, senderNickname) VALUES (?,?,?,?, ?)
 	`)
