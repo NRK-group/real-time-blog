@@ -431,8 +431,6 @@ func (forum *DB) CreateChatID(userID, recieverID string) string {
 		fmt.Println("Error inserting the chat id: ", err)
 		return ""
 	}
-	fmt.Println("chatID added between user: ", userID, " AND user: ", recieverID)
-
 	return chatID
 }
 
@@ -457,22 +455,7 @@ func (forum *DB) InsertMessage(details NewMessage) {
 	}
 }
 
-// func (forum *DB) QuerySpecificData(column, table, where, id string) (string, error) {
-// 	// ("imgUrl", "User", "userID", "7d6f9e83-f432-480f-a9e0-81e05181c662")
-// 	getData, err := forum.DB.Query("SELECT " + column + " FROM " + table + " WHERE " + where + " = '" + id + "'")
-// 	if err != nil {
-// 		fmt.Print("ERROR: QuerySpecificData", err)
-// 	}
-// 	var data string
-// 	for getData.Next() {
-// 		getData.Scan(&data)
-// 	}
-// 	fmt.Print(data)
-// 	return data, nil
-// }
-
-// CreateComment
-// is a method of database that add comment in it.
+// CreateComment is a method of database that add comment in it.
 func (forum *DB) CreateComment(userID, postID, content string) (string, error) {
 	date := time.Now().Format("2006 January 02")
 	time := time.Now()
@@ -543,8 +526,6 @@ func (forum *DB) ArrangeUsers(userID string) ([]User, []User, error) {
 }
 
 func (forum *DB) Notification(userID, recieverID string) {
-	fmt.Println("Update the notifation msg", userID, recieverID)
-
 	checkNotification, err := forum.DB.Query("SELECT 1 FROM MessageNotifications WHERE userID = ? AND recieverID = ?", userID, recieverID)
 	if err != nil {
 		fmt.Println("Error checking for notification row")
@@ -595,7 +576,6 @@ func (forum *DB) DeleteNotification(sender, target string) {
 	if deleteErr != nil {
 		fmt.Println("Error deleting from the Message Notification database")
 	}
-	fmt.Println("Successfully deleted notifications")
 }
 
 func (forum *DB) GetNotifications(target string) []Notify {
@@ -661,5 +641,3 @@ func (forum *DB) RegisterUser(userData UserData) StateChange {
 
 	return StateChange{UserID: userID, Nickname: userData.Nickname, Change: "NewUser", Active: "offline", ImgUrl: ""}
 }
-
-// ChangeStauts changes the status of a

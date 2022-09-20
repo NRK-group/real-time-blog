@@ -118,7 +118,6 @@ let allUsers;
 // ProccessMessage is a function that will display the message in the chat if the user has it open.
 const ProcessMessage = (message) => {
     const TYPING_MSG = document.querySelector('.fa-message');
-    console.log("Message obj === ", message)
     if (message.message === ' ') {
         {
             let username;
@@ -143,7 +142,6 @@ const ProcessMessage = (message) => {
 };
 
 const AddNotification = (i, senderID) => {
-    // console.log('Adding notification with:', senderID);
     const MESSAGE_BOX = document.getElementById(senderID);
     let notValue = parseInt(MESSAGE_BOX.innerHTML);
     notValue += parseInt(i);
@@ -181,9 +179,7 @@ const CreateWebSocket = () => {
     };
     socket.onmessage = (text) => {
         let messageInfo = JSON.parse(text.data);
-        // console.log('New Message', messageInfo);
         if (messageInfo.change === 'status') {
-            // console.log(messageInfo.userID, ' is ', messageInfo.active);
             UpdateStatus(messageInfo);
             return;
         }
@@ -211,19 +207,15 @@ const CreateWebSocket = () => {
             CHAT_MODAL_CONTAINER.style.display === 'flex' &&
             SEND_BTN.getAttribute('data-reciever-id') == messageInfo.senderID
         ) {
-            // console.log('Proccessing', messageInfo);
             ProcessMessage(messageInfo);
             return;
         }
         if (messageInfo.message != ' ') {
             //Show the notification animation
-            // console.log('You have a message from: ', messageInfo.senderID);
-
             AddNotification(1, messageInfo.senderID);
             //Return the notification to the db
             messageInfo.notification = true;
             messageInfo.userID = messageInfo.senderID;
-            // console.log('Sending back to the golang: ', messageInfo);
             socket.send(JSON.stringify(messageInfo));
         }
     };
@@ -234,12 +226,10 @@ const validateCoookie = () => {
         .then(async (response) => {
             resp = await response.json();
             if (resp.Msg === 'Login successful') {
-                // console.log('Valid cookie');
                 validateUser(resp);
             }
         })
         .catch(() => {
-            console.log('no valid cookie');
         });
 };
 const removeAllChildNodes = (parent) => {
@@ -293,20 +283,18 @@ const IsTyping = () => {
 };
 
 const validateUser = (resp) => {
-    // console.log(resp, '--line 268');
 
     if (resp.Msg === 'Login successful') {
+        openAllPost(document.querySelector('#all-post-id'))
         //Create the websocket when logged in#
         CreateWebSocket();
         const userImage = document.querySelector('#post-user-image');
-        console.log(resp.User.ImgUrl.length, 'Resp ===', resp.User.ImgUrl);
         //Update profile img aswell
         if (resp.User.ImgUrl.length !== 0) {
             userImage.outerHTML = `<img src=${resp.User.ImgUrl} id="post-user-image" alt="profile-picture" class="user-image">`;
             profilePictureImgMain.src = resp.User.ImgUrl;
 
         } else {
-            console.log("No image")
             userImage.outerHTML = `<div class="user-image" id="post-user-image"></div>`;
             profilePictureImgMain.src = '#';
             profilePictureImgMain.style.display = 'none';
@@ -321,12 +309,10 @@ const validateUser = (resp) => {
         if (resp.ChatUsers) {
             gChatUsers = resp.ChatUsers;
         }
-        // console.log('Printing all the users: ', gUsers, gChatUsers);
         GetNotificationAmount();
         ShowUsers();
         allUsers = [...(gUsers || []), ...(gChatUsers || [])];
         allPost = resp.Posts;
-        // console.log('allUsers', gChatUsers);
         DisplayAllPost(resp.Posts);
         const loginPageId = document.querySelector('#login-page-id');
         const registerPageId = document.querySelector('#register-page-id');
@@ -481,7 +467,6 @@ const GetNotificationAmount = () => {
         })
         .then((resp) => {
             resp.forEach((thisUser) => {
-                // console.log('This user: ', typeof thisUser.count);
                 if (thisUser.count == 0 || thisUser.count == undefined) return;
                 AddNotification(thisUser.count, thisUser.senderID);
             });
@@ -490,7 +475,6 @@ const GetNotificationAmount = () => {
 
 //CheckNotificationDisplay will hide notification divs when their innerHTML is 0
 const CheckNotificationDisplay = (arr) => {
-    // console.log(arr);
     arr.forEach((user) => {
         const NOTIF_BOX = document.getElementById(user.UserID);
         if (parseInt(NOTIF_BOX.innerHTML) < 1) {
@@ -500,7 +484,6 @@ const CheckNotificationDisplay = (arr) => {
 };
 
 const ShowUsers = (firstRun = true) => {
-    // console.log('showusers -> gUsers: ', gUsers);
     if (gUsers) {
         let usersDiv = document.getElementById('forum-users-container');
         let lastChat = document.getElementById('all-forum-users-container');
@@ -736,7 +719,6 @@ const GetUsers = () => {
         if (response.ChatUsers) {
             gChatUsers = response.ChatUsers;
         }
-        // console.log('Printing all the users: ', gUsers, gChatUsers);
         ShowUsers();
         GetNotificationAmount();
         allUsers = [...(gUsers || []), ...(gChatUsers || [])];
@@ -769,7 +751,6 @@ function revealPasswordBtn(id, className) {
 }
 
 const DisplayTenMessages = (messages) => {
-    // console.log('DISlaying ten messages');
     const CURR_USER_ID = getCookie('session_token').split('&')[0];
     const CHAT_CONTENT_CONTAINER = document.querySelector(
         '.chat-content-container'
@@ -781,8 +762,6 @@ const DisplayTenMessages = (messages) => {
         if (msg.senderID === CURR_USER_ID) {
             classNames = 'chat sender';
         }
-        console.log(msg)
-
         LoadMessages(msg.message, classNames, msg.date.split(' '), msg.nickName);
     });
 
@@ -794,7 +773,6 @@ const DisplayTenMessages = (messages) => {
 
 //FetchMsgs loads the next 10 messages of the conversation onto the screen
 const FetchMsgs = (chat, SEND_BTN) => {
-    // console.log('Getting Messages');
     fetch('/MessageInfo', {
         method: 'POST',
         headers: {
@@ -855,7 +833,6 @@ const DeleteChatNotifications = (usersID, recieversID) => {
 };
 
 const openChatModal = (e) => {
-    // console.log('Valid', valid);
     const RECIEVER_ID = e.getAttribute('data-user-id'); //data-user-id is the id of the user where we click on. This will be use to access the data on the database
     const RECIEVER_USERNAME = e.getAttribute('data-username');
     const CHAT_CONTAINER = document.querySelector('.chat-content-container');
@@ -916,7 +893,6 @@ const ArrangeUsers = (userId) => {
         }
     });
 
-    // console.log('object ', user);
     gChatUsers = [...gChatUsers, user];
     ShowUsers(false);
 };
@@ -941,11 +917,9 @@ const SendMessage = () => {
         chatID: CHAT_ID,
         nickName: USER_NICKNAME.innerHTML
     };
-    console.log(INFORMATION.nickName)
 
     if (MSG.trim().length !== 0) {
         socket.send(JSON.stringify(INFORMATION));
-        console.log("Sending message")
     const USER_NICKNAME = document.getElementById('profile-username-id');
         DisplayMessage(MSG, 'chat sender', SORTED.split(' '), USER_NICKNAME.innerHTML);
         TEXT_BOX.value = '';
@@ -962,7 +936,6 @@ const closeChat = () => {
     chatModalContainer.style.display = 'none';
     //clear the text box
     document.querySelector('.chat-input-box').value = '';
-    console.log('REmoving event listner');
     CHAT_CONTENT_CONTAINER.removeEventListener('scroll', CheckScrollTop);
 };
 
@@ -1092,7 +1065,6 @@ const openResponseModal = (postId) => {
             break;
         }
     }
-    console.log(allPost, '---1085\n');
     CreateResponses(allPost, postId);
     const responsePostContainer = document.querySelector(
         '#response-post-container'
@@ -1138,7 +1110,6 @@ const CreateResponses = (allPost, postID) => {
             break;
         }
     }
-    console.log(allPost);
     let responseContainer = document.getElementById('all-reponse-container');
     if (allComments) {
         allComments.forEach((item) => {
@@ -1475,13 +1446,11 @@ const loadingPageTimer = (func, timeout = 300) => {
 };
 let closePage;
 const closeLoadingPage = () => {
-    // console.log('Close');
     window.clearTimeout(closePage);
     closePage = setTimeout(function () {
         // Run the callback
         const loadingPage = document.querySelector('.loading-page-background');
         loadingPage.style.display = 'none';
-        // console.log('go');
     }, 2000);
 };
 closeLoadingPage();

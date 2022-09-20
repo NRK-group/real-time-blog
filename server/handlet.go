@@ -174,12 +174,6 @@ func (forum *DB) Login(w http.ResponseWriter, r *http.Request) {
 
 		chatusers, alluser, _ := forum.ArrangeUsers(userid)
 
-		fmt.Println()
-		fmt.Println()
-		fmt.Println(len(chatusers), len(alluser))
-		fmt.Println()
-		fmt.Println()
-
 		page = ReturnData{User: forum.GetUser(userid), Posts: forum.AllPost("", userid), Msg: "Login successful", Users: alluser, ChatUsers: chatusers}
 
 		marshallPage, err := json.Marshal(page)
@@ -194,7 +188,6 @@ func (forum *DB) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println("Error in login handler")
 	http.Error(w, "400 Bad Request.", http.StatusBadRequest)
 }
 
@@ -226,7 +219,6 @@ func (forum *DB) Logout(w http.ResponseWriter, r *http.Request) {
 		// Remove the user from ws connection map
 		if _, exsists := users[res[0]]; exsists {
 			delete(users, res[0])
-			fmt.Println("removing this user from the database: ", res[1])
 		}
 		// Update the users status in the database
 		forum.Update("User", "Status", "offline", "userID", res[0])
@@ -245,7 +237,6 @@ func (forum *DB) Logout(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Header().Set("Content-type", "application/text")
 		w.Write([]byte("Logout successful"))
-		fmt.Println("Logout successful")
 	default:
 		http.Error(w, "400 Bad Request.", http.StatusBadRequest)
 		return
@@ -293,8 +284,7 @@ func (forum *DB) Post(w http.ResponseWriter, r *http.Request) {
 
 		if forum.CheckSession(res[2]) {
 
-			postID, err := forum.CreatePost(res[0], postData.Title, postData.Category, forum.GetUser(res[0]).ImgUrl, postData.Content)
-			fmt.Println(postID)
+			_, err := forum.CreatePost(res[0], postData.Title, postData.Category, forum.GetUser(res[0]).ImgUrl, postData.Content)
 			fmt.Println(err)
 			page = ReturnData{Posts: forum.AllPost("", res[0]), Msg: "successful Post"}
 			marshallPage, err := json.Marshal(page)
@@ -595,7 +585,6 @@ func (forum *DB) WsEndpoint(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Store the new user in the Users map
-	fmt.Println(users)
 	userIdVal := strings.Split(c.Value, "&")[0]
 	users[userIdVal] = ws
 	// Let all users know this users is online
@@ -609,7 +598,6 @@ func (forum *DB) WsEndpoint(w http.ResponseWriter, r *http.Request) {
 			v.WriteMessage(1, send)
 		}
 	}
-	// fmt.Println(userIdVal, " is connected.")
 	go forum.reader(ws)
 }
 
@@ -620,7 +608,6 @@ func (forum *DB) Notifications(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.Method == "PUT" {
-		fmt.Println("Delete Info from notification table between:----------------------------------------- ")
 		var chatUsers NewMessage
 
 		err := json.NewDecoder(r.Body).Decode(&chatUsers)
@@ -644,7 +631,6 @@ func (forum *DB) Notifications(w http.ResponseWriter, r *http.Request) {
 		username := strings.Split(c.Value, "&")[0]
 
 		getNotifs = forum.GetNotifications(username)
-		// fmt.Println("getNotifs", getNotifs)
 		values, marshErr := json.Marshal(getNotifs)
 		if marshErr != nil {
 			fmt.Println("Error marshalling notification results")
