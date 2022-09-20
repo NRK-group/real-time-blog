@@ -30,6 +30,7 @@ func (forum *DB) reader(conn *websocket.Conn) {
 		var details NewMessage
 
 		errMarsh := json.Unmarshal(p, &details)
+		fmt.Println("----Nickname of reciver is ", details.Nickname)
 
 		if errMarsh != nil {
 			fmt.Println("Error unmarshalling: ", errMarsh)
@@ -73,7 +74,7 @@ func (forum *DB) reader(conn *websocket.Conn) {
 		}
 
 		// Now add the messafe to the database
-		if details.Mesg != " " && details.Mesg != "e702c728-67f2-4ecd-9e79-4795010501ea" {
+		if details.Mesg != " " && details.Mesg != "e702c728-67f2-4ecd-9e79-4795010501ea" && details.Nickname != "" {
 			forum.InsertMessage(details)
 		}
 	}
@@ -86,7 +87,7 @@ func SendMsgs() {
 			if ok {
 				// Add consition to check the user exsists
 				if _, valid := users[msg.RecieverID]; valid {
-					sendMess := SendMessage{Sender: msg.UserID, Message: msg.Mesg, Date: msg.Date}
+					sendMess := SendMessage{Sender: msg.UserID, Message: msg.Mesg, Date: msg.Date, Nickname: msg.Nickname}
 					res, marshErr := json.Marshal(sendMess)
 					if marshErr != nil {
 						fmt.Println("Error MArshalling the data before sending: ", marshErr)

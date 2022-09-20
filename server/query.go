@@ -438,7 +438,7 @@ func (forum *DB) CreateChatID(userID, recieverID string) string {
 
 func (forum *DB) InsertMessage(details NewMessage) {
 	insertMessage, err1 := forum.DB.Prepare(`
-	INSERT INTO Message (chatID, content, date, userID) VALUES (?,?,?,?)
+	INSERT INTO Message (chatID, content, date, userID, senderNickname) VALUES (?,?,?,?, ?)
 	`)
 	if err1 != nil {
 		fmt.Println("Error Preparing message: ", err1)
@@ -447,7 +447,7 @@ func (forum *DB) InsertMessage(details NewMessage) {
 
 	// messageID := uuid.NewV4().String()
 
-	_, err := insertMessage.Exec(details.ChatID, details.Mesg, details.Date, details.UserID)
+	_, err := insertMessage.Exec(details.ChatID, details.Mesg, details.Date, details.UserID, details.Nickname)
 
 	forum.Update("Chat", "date", time.Now().Format("2006 January 02 15:04:05"), "chatID", details.ChatID)
 
@@ -489,7 +489,7 @@ func (forum *DB) CreateComment(userID, postID, content string) (string, error) {
 
 func (forum *DB) TenMessages(chatID string, x int) []SendMessage {
 	// select the bottom 10 messages from the db
-	getTen, err := forum.DB.Query(`SELECT content, date, userID FROM Message  WHERE chatID = ? ORDER BY messageID DESC LIMIT ?,10`, chatID, x)
+	getTen, err := forum.DB.Query(`SELECT content, date, userID, senderNickname FROM Message  WHERE chatID = ? ORDER BY messageID DESC LIMIT ?,10`, chatID, x)
 	if err != nil {
 		fmt.Println("Error selecting messages: ", err)
 		return nil
@@ -500,7 +500,7 @@ func (forum *DB) TenMessages(chatID string, x int) []SendMessage {
 	for getTen.Next() {
 		// if count > x {
 		var current SendMessage
-		getTen.Scan(&current.Message, &current.Date, &current.Sender)
+		getTen.Scan(&current.Message, &current.Date, &current.Sender, &current.Nickname)
 		result = append(result, current)
 		// }
 		// count++
@@ -508,7 +508,6 @@ func (forum *DB) TenMessages(chatID string, x int) []SendMessage {
 		// 	break;
 		// }
 	}
-	fmt.Println(result)
 	return result
 }
 

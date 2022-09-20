@@ -54,22 +54,15 @@ function getCookie(name) {
     return null;
 }
 
-const LoadMessages = (messageText, classType, sentTime) => {
-    const MSG = AddMessages(messageText, classType, sentTime);
+const LoadMessages = (messageText, classType, sentTime, nickname) => {
+    const MSG = AddMessages(messageText, classType, sentTime, nickname);
     const CHAT_CONTENT_CONTAINER = document.querySelector(
         '.chat-content-container'
     );
     CHAT_CONTENT_CONTAINER.prepend(MSG);
-    // console.log('Prepending');
-    // const FIRST_MSG = document.querySelector('.chat');
-    // if (FIRST_MSG === null) {
-    //     CHAT_CONTENT_CONTAINER.append(MSG);
-    // } else {
-    //     FIRST_MSG.prepend(MSG);
-    // }
 };
 
-const AddMessages = (messageText, classType, sentTime) => {
+const AddMessages = (messageText, classType, sentTime, userNickname) => {
     //Make the div that will hold everything
     const MSG_HOLDER = document.createElement('div');
     MSG_HOLDER.className = classType;
@@ -85,7 +78,7 @@ const AddMessages = (messageText, classType, sentTime) => {
     MSG_CONTAINER.append(TEXT);
     //Create a div for the date
     const DATE = document.createElement('div');
-    DATE.innerHTML = `${sentTime[2]} ${sentTime[1]} ${
+    DATE.innerHTML = `${userNickname} - ${sentTime[2]} ${sentTime[1]} ${
         sentTime[3]
     } ${sentTime[4].slice(0, -3)}`;
     DATE.classList.add('message-date');
@@ -95,8 +88,8 @@ const AddMessages = (messageText, classType, sentTime) => {
     return MSG_HOLDER;
 };
 
-const DisplayMessage = (messageText, classType, sentTime) => {
-    const MSG = AddMessages(messageText, classType, sentTime);
+const DisplayMessage = (messageText, classType, sentTime, nickname) => {
+    const MSG = AddMessages(messageText, classType, sentTime, nickname);
     const CHAT_CONTENT_CONTAINER = document.querySelector(
         '.chat-content-container'
     );
@@ -125,6 +118,7 @@ let allUsers;
 // ProccessMessage is a function that will display the message in the chat if the user has it open.
 const ProcessMessage = (message) => {
     const TYPING_MSG = document.querySelector('.fa-message');
+    console.log("Message obj === ", message)
     if (message.message === ' ') {
         {
             let username;
@@ -144,7 +138,7 @@ const ProcessMessage = (message) => {
             Debounce(StoppedTyping, 1750);
         }
     } else {
-        DisplayMessage(message.message, 'chat', message.date.split(' '));
+        DisplayMessage(message.message, 'chat', message.date.split(' '), message.nickName);
     }
 };
 
@@ -358,7 +352,7 @@ const UpdateUserProfile = (resp) => {
     ).innerText = `${resp.User.Firstname}  ${resp.User.Lastname}`;
     document.getElementById(
         'profile-username-id'
-    ).innerText = ` @${resp.User.Nickname}`;
+    ).innerText = `${resp.User.Nickname}`;
     let yearCreated = resp.User.DateCreated.split(',')[1];
     document.querySelector(
         '#account-date-created-id'
@@ -787,8 +781,9 @@ const DisplayTenMessages = (messages) => {
         if (msg.senderID === CURR_USER_ID) {
             classNames = 'chat sender';
         }
+        console.log(msg)
 
-        LoadMessages(msg.message, classNames, msg.date.split(' '));
+        LoadMessages(msg.message, classNames, msg.date.split(' '), msg.nickName);
     });
 
     //Causing eventlistner to target
@@ -937,17 +932,21 @@ const SendMessage = () => {
     const SENT_TIME = new Date();
     const SORTED = SENT_TIME.toString();
     const CHAT_ID = SEND_BTN.getAttribute('data-chat-id');
+    const USER_NICKNAME = document.getElementById('profile-username-id');
     const INFORMATION = {
         message: MSG.trim(),
         userID: SEND_FROM,
         recieverID: SEND_TO,
         date: SORTED,
         chatID: CHAT_ID,
+        nickName: USER_NICKNAME.innerHTML
     };
+    console.log(INFORMATION.nickName)
 
     if (MSG.trim().length !== 0) {
         socket.send(JSON.stringify(INFORMATION));
-        DisplayMessage(MSG, 'chat sender', SORTED.split(' '));
+    const USER_NICKNAME = document.getElementById('profile-username-id');
+        DisplayMessage(MSG, 'chat sender', SORTED.split(' '), USER_NICKNAME.innerHTML);
         TEXT_BOX.value = '';
         // console.log('gUsers in socket.send: ', gUsers);
         ArrangeUsers(SEND_TO);
@@ -1154,7 +1153,7 @@ const CreateResponses = (allPost, postID) => {
                         ${img}
                         <span>
                             <div class="response-username">
-                                @${item.UserID}
+                                ${item.UserID}
                                 <span class="response-created">
                                 ${item.Date}
                                 </span>

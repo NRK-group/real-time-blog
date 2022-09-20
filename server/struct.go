@@ -115,13 +115,15 @@ type NewMessage struct {
 	ChatID       string `json:"chatID"`
 	Date         string `json:"date"`
 	Notification bool   `json:"notification"`
+	Nickname     string `json:"nickName"`
 	messageType  int
 }
 
 type SendMessage struct {
-	Sender  string `json:"senderID"`
-	Message string `json:"message"`
-	Date    string `json:"date"`
+	Sender   string `json:"senderID"`
+	Message  string `json:"message"`
+	Date     string `json:"date"`
+	Nickname string `json:"nickName"`
 }
 
 type ReturnMessages struct {
