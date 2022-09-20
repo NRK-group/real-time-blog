@@ -109,6 +109,7 @@ func initMessage(db *sql.DB) {
 		"content"	TEXT NOT NULL,
 		"date"      TEXT NOT NULL,
 		"userID"	TEXT NOT NULL,
+		"senderNickname" TEXT NOT NULL,
 		FOREIGN KEY ("chatID")
 			REFERENCES "Chat" ("chatID")
 		FOREIGN KEY ("userID")
