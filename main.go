@@ -2,9 +2,9 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"forum/server"
 
@@ -50,6 +50,11 @@ func main() {
 	http.HandleFunc("/updateuserimage", database.UpdateUserImage)
 	frontend := http.FileServer(http.Dir("./frontend"))
 	http.Handle("/frontend/", http.StripPrefix("/frontend/", frontend)) // handling the CSS
-	fmt.Printf("Starting server at port 8800\n")
-	log.Fatal(http.ListenAndServe(":8800", nil))
+	port := ""
+	port = os.Getenv("PORT")
+	if port == "" {
+		port = "8800"
+	}
+	log.Print("Listening on 0.0.0.0:" + port)
+	log.Fatal(http.ListenAndServe("0.0.0.0:"+port, nil))
 }
