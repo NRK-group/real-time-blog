@@ -161,8 +161,12 @@ func (forum *DB) Login(w http.ResponseWriter, r *http.Request) {
 				Value:   loginResp,
 				Expires: time.Now().Add(24 * time.Hour),
 			})
+			r.AddCookie(&http.Cookie{
+				Name:    "session_token",
+				Value:   loginResp,
+				Expires: time.Now().Add(24 * time.Hour),
+			})
 		}
-
 		c, err := r.Cookie("session_token")
 		if err != nil {
 			fmt.Println("Error Getting the cookie: ", err)

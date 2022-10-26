@@ -137,7 +137,12 @@ const ProcessMessage = (message) => {
             Debounce(StoppedTyping, 1750);
         }
     } else {
-        DisplayMessage(message.message, 'chat', message.date.split(' '), message.nickName);
+        DisplayMessage(
+            message.message,
+            'chat',
+            message.date.split(' '),
+            message.nickName
+        );
     }
 };
 
@@ -169,7 +174,7 @@ const UpdateStatus = (updater) => {
 
 let socket;
 const CreateWebSocket = () => {
-    socket = new WebSocket(`wss://${location.host}/ws`);
+    socket = new WebSocket(`ws://${location.host}/ws`);
     socket.onopen = () => {
         //Access The cookie value
         let cookie = getCookie('session_token');
@@ -229,8 +234,7 @@ const validateCoookie = () => {
                 validateUser(resp);
             }
         })
-        .catch(() => {
-        });
+        .catch(() => {});
 };
 const removeAllChildNodes = (parent) => {
     while (parent.firstChild) {
@@ -283,9 +287,8 @@ const IsTyping = () => {
 };
 
 const validateUser = (resp) => {
-
     if (resp.Msg === 'Login successful') {
-        openAllPost(document.querySelector('#all-post-id'))
+        openAllPost(document.querySelector('#all-post-id'));
         //Create the websocket when logged in#
         CreateWebSocket();
         const userImage = document.querySelector('#post-user-image');
@@ -293,13 +296,11 @@ const validateUser = (resp) => {
         if (resp.User.ImgUrl.length !== 0) {
             userImage.outerHTML = `<img src=${resp.User.ImgUrl} id="post-user-image" alt="profile-picture" class="user-image">`;
             profilePictureImgMain.src = resp.User.ImgUrl;
-
         } else {
             userImage.outerHTML = `<div class="user-image" id="post-user-image"></div>`;
             profilePictureImgMain.src = '#';
             profilePictureImgMain.style.display = 'none';
-            profilePictureMain.style.display = 'block'
-
+            profilePictureMain.style.display = 'block';
         }
         gUsers = [];
         gChatUsers = [];
@@ -762,7 +763,12 @@ const DisplayTenMessages = (messages) => {
         if (msg.senderID === CURR_USER_ID) {
             classNames = 'chat sender';
         }
-        LoadMessages(msg.message, classNames, msg.date.split(' '), msg.nickName);
+        LoadMessages(
+            msg.message,
+            classNames,
+            msg.date.split(' '),
+            msg.nickName
+        );
     });
 
     //Causing eventlistner to target
@@ -915,13 +921,18 @@ const SendMessage = () => {
         recieverID: SEND_TO,
         date: SORTED,
         chatID: CHAT_ID,
-        nickName: USER_NICKNAME.innerHTML
+        nickName: USER_NICKNAME.innerHTML,
     };
 
     if (MSG.trim().length !== 0) {
         socket.send(JSON.stringify(INFORMATION));
-    const USER_NICKNAME = document.getElementById('profile-username-id');
-        DisplayMessage(MSG, 'chat sender', SORTED.split(' '), USER_NICKNAME.innerHTML);
+        const USER_NICKNAME = document.getElementById('profile-username-id');
+        DisplayMessage(
+            MSG,
+            'chat sender',
+            SORTED.split(' '),
+            USER_NICKNAME.innerHTML
+        );
         TEXT_BOX.value = '';
         ArrangeUsers(SEND_TO);
     }
